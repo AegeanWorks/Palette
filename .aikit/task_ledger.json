@@ -1,5 +1,313 @@
 {
   "version": 1,
-  "active_task": null,
-  "checkpoints": []
+  "active_task": {
+    "task_id": "palette-0111",
+    "last_phase": "phase 4",
+    "active_phase": 4,
+    "status": "in_progress",
+    "updated_at": 1793397870.5593889,
+    "owner": "opencode:editor-live",
+    "started_by": "opencode:editor-live",
+    "continuations": []
+  },
+  "checkpoints": [
+    {
+      "task_id": "palette-autosave",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/3] Add a browser-only IndexedDB autosave store that captures layer PNG blobs, document metadata and blend/lock/adjustment state after edits, plus a startup restore dialog with Restore and Start fresh choices. [2/3] Wire debounced saves into commits, undo/redo and opened documents, handle quota/corrupt records gracefully, and keep the welcome sample from overwriting an older autosave. [3/3] Add static and browser dogfood coverage including a real page reload and restore, bump Palette to 0.6.0, re-vendor into AegeanWorks and bump the site shell cache.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793380093.211543,
+      "timestamp_str": "2026-10-30 20:08:13",
+      "agent": "kilo:palette",
+      "impact_assessment": {
+        "why": "A local-first editor must survive a reload or crash; IndexedDB recovery closes the last major data-loss gap without adding a server.",
+        "benefits": "Automatic local recovery, no uploads, graceful failure, and a restore choice that never replaces the welcome sample silently.",
+        "risks": "contract: a new startup modal and a new browser module; dependency: IndexedDB and Canvas blobs, both optional-safe; concurrency: asynchronous saves can overlap with edits and reloads; state: stale/corrupt records or quota failures must not break startup.",
+        "mitigation": "Use a versioned record schema, validate records before showing the dialog, serialize saves with a pending flag, skip the welcome baseline, delete a declined autosave, and test a full reload/restore in the headless browser."
+      }
+    },
+    {
+      "task_id": "palette-autosave",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "Completed [1/3]-[3/3]: a versioned IndexedDB autosave stores layer PNG blobs plus name/dimensions/active layer/opacity/blend/lock/adjustments; saves are debounced, serialized and skipped during gestures, with a status indicator, quota/corrupt-record handling, a validated restore dialog, Start fresh, and no welcome-sample overwrite. Palette is 0.6.0 with 59 tests; the browser dogfood saves a 4-layer document, reloads the real page, clicks Restore and compares layer metadata/pixels exactly. checklists: passed (test, hygiene, guidelines, secrets; UI delivery review remains advisory).",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793383463.2260852,
+      "timestamp_str": "2026-10-30 21:04:23",
+      "agent": "kilo:palette",
+      "handoff": {
+        "state": "npm test 59/59, dogfood passes autosave reload/restore, aikit check 4/4",
+        "next": "review or publish Palette 0.6.0",
+        "open": "app files are uncommitted",
+        "evidence": "src/ui/autosave.js, src/ui/editor.js initAutosave/runAutosave/restoreSession, tests/autosave.test.js, scripts/dogfood.mjs."
+      }
+    },
+    {
+      "task_id": "palette-autosave",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'palette-autosave' completed successfully.",
+      "status": "completed",
+      "timestamp": 1793383463.9826262,
+      "timestamp_str": "2026-10-30 21:04:23",
+      "agent": "kilo:palette"
+    },
+    {
+      "task_id": "palette-levels-invert",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/3] Add an invert flag to the single-shape marquee, even-odd clipping for paint/shapes/text/gradients/filters/clipboard, a document-boundary marquee cue, Ctrl/Cmd+Shift+I and a panel button; disallow selected-pixel moves and crop-to-selection while inverted. [2/3] Add a pure Levels pixel transform with black point, white point and gamma, a filter-panel control, selection-aware application and undo. [3/3] Add unit/static/browser dogfood coverage, bump Palette to 0.7.0, re-vendor into AegeanWorks and bump the site shell cache.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793384663.6081874,
+      "timestamp_str": "2026-10-30 21:24:23",
+      "agent": "kilo:palette",
+      "impact_assessment": {
+        "why": "Invert completes the selection workflow, and Levels is a standard tonal tool that adds real editing depth without new dependencies.",
+        "benefits": "Faster cutouts, even-odd selection clipping, tonal correction with selection support, and a site copy refreshed through the hash manifest.",
+        "risks": "contract: selection records gain an invert flag and the filter panel gains controls; dependency: Canvas even-odd clipping and pure pixel math; concurrency: none; state: inverted selections must not break copy/cut/filters and Levels must clamp black below white.",
+        "mitigation": "Normalise selection clones, centralise even-odd clipping in one helper, test Levels identity/clamping/gamma, dogfood inside/outside pixels for inverted paint and a Levels undo, and re-vendor only after the source suite is green."
+      }
+    },
+    {
+      "task_id": "palette-levels-invert",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "Completed [1/3]-[3/3]: selections gain an invert flag with even-odd clipping across paint/shapes/text/gradients/filters/clipboard, a document-boundary cue, a panel button and Shift+I; selected-pixel moves and crop-to-selection are guarded while inverted. Levels (black/white/gamma) is a pure pixel transform wired into the filter panel, selection-aware and undoable. Palette is 0.7.0 with 62 tests and dogfood coverage for inverted brush clipping and Levels undo. checklists: passed (test, hygiene, guidelines, secrets; UI delivery review remains advisory).",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793386321.463298,
+      "timestamp_str": "2026-10-30 21:52:01",
+      "agent": "kilo:palette",
+      "handoff": {
+        "state": "npm test 62/62, dogfood passes invert/levels, aikit check 4/4",
+        "next": "review or publish Palette 0.7.0",
+        "open": "app files are uncommitted",
+        "evidence": "src/ui/paint.js clipToSelection, src/core/filters.js applyLevels, src/ui/editor.js invertSelection/applyLevelsFilter, scripts/dogfood.mjs."
+      }
+    },
+    {
+      "task_id": "palette-levels-invert",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'palette-levels-invert' completed successfully.",
+      "status": "completed",
+      "timestamp": 1793386321.9880054,
+      "timestamp_str": "2026-10-30 21:52:01",
+      "agent": "kilo:palette"
+    },
+    {
+      "task_id": "palette-crop-flatten",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/3] Add a pure constrainAspect helper and a crop-ratio selector (free, 1:1, 4:3, 3:2, 16:9, 9:16) that constrains marquee drags and is testable. [2/3] Add a Flatten image command that composites visible layers with filters/blends into one layer, discards hidden layers and undoes in one step. [3/3] Add unit/static/browser dogfood coverage, bump Palette to 0.8.0, re-vendor into AegeanWorks and bump the site shell cache.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793387060.9141283,
+      "timestamp_str": "2026-10-30 22:04:20",
+      "agent": "kilo:palette",
+      "impact_assessment": {
+        "why": "Crop ratios are a standard image workflow and Flatten gives users a clean one-layer result without leaving the editor.",
+        "benefits": "Predictable social/print crops, single-step flatten, no new dependencies, and a site copy refreshed through the hash manifest.",
+        "risks": "contract: crop options and layer commands change; dependency: Canvas compositing only; concurrency: none; state: aspect drags must clip correctly at document edges and flatten must preserve the visible composite while discarding hidden layers.",
+        "mitigation": "Keep the aspect math in a pure tested helper, constrain only while dragging, use the existing compositeDocument path for flatten, and dogfood a 1:1 crop and flatten undo."
+      }
+    },
+    {
+      "task_id": "palette-crop-flatten",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "Completed [1/3]-[3/3]: a pure constrainAspect helper plus a crop-ratio selector (free, 1:1, 4:3, 3:2, 16:9, 9:16) constrains marquee drags and clamps at document edges; Flatten composites visible layers with filters/blends into one layer, discards hidden layers and undoes in one step. Palette is 0.8.0 with 64 tests and browser dogfood coverage for a square crop and flatten undo. checklists: passed (test, hygiene, guidelines, secrets; UI delivery review remains advisory).",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793387869.3861246,
+      "timestamp_str": "2026-10-30 22:17:49",
+      "agent": "kilo:palette",
+      "handoff": {
+        "state": "npm test 64/64, dogfood passes square crop and flatten, aikit check 4/4",
+        "next": "review or publish Palette 0.8.0",
+        "open": "app files are uncommitted",
+        "evidence": "src/core/geometry.js constrainAspect, src/ui/editor.js flattenImage, index.html crop-aspect/btn-flatten, scripts/dogfood.mjs."
+      }
+    },
+    {
+      "task_id": "palette-crop-flatten",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'palette-crop-flatten' completed successfully.",
+      "status": "completed",
+      "timestamp": 1793387869.7630696,
+      "timestamp_str": "2026-10-30 22:17:49",
+      "agent": "kilo:palette"
+    },
+    {
+      "task_id": "palette-canvas-export",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/3] Add a pure anchor-offset helper and a Canvas Size dialog (width, height, 3x3 anchor) that creates doc-sized layer canvases with the old art placed by anchor, clears selection and undoes in one step. [2/3] Add an export-scale control with normalized 0.25x-4x factors, scaled output dimensions in the dialog and a scaled composite in PNG/JPEG/WebP export. [3/3] Add unit/static/browser dogfood coverage (including PNG header dimensions), bump Palette to 0.9.0, re-vendor into AegeanWorks and bump the site shell cache.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793388850.9007869,
+      "timestamp_str": "2026-10-30 22:34:10",
+      "agent": "kilo:palette",
+      "impact_assessment": {
+        "why": "Canvas Size and export scaling are standard document/export controls that are still missing and are self-contained to add.",
+        "benefits": "Border/extend workflows, social-resolution exports, predictable output dimensions, no new dependencies, and a hash-verified site copy.",
+        "risks": "contract: two dialogs and the export API change; dependency: Canvas drawImage only; concurrency: none; state: anchors must place art correctly for growth and shrink, and scaled exports must preserve aspect and alpha rules.",
+        "mitigation": "Keep anchor math pure and tested, constrain dimensions through boundedDimensions, test normalization, parse the exported PNG header in dogfood, and verify the iframe copy."
+      }
+    },
+    {
+      "task_id": "palette-canvas-export",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "Completed [1/3]-[3/3]: a pure anchorOffset helper plus a Canvas Size dialog with nine anchors places existing art without scaling, clears selections and undoes in one step; export now supports 25%-400% scaling with normalized factors, scaled output dimensions in the dialog and scaled PNG/JPEG/WebP composites. Palette is 0.9.0 with 67 tests; the browser dogfood verifies a center-anchored 1600x1000 canvas, pixel shift and undo, plus a 50% PNG export with a 640x400 header. checklists: passed (test, hygiene, guidelines, secrets; UI delivery review remains advisory).",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793390445.8919675,
+      "timestamp_str": "2026-10-30 23:00:45",
+      "agent": "kilo:palette",
+      "handoff": {
+        "state": "npm test 67/67, dogfood passes canvas size and scaled export, aikit check 4/4",
+        "next": "review or publish Palette 0.9.0",
+        "open": "app files are uncommitted",
+        "evidence": "src/core/geometry.js anchorOffset, src/core/export.js normalizeExportScale, src/ui/editor.js applyCanvasSize/exportImage, index.html canvas dialog, scripts/dogfood.mjs."
+      }
+    },
+    {
+      "task_id": "palette-canvas-export",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'palette-canvas-export' completed successfully.",
+      "status": "completed",
+      "timestamp": 1793390447.0619733,
+      "timestamp_str": "2026-10-30 23:00:47",
+      "agent": "kilo:palette"
+    },
+    {
+      "task_id": "palette-histogram",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/3] Add a pure histogram module (256-bin RGB/luma counts, transparent-pixel exclusion, percentile black/white range) with unit tests. [2/3] Draw the active-layer luminance histogram in the adjustments panel, refresh it after edits, show the auto range, and add a selection-aware Auto levels button using the existing Levels transform and undo. [3/3] Add static and browser dogfood coverage, bump Palette to 0.10.0, re-vendor into AegeanWorks and bump the site shell cache.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793390738.532679,
+      "timestamp_str": "2026-10-30 23:05:38",
+      "agent": "kilo:palette",
+      "impact_assessment": {
+        "why": "A histogram makes tonal editing legible and Auto levels gives users a one-click correction built on the histogram and existing Levels transform.",
+        "benefits": "Visible tonal distribution, fast auto correction, pure testable analysis, no new dependencies, and a hash-verified site refresh.",
+        "risks": "contract: the adjustments panel gains a canvas and button; dependency: Canvas 2D only; concurrency: histogram refreshes must not run on every brush move; state: transparent pixels must not skew the range and an empty/neutral range must not break Auto levels.",
+        "mitigation": "Ignore transparent pixels, clamp/fallback empty ranges, debounce histogram drawing, test ramp/empty/all-alpha cases, and dogfood a changed image plus undo on a tonal layer."
+      }
+    },
+    {
+      "task_id": "palette-histogram",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "Completed [1/3]-[3/3]: a pure histogram module counts visible RGB/luma bins, ignores transparent pixels and derives percentile black/white ranges with safe fallbacks; the adjustments panel draws a live luminance histogram, shows the range and adds a one-click Auto levels command using the Levels transform, selection-aware and undoable. Palette is 0.10.0 with 72 tests and dogfood coverage for histogram rendering plus Auto levels change/undo. checklists: passed (test, hygiene, guidelines, secrets; UI delivery review remains advisory).",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793391868.6308045,
+      "timestamp_str": "2026-10-30 23:24:28",
+      "agent": "kilo:palette",
+      "handoff": {
+        "state": "npm test 72/72, dogfood passes histogram and auto levels, aikit check 4/4",
+        "next": "review or publish Palette 0.10.0",
+        "open": "app files are uncommitted",
+        "evidence": "src/core/histogram.js, src/ui/editor.js drawHistogram/autoLevels, tests/histogram.test.js, scripts/dogfood.mjs."
+      }
+    },
+    {
+      "task_id": "palette-histogram",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'palette-histogram' completed successfully.",
+      "status": "completed",
+      "timestamp": 1793391868.9010563,
+      "timestamp_str": "2026-10-30 23:24:28",
+      "agent": "kilo:palette"
+    },
+    {
+      "task_id": "palette-transform",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/3] Add a pure findContentBounds helper (alpha threshold, transparent/empty cases) with unit tests. [2/3] Add a Transform layer dialog for scale X/Y, rotation and flips, applying the affine transform around the visible content bounds in one undoable canvas command and clearing stale selections. [3/3] Add static and browser dogfood coverage, bump Palette to 0.11.0, re-vendor into AegeanWorks and bump the site shell cache.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793392204.7571886,
+      "timestamp_str": "2026-10-30 23:30:04",
+      "agent": "kilo:palette",
+      "impact_assessment": {
+        "why": "Move is implemented but individual layers still cannot scale, rotate or flip; content-aware transform is the largest remaining layer gap.",
+        "benefits": "Full layer transforms, content-centred results, one-step undo, no new dependencies, and a hash-verified site refresh.",
+        "risks": "contract: a new dialog and layer command; dependency: Canvas affine transforms only; concurrency: none; state: transforms must not shift content unexpectedly, empty/locked layers must be refused, and stale selections must clear.",
+        "mitigation": "Compute bounds purely and test transparent borders, transform around those bounds, refuse empty/locked layers, dogfood scale/undo pixels, and re-vendor only after the source suite is green."
+      }
+    },
+    {
+      "task_id": "palette-transform",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "Completed [1/3]-[3/3]: a pure findContentBounds helper with alpha-threshold tests supports content-centred layer transforms; a Transform dialog scales X/Y, rotates and flips around the visible content bounds in one undoable canvas command, clears stale selections, refuses empty/locked layers, and keeps document dimensions. Palette is 0.11.0 with 75 tests and dogfood coverage for a 50% scale (transparent corners, opaque centre) and undo. checklists: passed (test, hygiene, guidelines, secrets; UI delivery review remains advisory).",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793396858.5187025,
+      "timestamp_str": "2026-10-31 00:47:38",
+      "agent": "kilo:palette",
+      "handoff": {
+        "state": "npm test 75/75, dogfood passes layer transform and undo, aikit check 4/4",
+        "next": "review or publish Palette 0.11.0",
+        "open": "app files are uncommitted",
+        "evidence": "src/core/bounds.js, src/ui/editor.js applyLayerTransform, tests/bounds.test.js, scripts/dogfood.mjs."
+      }
+    },
+    {
+      "task_id": "palette-transform",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'palette-transform' completed successfully.",
+      "status": "completed",
+      "timestamp": 1793396858.8809633,
+      "timestamp_str": "2026-10-31 00:47:38",
+      "agent": "kilo:palette"
+    },
+    {
+      "task_id": "palette-0111",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/4] Plan: bound resize and export output, make Auto levels use the active selection, add regression tests, bump to 0.11.1, then hand the vendored build to AegeanWorks.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793397627.923104,
+      "timestamp_str": "2026-10-31 01:00:27",
+      "agent": "opencode:editor-live",
+      "impact_assessment": {
+        "why": "applyResize accepts 8192x8192 (64M pixels) past the 24M-pixel project cap, and export at 400% can exceed browser canvas limits and fail silently.",
+        "benefits": "Large-document edits and exports fail safely instead of crashing; selection-aware Auto levels matches the filtered region.",
+        "risks": "contract: editor exports stay zero-dependency; dependency: none; concurrency: AegeanWorks copies this tree; state: no persisted-format change.",
+        "mitigation": "Reuse boundedDimensions, add pure exportDimensions tests plus a dogfood cap check, and re-run npm test and dogfood before syncing."
+      }
+    },
+    {
+      "task_id": "palette-0111",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "Completed [1/4]: boundedDimensions now keeps the wide/tall aspect ratio while enforcing the 8192-axis and 24MP budget; resize, canvas-size and new-document inputs pass raw requested sizes through requestedDimension; exportDimensions caps scaled output and the dialog reports the effective percentage; Auto levels samples the active selection; added export/project regression tests and a dogfood resize-cap assertion. Evidence: 77/77 unit tests, dogfood pass with the 5000x5000 cap check, 4/4 project gates. checklists: passed (test, hygiene, guidelines, secrets; G-001 equivalent not configured for Palette).",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793397870.5593889,
+      "timestamp_str": "2026-10-31 01:04:30",
+      "agent": "opencode:editor-live",
+      "handoff": {
+        "state": "Palette 0.11.1 working tree green",
+        "next": "commit Palette, then vendor 0.11.1 into AegeanWorks and add it to Live",
+        "open": "Palette has no remote",
+        "evidence": "tests/export.test.js, tests/project.test.js, scripts/dogfood.mjs."
+      }
+    }
+  ]
 }

@@ -1,0 +1,16 @@
+{
+  "name": "palette",
+  "version": "0.11.1",
+  "private": true,
+  "license": "SEE LICENSE IN LICENSE",
+  "type": "module",
+  "description": "A zero-dependency, Photoshop-style static image editor for the browser: layers, drawing tools, adjustments, filters, undo/redo and export, fully client-side.",
+  "scripts": {
+    "start": "node scripts/serve.mjs --open",
+    "test": "node --test tests",
+    "dogfood": "node scripts/dogfood.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
