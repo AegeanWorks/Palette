@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "name": "palette",
+  "test_command": null,
+  "topics": [
+    "aikit",
+    "aikit-integrated",
+    "source-available",
+    "aegean-license",
+    "commercial-license",
+    "image-editor",
+    "canvas",
+    "vanilla-javascript",
+    "photoshop-alternative",
+    "browser-app"
+  ],
+  "gates": {},
+  "ui_required": true,
+  "mechanics_required": false,
+  "created": "2026-10-29",
+  "has_ui": true,
+  "ui_kind": "web",
+  "ui_evidence": [
+    "index.html"
+  ],
+  "ui_checked_at": "2026-10-31",
+  "ui_source": "detected"
+}
