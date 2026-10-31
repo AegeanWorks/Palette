@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "name": "palette",
+  "repo": "Palette",
+  "has_ui": true,
+  "ui_kind": "web",
+  "palette": [
+    "#0b0712",
+    "#2b1230",
+    "#a466f5",
+    "#f58ebb"
+  ],
+  "motif": "camera",
+  "layout": "left",
+  "assets": {
+    "logo": {
+      "path": "assets/logo.png",
+      "status": "approved",
+      "commit": "",
+      "generated_at": "2026-10-31T11:27:52",
+      "review": {
+        "status": "approved",
+        "reviewer": "agent:editor-live",
+        "method": "vision",
+        "notes": "Rendered 512px PNG of the approved camera SVG: transparent rounded corners, legible PA monogram and AegeanWorks wordmark, no clipping.",
+        "score": 90,
+        "reviewed_at": "2026-10-31T11:29:19"
+      }
+    },
+    "social_preview": {
+      "path": "assets/social-preview.svg",
+      "status": "approved",
+      "commit": "",
+      "generated_at": "2026-10-31T11:27:52",
+      "review": {
+        "status": "approved",
+        "reviewer": "agent:editor-live",
+        "method": "vision",
+        "notes": "Camera mark, title, complete two-sentence tagline and all three chips fit without clipping; palette is the authored purple identity.",
+        "score": 91,
+        "reviewed_at": "2026-10-31T11:28:32"
+      }
+    },
+    "social_preview_png": {
+      "path": "assets/social-preview.png",
+      "status": "pending_review",
+      "commit": "",
+      "generated_at": "2026-10-31T11:27:59",
+      "review": null
+    }
+  },
+  "screenshots": [
+    {
+      "path": "assets/screenshots/2026-10-31-home.png",
+      "alt": "Palette interface at 2026-10-31",
+      "caption": "Palette interface captured from index.html",
+      "commit": "0e484e5ee7c790705846d0d7938ba1b4607db05a",
+      "taken_at": "2026-10-31",
+      "viewport": "1440x900",
+      "width": 1440,
+      "height": 900,
+      "status": "approved",
+      "review": {
+        "status": "approved",
+        "reviewer": "agent:editor-live",
+        "method": "vision",
+        "notes": "Real 1440x900 capture of the welcome document: layers, blend control, adjustments, histogram and export controls are visible; canvas renders the welcome artwork and no dialog obscures it.",
+        "score": 92,
+        "reviewed_at": "2026-10-31T11:28:37"
+      }
+    }
+  ]
+}
