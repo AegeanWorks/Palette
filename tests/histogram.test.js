@@ -50,6 +50,12 @@ test("percentile ranges find the tonal span of a ramp", () => {
   assert.ok(auto.black < auto.white);
 });
 
+test("a flat midtone selection stays neutral under Auto levels", () => {
+  const flat = percentileRange(buildHistogram(pixels([128, 128, 128])));
+  assert.ok(flat.black < 128, JSON.stringify(flat));
+  assert.ok(flat.white > 128, JSON.stringify(flat));
+});
+
 test("histogram bins are bounded and invalid input is empty", () => {
   const tiny = buildHistogram(pixels([0, 255]), 1);
   assert.equal(tiny.bins, 2);

@@ -923,6 +923,48 @@ async function main() {
     await connection.evaluate("globalThis.palette.undo()");
     await wait(160);
 
+    await connection.evaluate("globalThis.palette.setTool('text')");
+    const awayPoint = await pointInDocument(connection, 320, 240);
+    for (const type of ["mousePressed", "mouseReleased"]) {
+      await connection.send("Input.dispatchMouseEvent", {
+        type,
+        x: awayPoint.x,
+        y: awayPoint.y,
+        button: "left",
+        buttons: type === "mousePressed" ? 1 : 0,
+        clickCount: 1,
+      });
+    }
+    await wait(160);
+    await connection.evaluate(`(() => {
+      const input = document.getElementById('text-input');
+      input.value = 'Away';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      globalThis.palette.setTool('move');
+    })()`);
+    const awayTarget = await pointInDocument(connection, 640, 420);
+    for (const type of ["mousePressed", "mouseReleased"]) {
+      await connection.send("Input.dispatchMouseEvent", {
+        type,
+        x: awayTarget.x,
+        y: awayTarget.y,
+        button: "left",
+        buttons: type === "mousePressed" ? 1 : 0,
+        clickCount: 1,
+      });
+    }
+    await wait(220);
+    const clickAway = await connection.evaluate(`(() => ({
+      draft: globalThis.palette.textDraft,
+      hidden: document.getElementById('text-editor').hidden,
+      label: globalThis.palette.history.undoLabel,
+    }))()`);
+    if (clickAway.draft !== null || !clickAway.hidden || clickAway.label !== "Add text") {
+      throw new Error(`Clicking away did not commit the text draft: ${JSON.stringify(clickAway)}`);
+    }
+    await connection.evaluate("globalThis.palette.undo()");
+    await wait(160);
+
     await connection.evaluate("document.getElementById('btn-filter-sharpen').click()");
     await wait(220);
     if (!(await connection.evaluate("globalThis.palette.history.canUndo"))) {
@@ -1093,8 +1135,14 @@ async function main() {
     if (halfWidth !== 640 || halfHeight !== 400) {
       throw new Error(`Scaled export is ${halfWidth} × ${halfHeight}, expected 640 × 400.`);
     }
+    if (!(await connection.evaluate("globalThis.palette.documentDirty"))) {
+      throw new Error("Edits did not mark the document as unsaved.");
+    }
     await connection.evaluate("document.getElementById('btn-save').click()");
     await wait(900);
+    if (await connection.evaluate("globalThis.palette.documentDirty")) {
+      throw new Error("Saving the project did not clear the unsaved flag.");
+    }
     const saved = readdirSync(downloads).find((name) => name.endsWith(".palette"));
     if (!saved) throw new Error("The project save did not download a .palette file.");
     const project = JSON.parse(readFileSync(join(downloads, saved), "utf8"));

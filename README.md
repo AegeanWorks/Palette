@@ -34,7 +34,7 @@ A zero-dependency, Photoshop-style static image editor for the browser: layers, 
 - **Clipboard**: copy/cut the selection or the whole layer, paste as a new layer, and create layers via copy or cut with a single undo step. Pasted art is fitted and centred when the document size changed.
 - **Adjustments**: non-destructive brightness, contrast, saturation, hue, grayscale, sepia, invert and blur stored per layer and visible in exports.
 - **Filters**: blur, pixelate, sharpen, vignette, Levels (black point, white point and gamma) and Auto levels baked into the active layer or current selection with undo support.
-- **Histogram**: a live luminance histogram of the active layer with a percentile-derived black/white range and a one-click Auto levels command.
+- **Histogram**: a live luminance histogram of the active layer with a percentile-derived black/white range and a one-click Auto levels command that samples the active selection when one exists.
 - **Document**: new document with white, transparent or custom background; open or drag-and-drop images; resize, canvas size with nine anchors, flip, rotate 90° and crop with free, 1:1, 4:3, 3:2, 16:9 or 9:16 ratios.
 - **History**: bounded undo/redo for every edit, including blend-mode changes and merge-down, with a memory-conscious per-document limit.
 - **Output**: export PNG, JPEG or WebP at 25–400% scale (quality control for lossy formats) and save/reopen a `.palette` project with embedded layer images.
@@ -71,6 +71,7 @@ palette/
 ├── LICENSES/
 ├── README.md
 ├── index.html                 <- editor shell, dialogs, panels and tools
+├── package.json               <- npm scripts, test command and version
 ├── src/
 │   ├── theme.css              <- design tokens
 │   ├── styles.css             <- responsive editor layout
@@ -91,7 +92,8 @@ palette/
 │       ├── paint.js           <- brush, shape, text and transform rasterisers
 │       ├── editor.js          <- state, tools, panels and file workflow
 │       └── main.js            <- bootstrap (exposes window.palette for dogfood)
-├── assets/favicon.svg
+├── assets/
+│   └── favicon.svg
 ├── scripts/
 │   ├── serve.mjs              <- zero-dependency static server
 │   └── dogfood.mjs            <- headless browser smoke pass
