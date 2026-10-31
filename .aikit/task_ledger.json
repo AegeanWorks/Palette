@@ -2,48 +2,16 @@
   "version": 1,
   "active_task": {
     "task_id": "palette-0112",
-    "last_phase": "phase 2",
-    "active_phase": 2,
-    "status": "in_progress",
-    "updated_at": 1793428244.9075031,
+    "last_phase": "phase 4",
+    "active_phase": 5,
+    "status": "completed",
+    "updated_at": 1793428337.784846,
     "owner": "opencode:editor-live",
     "started_by": "opencode:editor-live",
     "continuations": [],
-    "impact_assessment": {
-      "why": "A second audit pass found four behavioural gaps that survive the existing tests: flat tones crush under Auto levels, text drafts linger after a canvas click, a mid-draft lock still draws text, and opened images are not treated as unsaved.",
-      "benefits": "Neutral flat regions stay neutral, text commits match click-away expectations, locked layers stay untouched, and replacing an opened image now asks first.",
-      "risks": "contract: no format change; dependency: none; concurrency: AegeanWorks vendors this tree; state: the new dirty flag is session-only.",
-      "mitigation": "Add failing-first tests for the histogram case, extend dogfood for click-away and the dirty/save transition, and re-run both suites before syncing."
-    }
+    "completed_at": 1793428338.1395962
   },
   "checkpoints": [
-    {
-      "task_id": "palette-autosave",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'palette-autosave' completed successfully.",
-      "status": "completed",
-      "timestamp": 1793383463.9826262,
-      "timestamp_str": "2026-10-30 21:04:23",
-      "agent": "kilo:palette"
-    },
-    {
-      "task_id": "palette-levels-invert",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/3] Add an invert flag to the single-shape marquee, even-odd clipping for paint/shapes/text/gradients/filters/clipboard, a document-boundary marquee cue, Ctrl/Cmd+Shift+I and a panel button; disallow selected-pixel moves and crop-to-selection while inverted. [2/3] Add a pure Levels pixel transform with black point, white point and gamma, a filter-panel control, selection-aware application and undo. [3/3] Add unit/static/browser dogfood coverage, bump Palette to 0.7.0, re-vendor into AegeanWorks and bump the site shell cache.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793384663.6081874,
-      "timestamp_str": "2026-10-30 21:24:23",
-      "agent": "kilo:palette",
-      "impact_assessment": {
-        "why": "Invert completes the selection workflow, and Levels is a standard tonal tool that adds real editing depth without new dependencies.",
-        "benefits": "Faster cutouts, even-odd selection clipping, tonal correction with selection support, and a site copy refreshed through the hash manifest.",
-        "risks": "contract: selection records gain an invert flag and the filter panel gains controls; dependency: Canvas even-odd clipping and pure pixel math; concurrency: none; state: inverted selections must not break copy/cut/filters and Levels must clamp black below white.",
-        "mitigation": "Normalise selection clones, centralise even-odd clipping in one helper, test Levels identity/clamping/gamma, dogfood inside/outside pixels for inverted paint and a Levels undo, and re-vendor only after the source suite is green."
-      }
-    },
     {
       "task_id": "palette-levels-invert",
       "phase": "phase 4",
@@ -307,6 +275,27 @@
         "risks": "contract: no format change; dependency: none; concurrency: AegeanWorks vendors this tree; state: the new dirty flag is session-only.",
         "mitigation": "Add failing-first tests for the histogram case, extend dogfood for click-away and the dirty/save transition, and re-run both suites before syncing."
       }
+    },
+    {
+      "task_id": "palette-0112",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "Completed [1/2]-[2/2]: flat midtones now widen by one level instead of collapsing to black under Auto levels; a hidden text draft commits when the canvas is clicked; a layer locked mid-draft refuses the text with an error; opened images/projects and restored sessions mark the document dirty, every commit or undo/redo keeps it dirty, saving the .palette clears it, and New/Open prompts before replacing unsaved work; the transform dialog now says it clears the selection; README tree includes package.json and assets/. Evidence: 78/78 unit tests, dogfood with click-away and dirty/save assertions, 4/4 project gates. checklists: passed (test, hygiene, guidelines, secrets).",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793428337.784846,
+      "timestamp_str": "2026-10-31 09:32:17",
+      "agent": "opencode:editor-live"
+    },
+    {
+      "task_id": "palette-0112",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'palette-0112' completed successfully.",
+      "status": "completed",
+      "timestamp": 1793428338.1395981,
+      "timestamp_str": "2026-10-31 09:32:18",
+      "agent": "opencode:editor-live"
     }
   ]
 }
