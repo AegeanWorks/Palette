@@ -68,6 +68,30 @@ test("clipping resolves to the nearest unclipped layer below", () => {
   assert.equal(clippingBaseIndex(detached, "missing"), -1);
 });
 
+test("the bottom-most layer never retains a clipping mask", () => {
+  const badBase = createLayer({ id: "bad", clipToBelow: true });
+  const doc = createDocument({ width: 20, height: 20, layers: [badBase] });
+  assert.equal(doc.layers[0].clipToBelow, false);
+
+  const top = createLayer({ id: "top", clipToBelow: true });
+  const withTop = addLayer(doc, top);
+  assert.equal(withTop.layers[1].clipToBelow, true);
+
+  const reordered = moveLayer(withTop, "top", -1);
+  assert.equal(reordered.layers[0].id, "top");
+  assert.equal(reordered.layers[0].clipToBelow, false);
+
+  const removed = removeLayer(withTop, "bad");
+  assert.equal(removed.layers[0].id, "top");
+  assert.equal(removed.layers[0].clipToBelow, false);
+
+  const attemptedUpdate = updateLayer(doc, "bad", { clipToBelow: true });
+  assert.equal(attemptedUpdate.layers[0].clipToBelow, false);
+
+  const addedAtBottom = addLayer(doc, createLayer({ id: "insert", clipToBelow: true }), 0);
+  assert.equal(addedAtBottom.layers[0].clipToBelow, false);
+});
+
 test("adding, reordering and removing layers keeps references stable", () => {
   const first = createDocument({ width: 100, height: 100 });
   const second = createLayer({ name: "Second" });

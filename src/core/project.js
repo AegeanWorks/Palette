@@ -98,7 +98,7 @@ export function parseProject(source) {
       opacity: clamp(layer.opacity ?? 1, 0, 1),
       blendMode: normalizeBlendMode(layer.blendMode),
       locked: layer.locked === true,
-      clipToBelow: supportsClipping && layer.clipToBelow === true,
+      clipToBelow: supportsClipping && index > 0 && layer.clipToBelow === true,
       adjustments: clampAdjustments(layer.adjustments),
       image: layer.image,
     };

@@ -73,6 +73,21 @@ test("version 1 projects load with clipping disabled", () => {
   assert.equal(parsed.layers[1].locked, true);
 });
 
+test("version 2 projects clear clipping from layer 0", () => {
+  const parsed = parseProject({
+    format: PROJECT_FORMAT,
+    version: 2,
+    width: 40,
+    height: 30,
+    layers: [
+      { id: "base", image: IMAGE, clipToBelow: true },
+      { id: "top", image: IMAGE, clipToBelow: true },
+    ],
+  });
+  assert.equal(parsed.layers[0].clipToBelow, false);
+  assert.equal(parsed.layers[1].clipToBelow, true);
+});
+
 test("names and dimensions are cleaned and bounded", () => {
   assert.equal(cleanDocumentName("   "), "Untitled");
   assert.equal(cleanDocumentName("a\u0000b"), "a b");

@@ -1,61 +1,17 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "palette-dodge-burn",
+    "task_id": "palette-clipping-fix",
     "last_phase": "phase 4",
     "active_phase": 5,
     "status": "completed",
-    "updated_at": 1793493923.0845075,
-    "owner": "kilo:palette",
-    "started_by": "kilo:palette",
+    "updated_at": 1793519527.4456885,
+    "owner": "antigravity:1",
+    "started_by": "antigravity:1",
     "continuations": [],
-    "completed_at": 1793493923.3747618
+    "completed_at": 1793519536.5525637
   },
   "checkpoints": [
-    {
-      "task_id": "palette-0111",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "Completed [1/4]: boundedDimensions now keeps the wide/tall aspect ratio while enforcing the 8192-axis and 24MP budget; resize, canvas-size and new-document inputs pass raw requested sizes through requestedDimension; exportDimensions caps scaled output and the dialog reports the effective percentage; Auto levels samples the active selection; added export/project regression tests and a dogfood resize-cap assertion. Evidence: 77/77 unit tests, dogfood pass with the 5000x5000 cap check, 4/4 project gates. checklists: passed (test, hygiene, guidelines, secrets; G-001 equivalent not configured for Palette).",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793397870.5593889,
-      "timestamp_str": "2026-10-31 01:04:30",
-      "agent": "opencode:editor-live",
-      "handoff": {
-        "state": "Palette 0.11.1 working tree green",
-        "next": "commit Palette, then vendor 0.11.1 into AegeanWorks and add it to Live",
-        "open": "Palette has no remote",
-        "evidence": "tests/export.test.js, tests/project.test.js, scripts/dogfood.mjs."
-      }
-    },
-    {
-      "task_id": "palette-0111",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'palette-0111' completed successfully.",
-      "status": "completed",
-      "timestamp": 1793398912.6932437,
-      "timestamp_str": "2026-10-31 01:21:52",
-      "agent": "opencode:editor-live"
-    },
-    {
-      "task_id": "palette-0112",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/2] Fix flat-midtone Auto levels collapsing to black, commit a text draft when the canvas is clicked, guard text commits against a layer locked mid-draft, and track unsaved documents so New/Open cannot silently replace an opened image; [2/2] verify, bump to 0.11.2, and commit.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793428244.9075031,
-      "timestamp_str": "2026-10-31 09:30:44",
-      "agent": "opencode:editor-live",
-      "impact_assessment": {
-        "why": "A second audit pass found four behavioural gaps that survive the existing tests: flat tones crush under Auto levels, text drafts linger after a canvas click, a mid-draft lock still draws text, and opened images are not treated as unsaved.",
-        "benefits": "Neutral flat regions stay neutral, text commits match click-away expectations, locked layers stay untouched, and replacing an opened image now asks first.",
-        "risks": "contract: no format change; dependency: none; concurrency: AegeanWorks vendors this tree; state: the new dirty flag is session-only.",
-        "mitigation": "Add failing-first tests for the histogram case, extend dogfood for click-away and the dirty/save transition, and re-run both suites before syncing."
-      }
-    },
     {
       "task_id": "palette-0112",
       "phase": "phase 4",
@@ -266,6 +222,44 @@
       "timestamp": 1793493923.3747637,
       "timestamp_str": "2026-11-01 03:45:23",
       "agent": "kilo:palette"
+    },
+    {
+      "task_id": "palette-clipping-fix",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/3] Enforce base layer clipping invariants across document lifecycle. [2/3] Fix live Move tool translation for clipped layers and clipping bases in drawLayerStack. [3/3] Add comprehensive test coverage, run Phase 4 gates, and close UI contract.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793519368.8216038,
+      "timestamp_str": "2026-11-01 10:49:28",
+      "agent": "antigravity:1",
+      "impact_assessment": {
+        "why": "Clipped layers at index 0 become invisible and un-unclippable; live dragging of clipped layers shifts the mask instead of the content; tone/clone lacked unit tests.",
+        "benefits": "Base layer is guaranteed visible and unclipped across move/delete/load; live move drag accurately reflects committed results; full test verification.",
+        "risks": "contract: layer 0 clipToBelow is always false; dependency: Canvas 2D only; concurrency: none; state: moving preview must not mutate layers directly.",
+        "mitigation": "Reset clipToBelow on index 0 in document mutations and loaders, test moving/removing/loading layer 0, test canvas layer stack live translation."
+      }
+    },
+    {
+      "task_id": "palette-clipping-fix",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "Completed [1/3]-[3/3]: enforce base layer clipping invariants (clearing clipToBelow on layer 0 in document mutations, project loading, and autosave) and fix live move tool drag in drawLayerStack so clipped layers slide inside stationary base masks while base layer moves shift the mask; add unit tests across document, project, and autosave suites. checklists: passed (test, hygiene, guidelines, secrets).",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793519527.4456885,
+      "timestamp_str": "2026-11-01 10:52:07",
+      "agent": "antigravity:1"
+    },
+    {
+      "task_id": "palette-clipping-fix",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'palette-clipping-fix' completed successfully.",
+      "status": "completed",
+      "timestamp": 1793519536.552567,
+      "timestamp_str": "2026-11-01 10:52:16",
+      "agent": "antigravity:1"
     }
   ]
 }

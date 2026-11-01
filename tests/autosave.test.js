@@ -50,6 +50,20 @@ test("version 1 autosave records load with clipping disabled", () => {
   assert.equal(record.layers[1].clipToBelow, false);
 });
 
+test("autosave records clear clipping from layer 0", () => {
+  const record = validateSessionRecord(
+    sample({
+      layers: [
+        { id: "base", name: "Base", visible: true, opacity: 1, blendMode: "normal", locked: false, clipToBelow: true, image: IMAGE },
+        { id: "top", name: "Top", visible: true, opacity: 1, blendMode: "normal", locked: false, clipToBelow: true, image: IMAGE },
+      ],
+    }),
+  );
+  assert.ok(record);
+  assert.equal(record.layers[0].clipToBelow, false);
+  assert.equal(record.layers[1].clipToBelow, true);
+});
+
 test("missing image, bad format, bad version and empty layers are rejected", () => {
   assert.equal(validateSessionRecord(null), null);
   assert.equal(validateSessionRecord({}), null);
