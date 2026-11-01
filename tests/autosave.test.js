@@ -21,8 +21,8 @@ function sample(overrides = {}) {
     height: 480,
     activeLayerId: "top",
     layers: [
-      { id: "base", name: "Base", visible: true, opacity: 0.5, blendMode: "multiply", locked: true, adjustments: { brightness: 12 }, image: IMAGE },
-      { id: "top", name: "Top", visible: false, opacity: 2, blendMode: "bogus", locked: false, adjustments: {}, image: IMAGE },
+      { id: "base", name: "Base", visible: true, opacity: 0.5, blendMode: "multiply", locked: true, clipToBelow: false, adjustments: { brightness: 12 }, image: IMAGE },
+      { id: "top", name: "Top", visible: false, opacity: 2, blendMode: "bogus", locked: false, clipToBelow: true, adjustments: {}, image: IMAGE },
     ],
     ...overrides,
   };
@@ -37,8 +37,17 @@ test("a valid autosave record is normalized and keeps its active layer", () => {
   assert.equal(record.activeLayerId, "top");
   assert.equal(record.layers[0].blendMode, "multiply");
   assert.equal(record.layers[0].locked, true);
+  assert.equal(record.layers[0].clipToBelow, false);
   assert.equal(record.layers[1].opacity, 1);
   assert.equal(record.layers[1].blendMode, "bogus");
+  assert.equal(record.layers[1].clipToBelow, true);
+});
+
+test("version 1 autosave records load with clipping disabled", () => {
+  const record = validateSessionRecord(sample({ version: 1 }));
+  assert.ok(record);
+  assert.equal(record.version, AUTOSAVE_VERSION);
+  assert.equal(record.layers[1].clipToBelow, false);
 });
 
 test("missing image, bad format, bad version and empty layers are rejected", () => {

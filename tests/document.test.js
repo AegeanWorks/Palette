@@ -6,6 +6,7 @@ import {
   activeLayer,
   addLayer,
   blendOperation,
+  clippingBaseIndex,
   createDocument,
   createLayer,
   duplicateLayerRecord,
@@ -43,6 +44,8 @@ test("blend modes are whitelisted and map to canvas operations", () => {
   assert.equal(createLayer({ blendMode: null }).blendMode, "normal");
   assert.equal(createLayer().locked, false);
   assert.equal(createLayer({ locked: true }).locked, true);
+  assert.equal(createLayer().clipToBelow, false);
+  assert.equal(createLayer({ clipToBelow: true }).clipToBelow, true);
   assert.equal(normalizeBlendMode("screen"), "screen");
   assert.equal(normalizeBlendMode("source-over"), "normal");
   assert.equal(blendOperation("normal"), "source-over");
@@ -50,6 +53,19 @@ test("blend modes are whitelisted and map to canvas operations", () => {
   assert.equal(blendOperation("nope"), "source-over");
   assert.ok(Object.isFrozen(BLEND_MODES));
   assert.equal(BLEND_MODES.luminosity, "Luminosity");
+});
+
+test("clipping resolves to the nearest unclipped layer below", () => {
+  const base = createLayer({ id: "base" });
+  const clipped = createLayer({ id: "clipped", clipToBelow: true });
+  const nested = createLayer({ id: "nested", clipToBelow: true });
+  const doc = createDocument({ width: 20, height: 20, layers: [base, clipped, nested] });
+  assert.equal(clippingBaseIndex(doc, "base"), -1);
+  assert.equal(clippingBaseIndex(doc, "clipped"), 0);
+  assert.equal(clippingBaseIndex(doc, "nested"), 0);
+  const detached = updateLayer(doc, "clipped", { clipToBelow: false });
+  assert.equal(clippingBaseIndex(detached, "nested"), 1);
+  assert.equal(clippingBaseIndex(detached, "missing"), -1);
 });
 
 test("adding, reordering and removing layers keeps references stable", () => {

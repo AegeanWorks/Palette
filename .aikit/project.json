@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "name": "palette",
-  "test_command": null,
+  "test_command": "npm test",
   "topics": [
     "aikit",
     "aikit-integrated",

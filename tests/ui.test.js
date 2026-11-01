@@ -38,6 +38,7 @@ test("the shell carries every critical editor surface", () => {
     "btn-layer-image",
     "btn-layer-merge",
     "btn-layer-lock",
+    "btn-layer-clip",
     "btn-layer-delete",
     "file-layer",
     "layer-blend",
@@ -96,6 +97,8 @@ test("every tool and panel control is named once", () => {
     "move",
     "brush",
     "eraser",
+    "clone",
+    "dodge",
     "crop",
     "marquee",
     "text",
@@ -142,8 +145,28 @@ test("the layer panel exposes the full blend mode set", () => {
   ]);
   assert.match(html, /data-ui="layer-merge"/);
   assert.match(html, /data-ui="layer-lock"/);
+  assert.match(html, /data-ui="layer-clip"/);
   assert.match(styles, /\.blend-row/);
   assert.match(styles, /\.layer-lock/);
+  assert.match(styles, /\.layer-clip/);
+});
+
+test("the dodge panel exposes mode, size, hardness and strength", () => {
+  assert.match(html, /data-ui="tool-dodge"/);
+  assert.match(html, /id="options-dodge"/);
+  assert.match(html, /id="dodge-mode"[\s\S]*?value="burn"/);
+  assert.match(html, /id="dodge-size" type="range"/);
+  assert.match(html, /id="dodge-hardness" type="range"/);
+  assert.match(html, /id="dodge-strength" type="range"/);
+});
+
+test("the clone panel exposes size, hardness and opacity", () => {
+  assert.match(html, /data-ui="tool-clone"/);
+  assert.match(html, /id="options-clone"/);
+  assert.match(html, /id="clone-size" type="range"/);
+  assert.match(html, /id="clone-hardness" type="range"/);
+  assert.match(html, /id="clone-opacity" type="range"/);
+  assert.match(html, /Alt-click a source point/);
 });
 
 test("the gradient panel exposes type, end colour, fade and opacity", () => {

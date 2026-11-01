@@ -23,7 +23,7 @@ function sample() {
     name: "  Study   one  ",
     layers: [
       createLayer({ id: "base", name: "Base", opacity: 0.8, adjustments: { brightness: 12 } }),
-      createLayer({ id: "top", name: "Top", visible: false, blendMode: "multiply", locked: true }),
+      createLayer({ id: "top", name: "Top", visible: false, blendMode: "multiply", locked: true, clipToBelow: true }),
     ],
     activeLayerId: "top",
   });
@@ -42,6 +42,8 @@ test("projects round-trip through JSON", () => {
   assert.equal(data.layers[0].locked, false);
   assert.equal(data.layers[1].blendMode, "multiply");
   assert.equal(data.layers[1].locked, true);
+  assert.equal(data.layers[1].clipToBelow, true);
+  assert.equal(data.layers[0].clipToBelow, false);
 
   const parsed = parseProject(text);
   assert.equal(parsed.name, "Study one");
@@ -51,6 +53,23 @@ test("projects round-trip through JSON", () => {
   assert.equal(parsed.layers[0].opacity, 0.8);
   assert.equal(parsed.layers[1].visible, false);
   assert.equal(parsed.layers[1].blendMode, "multiply");
+  assert.equal(parsed.layers[1].locked, true);
+  assert.equal(parsed.layers[1].clipToBelow, true);
+});
+
+test("version 1 projects load with clipping disabled", () => {
+  const parsed = parseProject({
+    format: PROJECT_FORMAT,
+    version: 1,
+    width: 40,
+    height: 30,
+    layers: [
+      { id: "base", image: IMAGE },
+      { id: "top", image: IMAGE, locked: true, clipToBelow: true },
+    ],
+  });
+  assert.equal(parsed.version, PROJECT_VERSION);
+  assert.equal(parsed.layers[1].clipToBelow, false);
   assert.equal(parsed.layers[1].locked, true);
 });
 
@@ -141,5 +160,6 @@ test("missing identity fields receive safe fallbacks", () => {
   assert.equal(parsed.layers[0].name, "Layer 1");
   assert.equal(parsed.layers[0].blendMode, "normal");
   assert.equal(parsed.layers[0].locked, false);
+  assert.equal(parsed.layers[0].clipToBelow, false);
   assert.equal(parsed.activeLayerId, parsed.layers[0].id);
 });

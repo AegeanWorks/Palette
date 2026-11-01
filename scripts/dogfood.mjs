@@ -231,7 +231,7 @@ async function main() {
         undo: editor?.history?.canUndo ?? null,
       };
     })()`);
-    if (initial.layers !== 3 || initial.tools !== 13 || initial.name !== "Welcome to Palette") {
+    if (initial.layers !== 3 || initial.tools !== 15 || initial.name !== "Welcome to Palette") {
       throw new Error(`The welcome document did not mount: ${JSON.stringify(initial)}`);
     }
     if (!initial.size || initial.size[0] !== 1280 || initial.size[1] !== 800 || initial.undo !== false) {
@@ -1157,6 +1157,247 @@ async function main() {
     }
     await connection.evaluate("document.getElementById('help-close').click()");
 
+    await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const context = layer.canvas.getContext('2d');
+      globalThis.__clonePixels = context.getImageData(0, 0, layer.canvas.width, layer.canvas.height);
+      context.save();
+      context.setTransform(1, 0, 0, 1, 0, 0);
+      context.globalAlpha = 1;
+      context.globalCompositeOperation = 'source-over';
+      context.filter = 'none';
+      context.clearRect(0, 0, layer.canvas.width, layer.canvas.height);
+      context.fillStyle = '#ff8800';
+      context.fillRect(100, 100, 140, 140);
+      context.restore();
+      editor.deselect();
+      editor.setTool('clone');
+      editor.cloneSource = null;
+      editor.scheduleRender();
+    })()`);
+    const cloneSourcePoint = await pointInDocument(connection, 160, 160);
+    await connection.send("Input.dispatchMouseEvent", {
+      type: "mousePressed",
+      x: cloneSourcePoint.x,
+      y: cloneSourcePoint.y,
+      button: "left",
+      buttons: 1,
+      clickCount: 1,
+      modifiers: 1,
+    });
+    await connection.send("Input.dispatchMouseEvent", {
+      type: "mouseReleased",
+      x: cloneSourcePoint.x,
+      y: cloneSourcePoint.y,
+      button: "left",
+      buttons: 0,
+      clickCount: 1,
+      modifiers: 1,
+    });
+    await wait(140);
+    const cloneSourceState = await connection.evaluate(`(() => ({
+      source: globalThis.palette.cloneSource,
+      tool: globalThis.palette.tool,
+    }))()`);
+    if (
+      cloneSourceState.tool !== "clone" ||
+      !cloneSourceState.source ||
+      Math.round(cloneSourceState.source.x) !== 160 ||
+      Math.round(cloneSourceState.source.y) !== 160
+    ) {
+      throw new Error(`Alt-click did not set the clone source: ${JSON.stringify(cloneSourceState)}`);
+    }
+    const cloneFrom = await pointInDocument(connection, 380, 380);
+    const cloneTo = await pointInDocument(connection, 440, 440);
+    await drag(connection, cloneFrom, cloneTo);
+    const cloneState = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const context = layer.canvas.getContext('2d');
+      const data = context.getImageData(400, 400, 1, 1).data;
+      const untouched = context.getImageData(600, 600, 1, 1).data;
+      return {
+        pixel: [data[0], data[1], data[2], data[3]],
+        untouched: [untouched[0], untouched[1], untouched[2], untouched[3]],
+        undo: editor.history.canUndo,
+      };
+    })()`);
+    if (
+      cloneState.pixel[0] !== 255 ||
+      cloneState.pixel[1] !== 136 ||
+      cloneState.pixel[2] !== 0 ||
+      cloneState.pixel[3] !== 255 ||
+      cloneState.untouched[3] !== 0 ||
+      !cloneState.undo
+    ) {
+      throw new Error(`Clone stamp did not copy the sampled pixels: ${JSON.stringify(cloneState)}`);
+    }
+    await connection.evaluate("globalThis.palette.undo()");
+    await wait(220);
+    const cloneUndone = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      return layer.canvas.getContext('2d').getImageData(400, 400, 1, 1).data[3];
+    })()`);
+    if (cloneUndone !== 0) throw new Error(`Undo did not remove the clone stroke: ${cloneUndone}`);
+    await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      layer.canvas.getContext('2d').putImageData(globalThis.__clonePixels, 0, 0);
+      delete globalThis.__clonePixels;
+      editor.cloneSource = null;
+      editor.setTool('move');
+      editor.renderLayerList();
+      editor.scheduleRender();
+    })()`);
+
+    await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const context = layer.canvas.getContext('2d');
+      globalThis.__tonePixels = context.getImageData(0, 0, layer.canvas.width, layer.canvas.height);
+      context.save();
+      context.setTransform(1, 0, 0, 1, 0, 0);
+      context.globalAlpha = 1;
+      context.globalCompositeOperation = 'source-over';
+      context.filter = 'none';
+      context.clearRect(0, 0, layer.canvas.width, layer.canvas.height);
+      context.fillStyle = 'rgb(120,120,120)';
+      context.fillRect(100, 100, 160, 160);
+      context.restore();
+      editor.setTool('dodge');
+      editor.options.dodge.mode = 'dodge';
+      editor.options.dodge.strength = 0.5;
+      editor.syncOptionControls();
+      editor.scheduleRender();
+    })()`);
+    const toneFrom = await pointInDocument(connection, 140, 140);
+    const toneTo = await pointInDocument(connection, 200, 200);
+    await drag(connection, toneFrom, toneTo);
+    const dodged = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const data = layer.canvas.getContext('2d').getImageData(170, 170, 1, 1).data;
+      return { pixel: [data[0], data[1], data[2], data[3]], undo: editor.history.canUndo };
+    })()`);
+    if (dodged.pixel[0] <= 120 || dodged.pixel[3] !== 255 || !dodged.undo) {
+      throw new Error(`Dodge did not lighten existing pixels: ${JSON.stringify(dodged)}`);
+    }
+    await connection.evaluate("globalThis.palette.undo()");
+    await wait(220);
+    await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      editor.setTool('dodge');
+      editor.options.dodge.mode = 'burn';
+      editor.options.dodge.strength = 0.5;
+      editor.syncOptionControls();
+    })()`);
+    await drag(connection, toneFrom, toneTo);
+    const burned = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const data = layer.canvas.getContext('2d').getImageData(170, 170, 1, 1).data;
+      return { pixel: [data[0], data[1], data[2], data[3]], undo: editor.history.canUndo };
+    })()`);
+    if (burned.pixel[0] >= 120 || burned.pixel[3] !== 255 || !burned.undo) {
+      throw new Error(`Burn did not darken existing pixels: ${JSON.stringify(burned)}`);
+    }
+    await connection.evaluate("globalThis.palette.undo()");
+    await wait(220);
+    const toneRestored = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const data = layer.canvas.getContext('2d').getImageData(170, 170, 1, 1).data;
+      return [data[0], data[1], data[2], data[3]];
+    })()`);
+    if (toneRestored[0] !== 120 || toneRestored[3] !== 255) {
+      throw new Error(`Undo did not restore the tone stroke: ${JSON.stringify(toneRestored)}`);
+    }
+    await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      layer.canvas.getContext('2d').putImageData(globalThis.__tonePixels, 0, 0);
+      delete globalThis.__tonePixels;
+      editor.setTool('move');
+      editor.renderLayerList();
+      editor.scheduleRender();
+    })()`);
+
+    const clipping = await connection.evaluate(`(async () => {
+      const { compositeDocument } = await import('/src/ui/canvas.js');
+      const editor = globalThis.palette;
+      const doc = editor.doc;
+      if (doc.layers.length < 2) return { error: 'need two layers' };
+      const top = doc.layers[doc.layers.length - 1];
+      const lower = doc.layers[doc.layers.length - 2];
+      editor.selectLayer(top.id);
+      const topPixels = top.canvas.getContext('2d').getImageData(0, 0, top.canvas.width, top.canvas.height);
+      const lowerPixels = lower.canvas.getContext('2d').getImageData(0, 0, lower.canvas.width, lower.canvas.height);
+      const size = 240;
+      const cx = Math.round(doc.width / 2);
+      const cy = Math.round(doc.height / 2);
+      const lowerContext = lower.canvas.getContext('2d');
+      lowerContext.save();
+      lowerContext.setTransform(1, 0, 0, 1, 0, 0);
+      lowerContext.globalAlpha = 1;
+      lowerContext.globalCompositeOperation = 'source-over';
+      lowerContext.filter = 'none';
+      lowerContext.clearRect(0, 0, lower.canvas.width, lower.canvas.height);
+      lowerContext.fillStyle = '#00ff00';
+      lowerContext.fillRect(cx - size / 2, cy - size / 2, size, size);
+      lowerContext.restore();
+      const topContext = top.canvas.getContext('2d');
+      topContext.save();
+      topContext.setTransform(1, 0, 0, 1, 0, 0);
+      topContext.globalAlpha = 1;
+      topContext.globalCompositeOperation = 'source-over';
+      topContext.filter = 'none';
+      topContext.clearRect(0, 0, top.canvas.width, top.canvas.height);
+      topContext.fillStyle = '#ff0000';
+      topContext.fillRect(0, 0, top.canvas.width, top.canvas.height);
+      topContext.restore();
+      const sample = (canvas, x, y) => {
+        const data = canvas.getContext('2d').getImageData(x, y, 1, 1).data;
+        return [data[0], data[1], data[2], data[3]];
+      };
+      const before = compositeDocument(doc);
+      const insideBefore = sample(before, cx, cy);
+      const outsideBefore = sample(before, 10, 10);
+      document.getElementById('btn-layer-clip').click();
+      const after = compositeDocument(editor.doc);
+      const state = {
+        clip: editor.doc.layers.find((layer) => layer.id === top.id).clipToBelow,
+        pressed: document.getElementById('btn-layer-clip').getAttribute('aria-pressed'),
+        row: [...document.querySelectorAll('.layer-item')].some((item) => item.dataset.clipped === 'true'),
+        inside: sample(after, cx, cy),
+        outside: sample(after, 10, 10),
+      };
+      editor.undo();
+      const restored = editor.doc.layers.find((layer) => layer.id === top.id).clipToBelow;
+      top.canvas.getContext('2d').putImageData(topPixels, 0, 0);
+      lower.canvas.getContext('2d').putImageData(lowerPixels, 0, 0);
+      editor.renderLayerList();
+      editor.scheduleRender();
+      return { insideBefore, outsideBefore, state, restored };
+    })()`);
+    if (clipping.error) throw new Error(`Clipping setup failed: ${clipping.error}`);
+    if (
+      clipping.state.clip !== true ||
+      clipping.state.pressed !== "true" ||
+      clipping.state.row !== true ||
+      clipping.restored !== false
+    ) {
+      throw new Error(`Clipping state did not toggle and undo: ${JSON.stringify(clipping)}`);
+    }
+    if (JSON.stringify(clipping.state.inside) !== JSON.stringify(clipping.insideBefore)) {
+      throw new Error(`Clipping changed pixels inside the base alpha: ${JSON.stringify(clipping)}`);
+    }
+    if (JSON.stringify(clipping.state.outside) === JSON.stringify(clipping.outsideBefore)) {
+      throw new Error(`Clipping did not hide pixels outside the base alpha: ${JSON.stringify(clipping)}`);
+    }
+
+    await connection.evaluate("globalThis.palette.toggleClippingMask()");
     await connection.evaluate("globalThis.palette.setDocumentName('Autosave Check'); globalThis.palette.addNewLayer()");
     const readRecordExpression = `(async () => {
       const record = await new Promise((resolve, reject) => {
@@ -1194,6 +1435,7 @@ async function main() {
             opacity: layer.opacity,
             blendMode: layer.blendMode,
             locked: layer.locked,
+            clipToBelow: Boolean(layer.clipToBelow),
             pixel: [data[0], data[1], data[2], data[3]],
           };
         }),
@@ -1246,7 +1488,7 @@ async function main() {
     }
 
     console.log(
-      "[OK] Palette dogfood: layers, blend modes, merge-down blend retention, image placement, gradients, layer locking, marquee selection/invert, clipboard, layer via copy/cut, autosave reload/restore, crop ratios, flatten, canvas size, layer transform, histogram/auto levels, levels, brush, eraser, move, undo, crop, adjustments, shapes, text, filters, resize, zoom, scaled export, project save and dialogs.",
+      "[OK] Palette dogfood: layers, blend modes, clipping masks, clone stamp, dodge/burn, merge-down blend retention, image placement, gradients, layer locking, marquee selection/invert, clipboard, layer via copy/cut, autosave reload/restore, crop ratios, flatten, canvas size, layer transform, histogram/auto levels, levels, brush, eraser, move, undo, crop, adjustments, shapes, text, filters, resize, zoom, scaled export, project save and dialogs.",
     );
     return 0;
   } catch (error) {
