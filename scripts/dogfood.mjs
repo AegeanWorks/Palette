@@ -52,6 +52,20 @@ function freePort() {
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+async function waitForFile(dir, predicate, timeoutMs = 4000) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    try {
+      const match = readdirSync(dir).find(predicate);
+      if (match && statSync(join(dir, match)).size > 0) return match;
+    } catch {
+      // The file or directory is not readable yet.
+    }
+    await wait(100);
+  }
+  return null;
+}
+
 async function waitForTarget(port, url, timeoutMs = 12000) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
@@ -1105,9 +1119,8 @@ async function main() {
     );
     if (!exportOpen) throw new Error("The export dialog did not open with the document size.");
     await connection.evaluate("document.getElementById('export-confirm').click()");
-    await wait(900);
-    const exported = readdirSync(downloads).find((name) => name.endsWith(".png"));
-    if (!exported || statSync(join(downloads, exported)).size <= 0) {
+    const exported = await waitForFile(downloads, (name) => name.endsWith(".png") && !name.startsWith("Half"));
+    if (!exported) {
       const diagnostics = await connection.evaluate(`(() => ({
         openDialogs: [...document.querySelectorAll('dialog[open]')].map((dialog) => dialog.id),
         exportOpen: document.getElementById('export-dialog').open,
@@ -1126,8 +1139,7 @@ async function main() {
       scale.dispatchEvent(new Event('change', { bubbles: true }));
       document.getElementById('export-confirm').click();
     })()`);
-    await wait(900);
-    const halfExport = readdirSync(downloads).find((name) => name.startsWith("Half") && name.endsWith(".png"));
+    const halfExport = await waitForFile(downloads, (name) => name.startsWith("Half") && name.endsWith(".png"));
     if (!halfExport) throw new Error("The scaled export did not download.");
     const halfBuffer = readFileSync(join(downloads, halfExport));
     const halfWidth = halfBuffer.readUInt32BE(16);
@@ -1139,11 +1151,10 @@ async function main() {
       throw new Error("Edits did not mark the document as unsaved.");
     }
     await connection.evaluate("document.getElementById('btn-save').click()");
-    await wait(900);
+    const saved = await waitForFile(downloads, (name) => name.endsWith(".palette"));
     if (await connection.evaluate("globalThis.palette.documentDirty")) {
       throw new Error("Saving the project did not clear the unsaved flag.");
     }
-    const saved = readdirSync(downloads).find((name) => name.endsWith(".palette"));
     if (!saved) throw new Error("The project save did not download a .palette file.");
     const project = JSON.parse(readFileSync(join(downloads, saved), "utf8"));
     if (project.format !== "palette-project" || project.layers.length !== 3) {
