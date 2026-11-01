@@ -285,3 +285,13 @@ test("every local module import resolves", () => {
   }
   assert.ok(seen.size >= 8);
 });
+
+test("editor keyboard shortcuts and paste routing cover retouching and placement", () => {
+  const editorSource = readFileSync(resolve(root, "src/ui/editor.js"), "utf8");
+  for (const tool of ["move", "brush", "eraser", "clone", "dodge", "crop", "marquee", "text", "rect", "ellipse", "line", "gradient", "eyedropper", "hand", "zoom"]) {
+    assert.match(editorSource, new RegExp(`\\b${tool}\\b`));
+  }
+  assert.match(editorSource, /key === "g" && event\.altKey[\s\S]*?toggleClippingMask/);
+  assert.match(editorSource, /if \(this\.doc\) \{\s*this\.addImageLayer\(file\);\s*\} else \{\s*this\.openImageFile\(file\);\s*\}/);
+  assert.match(editorSource, /action\?\.type === "clone"[\s\S]*?action\.last\.x \+ this\.action\.offset\.x/);
+});

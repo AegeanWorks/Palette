@@ -984,7 +984,11 @@ export class PaletteEditor {
     }
 
     if (this.tool === "clone" && this.cloneSource) {
-      const source = docToScreen(this.cloneSource, this.view);
+      const currentSource =
+        this.action?.type === "clone" && this.action.last && this.action.offset
+          ? { x: this.action.last.x + this.action.offset.x, y: this.action.last.y + this.action.offset.y }
+          : this.cloneSource;
+      const source = docToScreen(currentSource, this.view);
       context.save();
       context.strokeStyle = "rgba(103, 232, 249, 0.95)";
       context.lineWidth = 1.5;
@@ -2869,7 +2873,11 @@ export class PaletteEditor {
     const file = image.getAsFile();
     if (!file) return;
     event.preventDefault();
-    this.openImageFile(file);
+    if (this.doc) {
+      this.addImageLayer(file);
+    } else {
+      this.openImageFile(file);
+    }
   }
 
   onDragOver(event) {

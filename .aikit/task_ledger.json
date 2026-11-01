@@ -1,55 +1,17 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "palette-clipping-fix",
+    "task_id": "palette-clone-paste-enhancements",
     "last_phase": "phase 4",
     "active_phase": 5,
     "status": "completed",
-    "updated_at": 1793519527.4456885,
+    "updated_at": 1793520154.7297564,
     "owner": "antigravity:1",
     "started_by": "antigravity:1",
     "continuations": [],
-    "completed_at": 1793519536.5525637
+    "completed_at": 1793520158.7874932
   },
   "checkpoints": [
-    {
-      "task_id": "palette-0112",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "Completed [1/2]-[2/2]: flat midtones now widen by one level instead of collapsing to black under Auto levels; a hidden text draft commits when the canvas is clicked; a layer locked mid-draft refuses the text with an error; opened images/projects and restored sessions mark the document dirty, every commit or undo/redo keeps it dirty, saving the .palette clears it, and New/Open prompts before replacing unsaved work; the transform dialog now says it clears the selection; README tree includes package.json and assets/. Evidence: 78/78 unit tests, dogfood with click-away and dirty/save assertions, 4/4 project gates. checklists: passed (test, hygiene, guidelines, secrets).",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793428337.784846,
-      "timestamp_str": "2026-10-31 09:32:17",
-      "agent": "opencode:editor-live"
-    },
-    {
-      "task_id": "palette-0112",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'palette-0112' completed successfully.",
-      "status": "completed",
-      "timestamp": 1793428338.1395981,
-      "timestamp_str": "2026-10-31 09:32:18",
-      "agent": "opencode:editor-live"
-    },
-    {
-      "task_id": "palette-publish",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/1] Publish the repository at AegeanWorks/Palette and keep its history, topics and license intact.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793433112.136611,
-      "timestamp_str": "2026-10-31 10:51:52",
-      "agent": "opencode:editor-live",
-      "impact_assessment": {
-        "why": "The Live catalog needs a real Source URL, and the project has no remote.",
-        "benefits": "Palette becomes discoverable, its Live card links to source, and future releases have a push target.",
-        "risks": "contract: none; dependency: none; concurrency: none; state: the public history includes the full editor and its ledger.",
-        "mitigation": "Publish the committed tree only, set the catalog topics and homepage, then verify visibility and the remote tracking branch."
-      }
-    },
     {
       "task_id": "palette-publish",
       "phase": "phase 4",
@@ -259,6 +221,44 @@
       "status": "completed",
       "timestamp": 1793519536.552567,
       "timestamp_str": "2026-11-01 10:52:16",
+      "agent": "antigravity:1"
+    },
+    {
+      "task_id": "palette-clone-paste-enhancements",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/2] Route external clipboard image paste to addImageLayer when a document exists, and update clone tool overlay to follow active sampling offset during dragging. [2/2] Add test coverage for editor shortcuts and paste routing, verify UI contract, and pass Phase 4 gates.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793520083.9221964,
+      "timestamp_str": "2026-11-01 11:01:23",
+      "agent": "antigravity:1",
+      "impact_assessment": {
+        "why": "Pasting an image when a document is open discarded the document instead of adding a layer; clone crosshair was stationary during painting.",
+        "benefits": "Standard image editor pasting behavior; live feedback on exact clone sampling source; clean verification.",
+        "risks": "contract: no API changes; dependency: web standards clipboard only; concurrency: none; state: uncommitted files must pass checks.",
+        "mitigation": "Preserve openImageFile fallback when no document exists; verify with tests."
+      }
+    },
+    {
+      "task_id": "palette-clone-paste-enhancements",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "Completed [1/2]-[2/2]: route external image paste to addImageLayer when document exists, live-track clone sampling offset in overlay during drag, and add unit test coverage. checklists: passed (test, hygiene, guidelines, secrets).",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793520154.7297564,
+      "timestamp_str": "2026-11-01 11:02:34",
+      "agent": "antigravity:1"
+    },
+    {
+      "task_id": "palette-clone-paste-enhancements",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'palette-clone-paste-enhancements' completed successfully.",
+      "status": "completed",
+      "timestamp": 1793520158.7874944,
+      "timestamp_str": "2026-11-01 11:02:38",
       "agent": "antigravity:1"
     }
   ]
