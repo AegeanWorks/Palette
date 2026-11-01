@@ -1,149 +1,17 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "palette-media",
+    "task_id": "palette-dodge-burn",
     "last_phase": "phase 4",
     "active_phase": 5,
     "status": "completed",
-    "updated_at": 1793435899.1781023,
-    "owner": "opencode:editor-live",
-    "started_by": "opencode:editor-live",
+    "updated_at": 1793493923.0845075,
+    "owner": "kilo:palette",
+    "started_by": "kilo:palette",
     "continuations": [],
-    "completed_at": 1793435899.4843292
+    "completed_at": 1793493923.3747618
   },
   "checkpoints": [
-    {
-      "task_id": "palette-canvas-export",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "Completed [1/3]-[3/3]: a pure anchorOffset helper plus a Canvas Size dialog with nine anchors places existing art without scaling, clears selections and undoes in one step; export now supports 25%-400% scaling with normalized factors, scaled output dimensions in the dialog and scaled PNG/JPEG/WebP composites. Palette is 0.9.0 with 67 tests; the browser dogfood verifies a center-anchored 1600x1000 canvas, pixel shift and undo, plus a 50% PNG export with a 640x400 header. checklists: passed (test, hygiene, guidelines, secrets; UI delivery review remains advisory).",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793390445.8919675,
-      "timestamp_str": "2026-10-30 23:00:45",
-      "agent": "kilo:palette",
-      "handoff": {
-        "state": "npm test 67/67, dogfood passes canvas size and scaled export, aikit check 4/4",
-        "next": "review or publish Palette 0.9.0",
-        "open": "app files are uncommitted",
-        "evidence": "src/core/geometry.js anchorOffset, src/core/export.js normalizeExportScale, src/ui/editor.js applyCanvasSize/exportImage, index.html canvas dialog, scripts/dogfood.mjs."
-      }
-    },
-    {
-      "task_id": "palette-canvas-export",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'palette-canvas-export' completed successfully.",
-      "status": "completed",
-      "timestamp": 1793390447.0619733,
-      "timestamp_str": "2026-10-30 23:00:47",
-      "agent": "kilo:palette"
-    },
-    {
-      "task_id": "palette-histogram",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/3] Add a pure histogram module (256-bin RGB/luma counts, transparent-pixel exclusion, percentile black/white range) with unit tests. [2/3] Draw the active-layer luminance histogram in the adjustments panel, refresh it after edits, show the auto range, and add a selection-aware Auto levels button using the existing Levels transform and undo. [3/3] Add static and browser dogfood coverage, bump Palette to 0.10.0, re-vendor into AegeanWorks and bump the site shell cache.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793390738.532679,
-      "timestamp_str": "2026-10-30 23:05:38",
-      "agent": "kilo:palette",
-      "impact_assessment": {
-        "why": "A histogram makes tonal editing legible and Auto levels gives users a one-click correction built on the histogram and existing Levels transform.",
-        "benefits": "Visible tonal distribution, fast auto correction, pure testable analysis, no new dependencies, and a hash-verified site refresh.",
-        "risks": "contract: the adjustments panel gains a canvas and button; dependency: Canvas 2D only; concurrency: histogram refreshes must not run on every brush move; state: transparent pixels must not skew the range and an empty/neutral range must not break Auto levels.",
-        "mitigation": "Ignore transparent pixels, clamp/fallback empty ranges, debounce histogram drawing, test ramp/empty/all-alpha cases, and dogfood a changed image plus undo on a tonal layer."
-      }
-    },
-    {
-      "task_id": "palette-histogram",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "Completed [1/3]-[3/3]: a pure histogram module counts visible RGB/luma bins, ignores transparent pixels and derives percentile black/white ranges with safe fallbacks; the adjustments panel draws a live luminance histogram, shows the range and adds a one-click Auto levels command using the Levels transform, selection-aware and undoable. Palette is 0.10.0 with 72 tests and dogfood coverage for histogram rendering plus Auto levels change/undo. checklists: passed (test, hygiene, guidelines, secrets; UI delivery review remains advisory).",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793391868.6308045,
-      "timestamp_str": "2026-10-30 23:24:28",
-      "agent": "kilo:palette",
-      "handoff": {
-        "state": "npm test 72/72, dogfood passes histogram and auto levels, aikit check 4/4",
-        "next": "review or publish Palette 0.10.0",
-        "open": "app files are uncommitted",
-        "evidence": "src/core/histogram.js, src/ui/editor.js drawHistogram/autoLevels, tests/histogram.test.js, scripts/dogfood.mjs."
-      }
-    },
-    {
-      "task_id": "palette-histogram",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'palette-histogram' completed successfully.",
-      "status": "completed",
-      "timestamp": 1793391868.9010563,
-      "timestamp_str": "2026-10-30 23:24:28",
-      "agent": "kilo:palette"
-    },
-    {
-      "task_id": "palette-transform",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/3] Add a pure findContentBounds helper (alpha threshold, transparent/empty cases) with unit tests. [2/3] Add a Transform layer dialog for scale X/Y, rotation and flips, applying the affine transform around the visible content bounds in one undoable canvas command and clearing stale selections. [3/3] Add static and browser dogfood coverage, bump Palette to 0.11.0, re-vendor into AegeanWorks and bump the site shell cache.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793392204.7571886,
-      "timestamp_str": "2026-10-30 23:30:04",
-      "agent": "kilo:palette",
-      "impact_assessment": {
-        "why": "Move is implemented but individual layers still cannot scale, rotate or flip; content-aware transform is the largest remaining layer gap.",
-        "benefits": "Full layer transforms, content-centred results, one-step undo, no new dependencies, and a hash-verified site refresh.",
-        "risks": "contract: a new dialog and layer command; dependency: Canvas affine transforms only; concurrency: none; state: transforms must not shift content unexpectedly, empty/locked layers must be refused, and stale selections must clear.",
-        "mitigation": "Compute bounds purely and test transparent borders, transform around those bounds, refuse empty/locked layers, dogfood scale/undo pixels, and re-vendor only after the source suite is green."
-      }
-    },
-    {
-      "task_id": "palette-transform",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "Completed [1/3]-[3/3]: a pure findContentBounds helper with alpha-threshold tests supports content-centred layer transforms; a Transform dialog scales X/Y, rotates and flips around the visible content bounds in one undoable canvas command, clears stale selections, refuses empty/locked layers, and keeps document dimensions. Palette is 0.11.0 with 75 tests and dogfood coverage for a 50% scale (transparent corners, opaque centre) and undo. checklists: passed (test, hygiene, guidelines, secrets; UI delivery review remains advisory).",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793396858.5187025,
-      "timestamp_str": "2026-10-31 00:47:38",
-      "agent": "kilo:palette",
-      "handoff": {
-        "state": "npm test 75/75, dogfood passes layer transform and undo, aikit check 4/4",
-        "next": "review or publish Palette 0.11.0",
-        "open": "app files are uncommitted",
-        "evidence": "src/core/bounds.js, src/ui/editor.js applyLayerTransform, tests/bounds.test.js, scripts/dogfood.mjs."
-      }
-    },
-    {
-      "task_id": "palette-transform",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'palette-transform' completed successfully.",
-      "status": "completed",
-      "timestamp": 1793396858.8809633,
-      "timestamp_str": "2026-10-31 00:47:38",
-      "agent": "kilo:palette"
-    },
-    {
-      "task_id": "palette-0111",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/4] Plan: bound resize and export output, make Auto levels use the active selection, add regression tests, bump to 0.11.1, then hand the vendored build to AegeanWorks.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793397627.923104,
-      "timestamp_str": "2026-10-31 01:00:27",
-      "agent": "opencode:editor-live",
-      "impact_assessment": {
-        "why": "applyResize accepts 8192x8192 (64M pixels) past the 24M-pixel project cap, and export at 400% can exceed browser canvas limits and fail silently.",
-        "benefits": "Large-document edits and exports fail safely instead of crashing; selection-aware Auto levels matches the filtered region.",
-        "risks": "contract: editor exports stay zero-dependency; dependency: none; concurrency: AegeanWorks copies this tree; state: no persisted-format change.",
-        "mitigation": "Reuse boundedDimensions, add pure exportDimensions tests plus a dogfood cap check, and re-run npm test and dogfood before syncing."
-      }
-    },
     {
       "task_id": "palette-0111",
       "phase": "phase 4",
@@ -284,6 +152,120 @@
       "timestamp": 1793435899.484331,
       "timestamp_str": "2026-10-31 11:38:19",
       "agent": "opencode:editor-live"
+    },
+    {
+      "task_id": "palette-clipping-masks",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/4] Add clipToBelow to the layer model, serialize it in project/autosave format v2 with v1 migration and tests. [2/4] Render clipping through a shared compositor helper in the viewport, exports, flatten and merge-down. [3/4] Add the layer clipping control, row indicator, shortcut and browser dogfood coverage. [4/4] Bump Palette to 0.12.0, document it, re-vendor into AegeanWorks and bump the site shell.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793489087.0653694,
+      "timestamp_str": "2026-11-01 02:24:47",
+      "agent": "kilo:palette",
+      "impact_assessment": {
+        "why": "Clipping masks are the main Photoshop layer capability still missing; they let users confine a layer to the alpha of the layer below without destructive erasing.",
+        "benefits": "Non-destructive per-layer clipping, correct viewport and export compositing, persisted projects and autosave, one-step undo, and parity with the vendored site.",
+        "risks": "contract: project and autosave formats gain a field and version; dependency: Canvas 2D only; concurrency: AegeanWorks will vendor this tree; state: clipped layers must follow the nearest unclipped base and hide when it is hidden.",
+        "mitigation": "Read format versions before writing, migrate v1 records to clip=false, centralize stack compositing, keep merge inside a clipping group, and verify with unit, browser and site checks."
+      }
+    },
+    {
+      "task_id": "palette-clipping-masks",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "Completed [1/4]-[4/4]: layers carry a persisted clipToBelow flag with project/autosave format v2 and v1 migration; a shared drawLayerStack composites clipped layers through the nearest unclipped base in the viewport, exports, flatten and merge-down; the Layers panel toggles clipping with Ctrl/Cmd+Alt+G, shows a clip badge, and refuses merges across a clipping-group boundary; Palette is 0.12.0 with 81 tests and browser dogfood for clipping pixels, state, undo and autosave restore. AegeanWorks vendors 0.12.0 at hash 430771616171b27a, records it in live.json, and bumps the shell to v39. checklists: passed (test, hygiene, guidelines, secrets; UI delivery review remains advisory).",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793491338.0979965,
+      "timestamp_str": "2026-11-01 03:02:18",
+      "agent": "kilo:palette"
+    },
+    {
+      "task_id": "palette-clipping-masks",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'palette-clipping-masks' completed successfully.",
+      "status": "completed",
+      "timestamp": 1793491345.1376226,
+      "timestamp_str": "2026-11-01 03:02:25",
+      "agent": "kilo:palette"
+    },
+    {
+      "task_id": "palette-clone-stamp",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/4] Add a Clone stamp paint helper and editor action that samples an Alt-clicked source from the active layer snapshot, paints through the brush mask and selection, and commits one undo step. [2/4] Add the clone tool rail button, options panel, S shortcut, brush-size shortcut and source/brush overlay markers with contract tests. [3/4] Add browser dogfood pixel and undo coverage, bump Palette to 0.13.0 and document the tool. [4/4] Re-vendor into AegeanWorks, bump the site shell and live catalogue, and run both gate suites.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793492077.935251,
+      "timestamp_str": "2026-11-01 03:14:37",
+      "agent": "kilo:palette",
+      "impact_assessment": {
+        "why": "Clone stamp is the main retouching tool still missing; clipping and blend work made retouching the natural next layer.",
+        "benefits": "Local non-destructive retouching with one-step undo, selection-aware output, no new dependencies, and site parity.",
+        "risks": "contract: a new tool and options surface; dependency: Canvas 2D only; concurrency: AegeanWorks vendors this tree; state: the source snapshot must not feed back into the stroke and the clone source must reset with a new document.",
+        "mitigation": "Snapshot the active layer before the stroke so cloning cannot feed back, clamp and refuse locked/hidden layers, clear the source on document replacement, and verify pixels plus undo in the browser."
+      }
+    },
+    {
+      "task_id": "palette-clone-stamp",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "Completed [1/4]-[4/4]: a Clone stamp tool samples an Alt-clicked source from a pre-stroke snapshot of the active layer, paints through the brush mask and selection, and commits one undo step; the tool has its own size/hardness/opacity panel, S and bracket shortcuts, a source crosshair and brush ring. Palette is 0.13.0 with 82 tests and browser dogfood for source setting, copied pixels, untouched pixels and undo. AegeanWorks vendors 0.13.0 at hash 24974892d8434d9a, records it in live.json, and bumps the shell to v40. checklists: passed (test, hygiene, guidelines, secrets; UI delivery review remains advisory).",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793492862.9351103,
+      "timestamp_str": "2026-11-01 03:27:42",
+      "agent": "kilo:palette"
+    },
+    {
+      "task_id": "palette-clone-stamp",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'palette-clone-stamp' completed successfully.",
+      "status": "completed",
+      "timestamp": 1793492876.9576044,
+      "timestamp_str": "2026-11-01 03:27:56",
+      "agent": "kilo:palette"
+    },
+    {
+      "task_id": "palette-dodge-burn",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/4] Add a source-atop tone stroke helper and a Dodge/burn tool that lightens or darkens only existing layer pixels through the brush mask and selection. [2/4] Add the tool rail button, options panel with mode/size/hardness/strength, D shortcut and overlay ring with contract tests. [3/4] Add browser dogfood pixel and undo coverage, bump Palette to 0.14.0 and document the tool. [4/4] Re-vendor into AegeanWorks, bump the site shell and live catalogue, and run both gate suites.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793493012.4469748,
+      "timestamp_str": "2026-11-01 03:30:12",
+      "agent": "kilo:palette",
+      "impact_assessment": {
+        "why": "Retouching still lacks tonal tools; dodge and burn pair naturally with the clone stamp and cover the common local lighten/darken workflow.",
+        "benefits": "Local non-destructive tonal retouching with one-step undo, selection-aware output, no new dependencies, and site parity.",
+        "risks": "contract: a new tool and options surface; dependency: Canvas 2D source-atop only; concurrency: AegeanWorks vendors this tree; state: tone strokes must not create pixels on transparent areas and must not accept locked or hidden layers.",
+        "mitigation": "Use source-atop compositing, clip to the selection, refuse locked/hidden layers, cap accumulated strength, and verify lighten, darken, untouched alpha and undo in the browser."
+      }
+    },
+    {
+      "task_id": "palette-dodge-burn",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "Completed [1/4]-[4/4]: a Dodge & burn tool uses a source-atop tone stroke so only existing layer pixels lighten or darken, respects the brush mask and selection, leaves transparent areas untouched, and commits one undo step; it has mode, size, hardness and strength controls, the D and bracket shortcuts, and a brush ring. Palette is 0.14.0 with 83 tests and browser dogfood for lighten, darken, alpha preservation and undo. AegeanWorks vendors 0.14.0 at hash ad3b76430d338eac, records it in live.json, and bumps the shell to v41. checklists: passed (test, hygiene, guidelines, secrets; UI delivery review remains advisory).",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793493923.0845075,
+      "timestamp_str": "2026-11-01 03:45:23",
+      "agent": "kilo:palette"
+    },
+    {
+      "task_id": "palette-dodge-burn",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'palette-dodge-burn' completed successfully.",
+      "status": "completed",
+      "timestamp": 1793493923.3747637,
+      "timestamp_str": "2026-11-01 03:45:23",
+      "agent": "kilo:palette"
     }
   ]
 }
