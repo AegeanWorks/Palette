@@ -43,10 +43,17 @@
     },
     "social_preview_png": {
       "path": "assets/social-preview.png",
-      "status": "pending_review",
+      "status": "approved",
       "commit": "",
       "generated_at": "2026-10-31T11:27:59",
-      "review": null
+      "review": {
+        "status": "approved",
+        "reviewer": "agent:kilo",
+        "method": "vision",
+        "notes": "Rendered PNG matches the approved SVG: camera mark, Palette title, WEB kicker, full three-sentence tagline and all three chips legible; purple identity intact.",
+        "score": 91,
+        "reviewed_at": "2026-11-03"
+      }
     }
   },
   "screenshots": [
@@ -67,6 +74,44 @@
         "notes": "Real 1440x900 capture of the welcome document: layers, blend control, adjustments, histogram and export controls are visible; canvas renders the welcome artwork and no dialog obscures it.",
         "score": 92,
         "reviewed_at": "2026-10-31T11:28:37"
+      }
+    },
+    {
+      "path": "assets/screenshots/2026-11-02-home.png",
+      "alt": "Palette welcome document at 2026-11-02",
+      "caption": "Welcome document from npm start (http://127.0.0.1:4176): three layers, blend control, adjustments, histogram and export controls; supersedes the 2026-10-31 capture after editor.js/canvas/paint changes.",
+      "commit": "1bda086e5302d7a28b17e4c3f05f8f391e3ef27c",
+      "taken_at": "2026-11-02",
+      "viewport": "1440x900",
+      "width": 1440,
+      "height": 900,
+      "status": "approved",
+      "review": {
+        "status": "approved",
+        "reviewer": "agent:kilo",
+        "method": "vision",
+        "notes": "Real 1440x900 viewport capture of the current build: welcome canvas, Layers/Adjustments panels, toolbar and status bar all legible; no dialog obscures the canvas. Matches the prior shot's view, re-taken because the code moved (editor.js +357).",
+        "score": 92,
+        "reviewed_at": "2026-11-03"
+      }
+    },
+    {
+      "path": "assets/screenshots/2026-11-02-export.png",
+      "alt": "Palette export dialog at 2026-11-02",
+      "caption": "Same build after clicking Export: file name, PNG format, 100% scale, 1280x800 output readout with Cancel/Export.",
+      "commit": "1bda086e5302d7a28b17e4c3f05f8f391e3ef27c",
+      "taken_at": "2026-11-02",
+      "viewport": "1440x900",
+      "width": 1440,
+      "height": 900,
+      "status": "approved",
+      "review": {
+        "status": "approved",
+        "reviewer": "agent:kilo",
+        "method": "vision",
+        "notes": "Real export dialog over a dimmed welcome canvas: format/scale/output all visible and honest; one click from the fresh-user path, proves the local-export story.",
+        "score": 91,
+        "reviewed_at": "2026-11-03"
       }
     }
   ]

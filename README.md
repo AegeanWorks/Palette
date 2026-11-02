@@ -105,7 +105,9 @@ palette/
 │   ├── social-preview.png
 │   ├── social-preview.svg
 │   └── screenshots/
-│       └── 2026-10-31-home.png
+│       ├── 2026-10-31-home.png <- prior welcome capture (commit 0e484e5)
+│       ├── 2026-11-02-home.png <- current welcome capture (commit 1bda086)
+│       └── 2026-11-02-export.png <- export dialog (commit 1bda086)
 ├── scripts/
 │   ├── serve.mjs              <- zero-dependency static server
 │   └── dogfood.mjs            <- headless browser smoke pass
@@ -155,3 +157,19 @@ python tools/sync_editor.py --check
 ## 📜 License
 
 Free for personal use under the Aegean License 1.1 (AL-1.1); see [LICENSE](LICENSE). Any commercial use needs the Aegean Commercial License 1.0 (ACL-1.0); see [COMMERCIAL.md](COMMERCIAL.md).
+
+<!-- aegean:brand-assets:start -->
+## 🎨 Brand Assets
+
+> **AI-Generated Brand Artwork.** The banner and logo are **AI-generated brand assets**. They are illustrative and may not literally depict every feature or the full project scope.
+<!-- aegean:brand-assets:end -->
+
+<!-- aegean:screenshots:start -->
+## Screenshots
+
+<a href="https://github.com/AegeanWorks/Palette/commit/1bda086"><img src="assets/screenshots/2026-11-02-home.png" alt="Palette welcome document at 2026-11-02"></a>
+
+<a href="https://github.com/AegeanWorks/Palette/commit/1bda086"><img src="assets/screenshots/2026-11-02-export.png" alt="Palette export dialog at 2026-11-02"></a>
+
+*commit `1bda086` · 2026-11-02 · viewport 1440x900 · prior `2026-10-31-home.png` (commit `0e484e5`) superseded after editor changes*
+<!-- aegean:screenshots:end -->
