@@ -5,29 +5,12 @@
     "last_phase": "phase 4",
     "active_phase": 4,
     "status": "in_progress",
-    "updated_at": 1793723152.5794122,
+    "updated_at": 1793723209.6145,
     "owner": "kilo:palette-audit",
     "started_by": "kilo:palette-audit",
     "continuations": []
   },
   "checkpoints": [
-    {
-      "task_id": "palette-clipping-masks",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/4] Add clipToBelow to the layer model, serialize it in project/autosave format v2 with v1 migration and tests. [2/4] Render clipping through a shared compositor helper in the viewport, exports, flatten and merge-down. [3/4] Add the layer clipping control, row indicator, shortcut and browser dogfood coverage. [4/4] Bump Palette to 0.12.0, document it, re-vendor into AegeanWorks and bump the site shell.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793489087.0653694,
-      "timestamp_str": "2026-11-01 02:24:47",
-      "agent": "kilo:palette",
-      "impact_assessment": {
-        "why": "Clipping masks are the main Photoshop layer capability still missing; they let users confine a layer to the alpha of the layer below without destructive erasing.",
-        "benefits": "Non-destructive per-layer clipping, correct viewport and export compositing, persisted projects and autosave, one-step undo, and parity with the vendored site.",
-        "risks": "contract: project and autosave formats gain a field and version; dependency: Canvas 2D only; concurrency: AegeanWorks will vendor this tree; state: clipped layers must follow the nearest unclipped base and hide when it is hidden.",
-        "mitigation": "Read format versions before writing, migrate v1 records to clip=false, centralize stack compositing, keep merge inside a clipping group, and verify with unit, browser and site checks."
-      }
-    },
     {
       "task_id": "palette-clipping-masks",
       "phase": "phase 4",
@@ -266,6 +249,17 @@
       "status": "in_progress",
       "timestamp": 1793723152.5794122,
       "timestamp_str": "2026-11-03 19:25:52",
+      "agent": "kilo:palette-audit"
+    },
+    {
+      "task_id": "palette-audit-waves",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "Completed [2/3] Wave 10: onPaste returns early for typing targets before the internal-clipboard fallback, so Ctrl+V text into rename/doc-name/text/export/resize fields is no longer eaten and no stray layer is pasted; image-item routing unchanged and pinned patterns intact. Extended paste-routing test; 89/89 npm, 4/4 gates. checklists: passed (test, hygiene, guidelines, secrets).",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793723209.6145,
+      "timestamp_str": "2026-11-03 19:26:49",
       "agent": "kilo:palette-audit"
     }
   ]

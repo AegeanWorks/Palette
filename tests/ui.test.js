@@ -294,6 +294,7 @@ test("editor keyboard shortcuts and paste routing cover retouching and placement
   assert.match(editorSource, /key === "g" && event\.altKey[\s\S]*?toggleClippingMask/);
   assert.match(editorSource, /if \(this\.doc\) \{\s*this\.addImageLayer\(file\);\s*\} else \{\s*this\.openImageFile\(file\);\s*\}/);
   assert.match(editorSource, /if \(this\.clipboard\) \{\s*event\.preventDefault\(\);\s*this\.pasteClipboard\(\);\s*\}/);
+  assert.match(editorSource, /onPaste\(event\) \{[\s\S]*?isTypingTarget\(event\.target\)[\s\S]*?if \(this\.clipboard\)/);
   assert.match(editorSource, /action\?\.type === "clone"[\s\S]*?action\.last\.x \+ this\.action\.offset\.x/);
   assert.match(editorSource, /copySelection\(\) \{\s*if \(!this\.doc\) return;\s*this\.finishText\(\);/);
   assert.match(editorSource, /cutSelection\(\) \{\s*if \(!this\.doc\) return;\s*this\.finishText\(\);/);

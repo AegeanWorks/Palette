@@ -2887,6 +2887,7 @@ export class PaletteEditor {
       }
       return;
     }
+    if (isTypingTarget(event.target)) return;
     if (this.clipboard) {
       event.preventDefault();
       this.pasteClipboard();
