@@ -160,6 +160,19 @@ test("oversized projects are bounded by total pixels", () => {
   assert.ok(parsed.width < MAX_DIMENSION);
 });
 
+test("malformed layer values fall back to neutral defaults", () => {
+  const parsed = parseProject({
+    format: PROJECT_FORMAT,
+    version: PROJECT_VERSION,
+    width: 40,
+    height: 30,
+    layers: [{ id: "base", image: IMAGE, opacity: "abc", adjustments: { brightness: "abc", saturation: "oops" } }],
+  });
+  assert.equal(parsed.layers[0].opacity, 1);
+  assert.equal(parsed.layers[0].adjustments.brightness, 0);
+  assert.equal(parsed.layers[0].adjustments.saturation, 0);
+});
+
 test("missing identity fields receive safe fallbacks", () => {
   const parsed = parseProject({
     format: PROJECT_FORMAT,

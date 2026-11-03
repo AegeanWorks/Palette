@@ -32,6 +32,17 @@ test("adjustments clamp to their ranges", () => {
   assert.deepEqual(clampAdjustments(), { ...DEFAULT_ADJUSTMENTS });
 });
 
+test("non-numeric adjustments fall back to neutral defaults", () => {
+  const values = clampAdjustments({ brightness: "abc", contrast: NaN, saturation: "oops", hue: "50", blur: "5px" });
+  assert.equal(values.brightness, 0);
+  assert.equal(values.contrast, 0);
+  assert.equal(values.saturation, 0);
+  assert.equal(values.hue, 50);
+  assert.equal(values.blur, 0);
+  assert.equal(isNeutralAdjustments({ brightness: "abc" }), true);
+  assert.equal(buildCssFilter({ brightness: "abc" }), "none");
+});
+
 test("neutral adjustments produce no CSS filter", () => {
   assert.equal(buildCssFilter({}), "none");
   assert.equal(isNeutralAdjustments({}), true);

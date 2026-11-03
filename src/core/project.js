@@ -95,7 +95,7 @@ export function parseProject(source) {
       id,
       name: cleanDocumentName(layer.name, `Layer ${index + 1}`),
       visible: layer.visible !== false,
-      opacity: clamp(layer.opacity ?? 1, 0, 1),
+      opacity: Number.isFinite(Number(layer.opacity)) ? clamp(Number(layer.opacity), 0, 1) : 1,
       blendMode: normalizeBlendMode(layer.blendMode),
       locked: layer.locked === true,
       clipToBelow: supportsClipping && index > 0 && layer.clipToBelow === true,
