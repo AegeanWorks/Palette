@@ -2,31 +2,15 @@
   "version": 1,
   "active_task": {
     "task_id": "palette-hardening-and-shortcuts",
-    "last_phase": "phase 2",
-    "active_phase": 2,
+    "last_phase": "phase 4",
+    "active_phase": 4,
     "status": "in_progress",
-    "updated_at": 1794606509.1195734,
+    "updated_at": 1794606793.8810525,
     "owner": "gemini",
     "started_by": "gemini",
-    "continuations": [],
-    "impact_assessment": {
-      "why": "Prevent accidental modifications to hidden layers, clear stale selection rects on full-layer flips, and support universal Photoshop muscle memory shortcuts",
-      "benefits": "Better UX parity with standard creative desktop apps and hardened layer transform safety",
-      "risks": "contract: none, backwards compatible; dependency: none, zero dependencies; concurrency: none, single-threaded browser; state: selection cleared on flip to avoid stale coordinates",
-      "mitigation": "Thorough unit tests in tests/ui.test.js and end-to-end headless Chrome dogfood"
-    }
+    "continuations": []
   },
   "checkpoints": [
-    {
-      "task_id": "palette-stamp-and-stylize",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'palette-stamp-and-stylize' completed successfully.",
-      "status": "completed",
-      "timestamp": 1794600616.7873976,
-      "timestamp_str": "2026-11-13 23:10:16",
-      "agent": "antigravity:1"
-    },
     {
       "task_id": "palette-selection-and-toning",
       "phase": "phase 2",
@@ -281,6 +265,18 @@
       "handoff": {
         "next": "begin ui task and implement layer transform guards and keyboard shortcuts in src/ui/editor.js"
       }
+    },
+    {
+      "task_id": "palette-hardening-and-shortcuts",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "Completed [1/2]-[2/2]: hardened flipActiveLayer and rotateActiveLayer with hidden layer guards and selection deselect; added Photoshop-standard Ctrl/Cmd+Shift+I, Ctrl/Cmd+0, and Ctrl/Cmd+1 shortcuts; updated README and ADR-011; bumped to 0.23.1; verified via 118 unit tests and headless Chrome dogfood.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1794606793.8810525,
+      "timestamp_str": "2026-11-14 00:53:13",
+      "agent": "gemini",
+      "checklists": "passed"
     }
   ]
 }
