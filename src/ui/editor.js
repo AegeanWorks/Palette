@@ -28,10 +28,13 @@ import {
 } from "../core/export.js";
 import {
   DEFAULT_ADJUSTMENTS,
+  applyDesaturate,
   applyInvert,
   applyLevels,
   applyPixelate,
+  applyPosterize,
   applySharpen,
+  applyThreshold,
   applyVignette,
   buildCssFilter,
 } from "../core/filters.js";
@@ -168,7 +171,9 @@ const IDS = [
   "adj-grayscale-value", "adj-sepia", "adj-sepia-value", "adj-invert", "adj-invert-value",
   "adj-blur", "adj-blur-value", "filter-blur-radius", "filter-blur-value", "btn-filter-blur",
   "filter-pixel-size", "filter-pixel-value", "btn-filter-pixelate", "btn-filter-sharpen",
-  "btn-filter-vignette", "btn-filter-invert", "level-black", "level-black-value", "level-white", "level-white-value",
+  "btn-filter-vignette", "btn-filter-invert", "btn-filter-desaturate", "filter-threshold-cutoff",
+  "filter-threshold-value", "btn-filter-threshold", "filter-posterize-steps", "filter-posterize-value",
+  "btn-filter-posterize", "swatches-row", "level-black", "level-black-value", "level-white", "level-white-value",
   "level-gamma", "level-gamma-value", "btn-filter-levels", "status-tool", "status-message",
   "status-cursor", "status-zoom",
   "btn-actual", "new-dialog", "new-form", "new-name", "new-width", "new-height", "new-color",
@@ -2210,6 +2215,20 @@ export class PaletteEditor {
     this.applyPixelsToActive("Invert colours", (pixels) => applyInvert(pixels));
   }
 
+  applyDesaturateFilter() {
+    this.applyPixelsToActive("Desaturate", (pixels) => applyDesaturate(pixels));
+  }
+
+  applyThresholdFilter() {
+    const cutoff = Number(this.el.filterThresholdCutoff.value) || 128;
+    this.applyPixelsToActive("Threshold", (pixels) => applyThreshold(pixels, cutoff));
+  }
+
+  applyPosterizeFilter() {
+    const steps = Number(this.el.filterPosterizeSteps.value) || 4;
+    this.applyPixelsToActive("Posterize", (pixels) => applyPosterize(pixels, steps));
+  }
+
   applyLevelsFilter() {
     const black = Number(this.el.levelBlack.value);
     const white = Number(this.el.levelWhite.value);
@@ -3045,6 +3064,22 @@ export class PaletteEditor {
     this.el.btnFilterSharpen.addEventListener("click", () => this.applySharpenFilter());
     this.el.btnFilterVignette.addEventListener("click", () => this.applyVignetteFilter());
     this.el.btnFilterInvert.addEventListener("click", () => this.applyInvertFilter());
+    this.el.btnFilterDesaturate.addEventListener("click", () => this.applyDesaturateFilter());
+    this.el.filterThresholdCutoff.addEventListener("input", () => {
+      this.el.filterThresholdValue.textContent = this.el.filterThresholdCutoff.value;
+    });
+    this.el.btnFilterThreshold.addEventListener("click", () => this.applyThresholdFilter());
+    this.el.filterPosterizeSteps.addEventListener("input", () => {
+      this.el.filterPosterizeValue.textContent = this.el.filterPosterizeSteps.value;
+    });
+    this.el.btnFilterPosterize.addEventListener("click", () => this.applyPosterizeFilter());
+
+    for (const swatch of this.root.querySelectorAll("[data-swatch]")) {
+      swatch.addEventListener("click", () => {
+        const color = swatch.dataset.swatch;
+        if (color) this.setColor(color);
+      });
+    }
     this.el.btnFilterLevels.addEventListener("click", () => this.applyLevelsFilter());
 
     this.el.colorInput.addEventListener("input", () => this.setColor(this.el.colorInput.value));

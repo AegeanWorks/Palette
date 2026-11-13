@@ -557,6 +557,31 @@ svg {
   text-align: right;
 }
 
+.swatches-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: -6px;
+  margin-bottom: 12px;
+}
+
+.btn-swatch {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background-color: var(--swatch-color);
+  cursor: pointer;
+  transition: transform 0.1s ease, border-color 0.1s ease;
+}
+
+.btn-swatch:hover {
+  transform: scale(1.15);
+  border-color: var(--cyan);
+}
+
+
 .options-group {
   display: grid;
   gap: 7px;

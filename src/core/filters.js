@@ -175,3 +175,46 @@ export function applyInvert(pixels) {
   }
   return { width, height, data: out };
 }
+
+export function applyDesaturate(pixels) {
+  const { width, height, data } = pixels;
+  const out = new Uint8ClampedArray(data.length);
+  for (let index = 0; index < data.length; index += 4) {
+    const luma = Math.round(data[index] * 0.2126 + data[index + 1] * 0.7152 + data[index + 2] * 0.0722);
+    out[index] = luma;
+    out[index + 1] = luma;
+    out[index + 2] = luma;
+    out[index + 3] = data[index + 3];
+  }
+  return { width, height, data: out };
+}
+
+export function applyThreshold(pixels, threshold = 128) {
+  const cutoff = clamp(Math.round(Number(threshold) || 128), 0, 255);
+  const { width, height, data } = pixels;
+  const out = new Uint8ClampedArray(data.length);
+  for (let index = 0; index < data.length; index += 4) {
+    const luma = data[index] * 0.2126 + data[index + 1] * 0.7152 + data[index + 2] * 0.0722;
+    const value = luma >= cutoff ? 255 : 0;
+    out[index] = value;
+    out[index + 1] = value;
+    out[index + 2] = value;
+    out[index + 3] = data[index + 3];
+  }
+  return { width, height, data: out };
+}
+
+export function applyPosterize(pixels, levels = 4) {
+  const steps = clamp(Math.round(Number(levels) || 4), 2, 32);
+  const { width, height, data } = pixels;
+  const out = new Uint8ClampedArray(data.length);
+  const step = 255 / (steps - 1);
+  for (let index = 0; index < data.length; index += 4) {
+    for (let channel = 0; channel < 3; channel += 1) {
+      out[index + channel] = Math.round(Math.round(data[index + channel] / step) * step);
+    }
+    out[index + 3] = data[index + 3];
+  }
+  return { width, height, data: out };
+}
+

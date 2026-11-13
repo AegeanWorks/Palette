@@ -91,6 +91,14 @@ test("the shell carries every critical editor surface", () => {
     "bucket-opacity",
     "bucket-contiguous",
     "btn-filter-invert",
+    "btn-filter-desaturate",
+    "filter-threshold-cutoff",
+    "filter-threshold-value",
+    "btn-filter-threshold",
+    "filter-posterize-steps",
+    "filter-posterize-value",
+    "btn-filter-posterize",
+    "swatches-row",
   ]) {
     assert.ok(found.has(id), `missing #${id}`);
   }
@@ -221,6 +229,19 @@ test("the filter panel exposes Levels controls", () => {
   assert.match(html, /id="btn-filter-levels"/);
 });
 
+test("the filter panel exposes desaturate, threshold, posterize and swatches", () => {
+  assert.match(html, /data-ui="filter-desaturate"/);
+  assert.match(html, /id="filter-threshold-cutoff" type="range"/);
+  assert.match(html, /data-ui="filter-threshold"/);
+  assert.match(html, /id="filter-posterize-steps" type="range"/);
+  assert.match(html, /data-ui="filter-posterize"/);
+  assert.match(html, /id="swatches-row"/);
+  assert.match(html, /data-swatch="#000000"/);
+  assert.match(html, /data-swatch="#22d3ee"/);
+  assert.match(styles, /\.swatches-row/);
+  assert.match(styles, /\.btn-swatch/);
+});
+
 test("the crop panel exposes ratio presets and the document row exposes Flatten", () => {
   assert.match(html, /id="crop-aspect"[\s\S]*?value="1"[\s\S]*?value="1\.3333333333"/);
   assert.match(html, /id="btn-flatten"/);
@@ -308,6 +329,9 @@ test("editor keyboard shortcuts and paste routing cover retouching and placement
   assert.match(editorSource, /k:\s*"bucket"/);
   assert.match(editorSource, /key === "\+" \|\| key === "="/);
   assert.match(editorSource, /applyInvertFilter\(\)/);
+  assert.match(editorSource, /applyDesaturateFilter\(\)/);
+  assert.match(editorSource, /applyThresholdFilter\(\)/);
+  assert.match(editorSource, /applyPosterizeFilter\(\)/);
   assert.match(editorSource, /key === "g" && event\.altKey[\s\S]*?toggleClippingMask/);
   assert.match(editorSource, /if \(this\.doc\) \{\s*this\.addImageLayer\(file\);\s*\} else \{\s*this\.openImageFile\(file\);\s*\}/);
   assert.match(editorSource, /if \(this\.clipboard\) \{\s*event\.preventDefault\(\);\s*this\.pasteClipboard\(\);\s*\}/);

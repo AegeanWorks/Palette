@@ -143,6 +143,17 @@
           <input id="color-input" type="color" value="#22d3ee" aria-label="Active color">
           <output id="color-hex" class="mono" for="color-input">#22d3ee</output>
         </div>
+        <div class="swatches-row" id="swatches-row" role="group" aria-label="Preset color swatches">
+          <button class="btn-swatch" type="button" data-swatch="#000000" aria-label="Black" style="--swatch-color:#000000"></button>
+          <button class="btn-swatch" type="button" data-swatch="#ffffff" aria-label="White" style="--swatch-color:#ffffff"></button>
+          <button class="btn-swatch" type="button" data-swatch="#ef4444" aria-label="Red" style="--swatch-color:#ef4444"></button>
+          <button class="btn-swatch" type="button" data-swatch="#f97316" aria-label="Orange" style="--swatch-color:#f97316"></button>
+          <button class="btn-swatch" type="button" data-swatch="#eab308" aria-label="Yellow" style="--swatch-color:#eab308"></button>
+          <button class="btn-swatch" type="button" data-swatch="#22c55e" aria-label="Green" style="--swatch-color:#22c55e"></button>
+          <button class="btn-swatch" type="button" data-swatch="#22d3ee" aria-label="Cyan" style="--swatch-color:#22d3ee"></button>
+          <button class="btn-swatch" type="button" data-swatch="#3b82f6" aria-label="Blue" style="--swatch-color:#3b82f6"></button>
+          <button class="btn-swatch" type="button" data-swatch="#a855f7" aria-label="Purple" style="--swatch-color:#a855f7"></button>
+        </div>
 
         <div class="options-group" id="options-brush" hidden>
           <label class="field" for="brush-size">Size <output id="brush-size-value" for="brush-size">32</output> px</label>
@@ -406,6 +417,13 @@
           <button class="btn btn-ghost btn-small" id="btn-filter-sharpen" type="button" data-ui="filter-sharpen">Sharpen</button>
           <button class="btn btn-ghost btn-small" id="btn-filter-vignette" type="button" data-ui="filter-vignette">Vignette</button>
           <button class="btn btn-ghost btn-small" id="btn-filter-invert" type="button" data-ui="filter-invert">Invert</button>
+          <button class="btn btn-ghost btn-small" id="btn-filter-desaturate" type="button" data-ui="filter-desaturate">Desaturate</button>
+          <label class="field" for="filter-threshold-cutoff">Threshold <output id="filter-threshold-value" for="filter-threshold-cutoff">128</output></label>
+          <input id="filter-threshold-cutoff" type="range" min="1" max="254" step="1" value="128">
+          <button class="btn btn-ghost btn-small" id="btn-filter-threshold" type="button" data-ui="filter-threshold">Apply threshold</button>
+          <label class="field" for="filter-posterize-steps">Posterize <output id="filter-posterize-value" for="filter-posterize-steps">4</output> levels</label>
+          <input id="filter-posterize-steps" type="range" min="2" max="16" step="1" value="4">
+          <button class="btn btn-ghost btn-small" id="btn-filter-posterize" type="button" data-ui="filter-posterize">Apply posterize</button>
           <label class="field" for="level-black">Levels black <output id="level-black-value" for="level-black">0</output></label>
           <input id="level-black" type="range" min="0" max="254" step="1" value="0">
           <label class="field" for="level-white">Levels white <output id="level-white-value" for="level-white">255</output></label>

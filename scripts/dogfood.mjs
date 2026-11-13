@@ -1422,6 +1422,83 @@ async function main() {
     await connection.evaluate("globalThis.palette.undo()");
     await wait(220);
 
+    // Test desaturate filter
+    await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const ctx = layer.canvas.getContext('2d');
+      ctx.fillStyle = '#ff0000';
+      ctx.fillRect(120, 120, 10, 10);
+    })()`);
+    await connection.evaluate("globalThis.palette.applyDesaturateFilter()");
+    const desaturatedPixel = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const pixel = layer.canvas.getContext('2d').getImageData(120, 120, 1, 1).data;
+      return [pixel[0], pixel[1], pixel[2], pixel[3]];
+    })()`);
+    if (desaturatedPixel[0] !== 54 || desaturatedPixel[1] !== 54 || desaturatedPixel[2] !== 54) {
+      throw new Error(`Desaturate filter failed: ${JSON.stringify(desaturatedPixel)}`);
+    }
+    await connection.evaluate("globalThis.palette.undo()");
+    await wait(220);
+
+    // Test threshold filter
+    await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const ctx = layer.canvas.getContext('2d');
+      ctx.fillStyle = '#646464';
+      ctx.fillRect(120, 120, 10, 10);
+      document.getElementById('filter-threshold-cutoff').value = 128;
+    })()`);
+    await connection.evaluate("globalThis.palette.applyThresholdFilter()");
+    const thresholdPixel = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const pixel = layer.canvas.getContext('2d').getImageData(120, 120, 1, 1).data;
+      return [pixel[0], pixel[1], pixel[2], pixel[3]];
+    })()`);
+    if (thresholdPixel[0] !== 0 || thresholdPixel[1] !== 0 || thresholdPixel[2] !== 0) {
+      throw new Error(`Threshold filter failed: ${JSON.stringify(thresholdPixel)}`);
+    }
+    await connection.evaluate("globalThis.palette.undo()");
+    await wait(220);
+
+    // Test posterize filter
+    await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const ctx = layer.canvas.getContext('2d');
+      ctx.fillStyle = '#646464';
+      ctx.fillRect(120, 120, 10, 10);
+      document.getElementById('filter-posterize-steps').value = 4;
+    })()`);
+    await connection.evaluate("globalThis.palette.applyPosterizeFilter()");
+    const posterizePixel = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const pixel = layer.canvas.getContext('2d').getImageData(120, 120, 1, 1).data;
+      return [pixel[0], pixel[1], pixel[2], pixel[3]];
+    })()`);
+    if (posterizePixel[0] !== 85 || posterizePixel[1] !== 85 || posterizePixel[2] !== 85) {
+      throw new Error(`Posterize filter failed: ${JSON.stringify(posterizePixel)}`);
+    }
+    await connection.evaluate("globalThis.palette.undo()");
+    await wait(220);
+
+    // Test color swatches
+    await connection.evaluate(`(() => {
+      document.querySelector('[data-swatch="#ef4444"]').click();
+    })()`);
+    const swatchColor = await connection.evaluate("globalThis.palette.options.color");
+    if (swatchColor !== "#ef4444") {
+      throw new Error(`Color swatch did not set red: ${swatchColor}`);
+    }
+    await connection.evaluate(`(() => {
+      document.querySelector('[data-swatch="#22d3ee"]').click();
+    })()`);
+
     // Test zoom shortcuts
     const zoomInitial = await connection.evaluate("globalThis.palette.view.scale");
     await connection.evaluate("globalThis.palette.zoomIn()");
@@ -1609,7 +1686,7 @@ async function main() {
     }
 
     console.log(
-      "[OK] Palette dogfood: layers, blend modes, clipping masks, clone stamp, dodge/burn, paint bucket, invert filter, keyboard zoom, merge-down blend retention, image placement, gradients, layer locking, marquee selection/invert, clipboard, layer via copy/cut, autosave reload/restore, crop ratios, flatten, canvas size, layer transform, histogram/auto levels, levels, brush, eraser, move, undo, crop, adjustments, shapes, text, filters, resize, zoom, scaled export, project save and dialogs.",
+      "[OK] Palette dogfood: layers, blend modes, clipping masks, clone stamp, dodge/burn, paint bucket, invert filter, desaturate/threshold/posterize filters, swatches, keyboard zoom, merge-down blend retention, image placement, gradients, layer locking, marquee selection/invert, clipboard, layer via copy/cut, autosave reload/restore, crop ratios, flatten, canvas size, layer transform, histogram/auto levels, levels, brush, eraser, move, undo, crop, adjustments, shapes, text, filters, resize, zoom, scaled export, project save and dialogs.",
     );
     return 0;
   } catch (error) {

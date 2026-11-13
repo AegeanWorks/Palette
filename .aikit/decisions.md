@@ -25,3 +25,11 @@ contract, a dependency, a data format or the architecture; IDs are consecutive a
 - **Context**: Palette lacked a rapid contiguous area flood fill / color replacement tool, destructive invert filter on selections/layers, and standard keyboard zoom (+/-) navigation.
 - **Decision**: Add `src/core/fill.js` implementing scanline/BFS flood fill with tolerance, contiguous and non-contiguous modes, and selection clipping; add `applyInvert` to `src/core/filters.js`; wire the paint bucket tool (`K`), invert filter button, and keyboard zoom shortcuts into `editor.js`; bump Palette to 0.15.0; verify via 99 unit tests and headless browser dogfood.
 - **Consequences**: Palette gains full flood fill and color replace capability without external dependencies, full shortcut parity in help dialog, and validated headless browser coverage.
+
+### ADR-003: Add Desaturate, Threshold, and Posterize creative filters and quick color swatches
+- **Date**: 2026-11-13
+- **Status**: Accepted
+- **Context**: Palette lacked destructive monochrome conversion, custom cutoff thresholding, and channel posterization applicable to layers and selections, as well as fast one-click color swatches.
+- **Decision**: Add pure functions `applyDesaturate`, `applyThreshold`, and `applyPosterize` to `src/core/filters.js` operating on RGBA pixel buffers with alpha preservation and ITU-R BT.709 luminance; expose interactive filter controls and preset color swatches in `index.html` and `src/styles.css`; wire event handlers, undoable commands, and swatch buttons in `editor.js`; bump Palette to 0.16.0; verify with 103 unit tests and headless browser dogfood.
+- **Consequences**: Users can apply stylized high-contrast monochrome and pop-art posterization with selection clipping and full undo/redo, and pick standard colors quickly without triggering the native OS color picker dialog.
+

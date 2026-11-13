@@ -1,45 +1,16 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "palette-fill-and-shortcuts",
+    "task_id": "palette-filters-and-swatches",
     "last_phase": "phase 4",
-    "active_phase": 5,
-    "status": "completed",
-    "updated_at": 1794599268.3447196,
+    "active_phase": 4,
+    "status": "in_progress",
+    "updated_at": 1794600074.1432521,
     "owner": "antigravity:1",
     "started_by": "antigravity:1",
-    "continuations": [],
-    "completed_at": 1794599467.9808705
+    "continuations": []
   },
   "checkpoints": [
-    {
-      "task_id": "palette-dodge-burn",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/4] Add a source-atop tone stroke helper and a Dodge/burn tool that lightens or darkens only existing layer pixels through the brush mask and selection. [2/4] Add the tool rail button, options panel with mode/size/hardness/strength, D shortcut and overlay ring with contract tests. [3/4] Add browser dogfood pixel and undo coverage, bump Palette to 0.14.0 and document the tool. [4/4] Re-vendor into AegeanWorks, bump the site shell and live catalogue, and run both gate suites.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793493012.4469748,
-      "timestamp_str": "2026-11-01 03:30:12",
-      "agent": "kilo:palette",
-      "impact_assessment": {
-        "why": "Retouching still lacks tonal tools; dodge and burn pair naturally with the clone stamp and cover the common local lighten/darken workflow.",
-        "benefits": "Local non-destructive tonal retouching with one-step undo, selection-aware output, no new dependencies, and site parity.",
-        "risks": "contract: a new tool and options surface; dependency: Canvas 2D source-atop only; concurrency: AegeanWorks vendors this tree; state: tone strokes must not create pixels on transparent areas and must not accept locked or hidden layers.",
-        "mitigation": "Use source-atop compositing, clip to the selection, refuse locked/hidden layers, cap accumulated strength, and verify lighten, darken, untouched alpha and undo in the browser."
-      }
-    },
-    {
-      "task_id": "palette-dodge-burn",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "Completed [1/4]-[4/4]: a Dodge & burn tool uses a source-atop tone stroke so only existing layer pixels lighten or darken, respects the brush mask and selection, leaves transparent areas untouched, and commits one undo step; it has mode, size, hardness and strength controls, the D and bracket shortcuts, and a brush ring. Palette is 0.14.0 with 83 tests and browser dogfood for lighten, darken, alpha preservation and undo. AegeanWorks vendors 0.14.0 at hash ad3b76430d338eac, records it in live.json, and bumps the shell to v41. checklists: passed (test, hygiene, guidelines, secrets; UI delivery review remains advisory).",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793493923.0845075,
-      "timestamp_str": "2026-11-01 03:45:23",
-      "agent": "kilo:palette"
-    },
     {
       "task_id": "palette-dodge-burn",
       "phase": "completed",
@@ -264,6 +235,36 @@
       "timestamp": 1794599467.980873,
       "timestamp_str": "2026-11-13 22:51:07",
       "agent": "antigravity:1"
+    },
+    {
+      "task_id": "palette-filters-and-swatches",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/5] Plan: M1 core filter functions and unit tests; M2 UI controls and swatches; M3 editor wiring and UI tests; M4 dogfood verification; M5 docs, ADR and gate verification",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1794599737.8271663,
+      "timestamp_str": "2026-11-13 22:55:37",
+      "agent": "antigravity:1",
+      "impact_assessment": {
+        "why": "Add creative filters (desaturate, threshold, posterize) and quick color swatches to expand artistic retouching",
+        "benefits": "Enables high-contrast monochrome, posterized styling, and rapid color picking without opening OS color dialog",
+        "risks": "contract: none, additive filters and swatches only; dependency: none, pure vanilla JS; concurrency: none, synchronous pixel manipulation and event loop; state: none, transforms return fresh pixel buffers and integrate with existing undo history",
+        "mitigation": "Clamp parameters, BT.709 luma, preserve alpha, verify in unit tests and CDP dogfood"
+      },
+      "plan_digest": "8f0700eca5b498b520e211f518404a29c09defe12c746a2115b8110aada42136"
+    },
+    {
+      "task_id": "palette-filters-and-swatches",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "Completed [1/5]-[5/5]: added Desaturate, Threshold (monochrome cutoff slider), and Posterize (color channel steps) filters in src/core/filters.js and src/ui/editor.js; added preset color swatches in index.html and src/styles.css; bumped to 0.16.0; verified via 103 unit tests and headless browser dogfood pass.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1794600074.1432521,
+      "timestamp_str": "2026-11-13 23:01:14",
+      "agent": "antigravity:1",
+      "checklists": "passed"
     }
   ]
 }
