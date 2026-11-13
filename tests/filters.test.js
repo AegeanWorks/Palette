@@ -15,6 +15,8 @@ import {
   applyNoise,
   applyHighPass,
   applyTint,
+  applyFindEdges,
+  applySolarize,
   applyPixelate,
   applySharpen,
   applyVignette,
@@ -465,6 +467,65 @@ test("tint blends optical color filter, preserves luminosity and alpha", () => {
   // b = 100 * 0.5 + 230 * 0.5 = 165
   assert.equal(coolRaw.data[2], 165);
   assert.equal(coolRaw.data[3], 180);
+});
+
+test("find edges isolates high contrast contours as dark lines on white and preserves alpha", () => {
+  // Uniform 3x3 image -> gradients are 0, output is pure white (255)
+  const uniform = pixels(3, 3, 100);
+  uniform.data[3] = 190;
+  uniform.data[(1 * 3 + 1) * 4 + 3] = 210;
+  const edgesUniform = applyFindEdges(uniform);
+  assert.notStrictEqual(edgesUniform.data, uniform.data);
+  const centerIdx = (1 * 3 + 1) * 4;
+  assert.equal(edgesUniform.data[centerIdx], 255);
+  assert.equal(edgesUniform.data[centerIdx + 1], 255);
+  assert.equal(edgesUniform.data[centerIdx + 2], 255);
+  assert.equal(edgesUniform.data[centerIdx + 3], 210); // alpha preserved
+
+  // Step edge: left column black (0), right column white (255)
+  const step = pixels(3, 3, 128);
+  for (let y = 0; y < 3; y += 1) {
+    step.data[(y * 3 + 0) * 4] = 0;
+    step.data[(y * 3 + 0) * 4 + 1] = 0;
+    step.data[(y * 3 + 0) * 4 + 2] = 0;
+    step.data[(y * 3 + 2) * 4] = 255;
+    step.data[(y * 3 + 2) * 4 + 1] = 255;
+    step.data[(y * 3 + 2) * 4 + 2] = 255;
+  }
+  const edgesStep = applyFindEdges(step);
+  // Center pixel has strong horizontal gradient -> dark outline (< 255)
+  assert.ok(edgesStep.data[centerIdx] < 100, `Expected dark edge, got ${edgesStep.data[centerIdx]}`);
+});
+
+test("solarize applies sabattier tonal inversion curve and preserves alpha", () => {
+  const source = pixels(3, 1, 0);
+  // Pixel 0: black (0)
+  source.data[0] = 0;
+  source.data[1] = 0;
+  source.data[2] = 0;
+  source.data[3] = 150;
+  // Pixel 1: midtone (128)
+  source.data[4] = 128;
+  source.data[5] = 128;
+  source.data[6] = 128;
+  source.data[7] = 200;
+  // Pixel 2: highlight (255)
+  source.data[8] = 255;
+  source.data[9] = 255;
+  source.data[10] = 255;
+  source.data[11] = 250;
+
+  const solarized = applySolarize(source, 128);
+  assert.notStrictEqual(solarized.data, source.data);
+  // Black stays black (0)
+  assert.equal(solarized.data[0], 0);
+  assert.equal(solarized.data[3], 150); // alpha preserved
+  // Midtone peaks to white (255)
+  assert.equal(solarized.data[4], 255);
+  assert.equal(solarized.data[7], 200); // alpha preserved
+  // Highlight inverts to shadow (0)
+  assert.equal(solarized.data[8], 0);
+  assert.equal(solarized.data[11], 250); // alpha preserved
 });
 
 

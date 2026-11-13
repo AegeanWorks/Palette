@@ -1745,6 +1745,85 @@ async function main() {
       throw new Error(`Undo did not restore pixel after photo tint filter: ${JSON.stringify(restoredTintPixel)}`);
     }
 
+    // Test find edges filter
+    await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const ctx = layer.canvas.getContext('2d');
+      ctx.fillStyle = '#646464';
+      ctx.fillRect(140, 140, 40, 40);
+    })()`);
+    await connection.evaluate("document.getElementById('btn-filter-find-edges').click()");
+    const edgePixel = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const pixel = layer.canvas.getContext('2d').getImageData(160, 160, 1, 1).data;
+      return [pixel[0], pixel[1], pixel[2], pixel[3]];
+    })()`);
+    if (edgePixel[0] !== 255 || edgePixel[1] !== 255 || edgePixel[2] !== 255) {
+      throw new Error(`Find edges filter failed in flat region: ${JSON.stringify(edgePixel)}`);
+    }
+    await connection.evaluate("globalThis.palette.undo()");
+    await wait(220);
+
+    // Test solarize filter
+    await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const ctx = layer.canvas.getContext('2d');
+      ctx.fillStyle = 'rgb(128, 128, 128)';
+      ctx.fillRect(160, 160, 10, 10);
+    })()`);
+    await connection.evaluate("document.getElementById('btn-filter-solarize').click()");
+    const solarPixel = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const pixel = layer.canvas.getContext('2d').getImageData(160, 160, 1, 1).data;
+      return [pixel[0], pixel[1], pixel[2], pixel[3]];
+    })()`);
+    if (solarPixel[0] !== 255 || solarPixel[1] !== 255 || solarPixel[2] !== 255) {
+      throw new Error(`Solarize filter failed: ${JSON.stringify(solarPixel)}`);
+    }
+    await connection.evaluate("globalThis.palette.undo()");
+    await wait(220);
+
+    // Test flip active layer horizontal
+    await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const ctx = layer.canvas.getContext('2d');
+      ctx.fillStyle = '#ff0000';
+      ctx.fillRect(10, 10, 6, 6);
+    })()`);
+    const leftPixelBefore = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      return layer.canvas.getContext('2d').getImageData(12, 12, 1, 1).data[0];
+    })()`);
+    if (leftPixelBefore !== 255) {
+      throw new Error(`Marker setup failed: leftPixelBefore=${leftPixelBefore}`);
+    }
+    await connection.evaluate("document.getElementById('btn-layer-flip-h').click()");
+    const flippedWidth = await connection.evaluate("globalThis.palette.doc.width");
+    const rightPixelAfter = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      return layer.canvas.getContext('2d').getImageData(${flippedWidth} - 13, 12, 1, 1).data[0];
+    })()`);
+    if (rightPixelAfter !== 255) {
+      throw new Error(`Flip layer horizontal failed: rightPixelAfter=${rightPixelAfter}`);
+    }
+    await connection.evaluate("globalThis.palette.undo()");
+    await wait(220);
+    const leftPixelRestored = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      return layer.canvas.getContext('2d').getImageData(12, 12, 1, 1).data[0];
+    })()`);
+    if (leftPixelRestored !== 255) {
+      throw new Error(`Undo did not restore left pixel after flip: ${leftPixelRestored}`);
+    }
+
     // Test zoom shortcuts
     const zoomInitial = await connection.evaluate("globalThis.palette.view.scale");
     await connection.evaluate("globalThis.palette.zoomIn()");
@@ -1932,7 +2011,7 @@ async function main() {
     }
 
     console.log(
-      "[OK] Palette dogfood: layers, blend modes, clipping masks, clone stamp, dodge/burn, paint bucket, invert filter, desaturate/threshold/posterize/sepia/emboss/brightness-contrast/color-balance/noise/high-pass/tint filters, swatches, stamp visible, expand/contract selection, keyboard zoom, merge-down blend retention, image placement, gradients, layer locking, marquee selection/invert, clipboard, layer via copy/cut, autosave reload/restore, crop ratios, flatten, canvas size, layer transform, histogram/auto levels, levels, brush, eraser, move, undo, crop, adjustments, shapes, text, filters, resize, zoom, scaled export, project save and dialogs.",
+      "[OK] Palette dogfood: layers, blend modes, clipping masks, clone stamp, dodge/burn, paint bucket, invert filter, desaturate/threshold/posterize/sepia/emboss/brightness-contrast/color-balance/noise/high-pass/tint/find-edges/solarize filters, swatches, stamp visible, layer flip h/v, expand/contract selection, keyboard zoom, merge-down blend retention, image placement, gradients, layer locking, marquee selection/invert, clipboard, layer via copy/cut, autosave reload/restore, crop ratios, flatten, canvas size, layer transform, histogram/auto levels, levels, brush, eraser, move, undo, crop, adjustments, shapes, text, filters, resize, zoom, scaled export, project save and dialogs.",
     );
     return 0;
   } catch (error) {

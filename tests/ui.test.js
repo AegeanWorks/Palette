@@ -125,6 +125,10 @@ test("the shell carries every critical editor surface", () => {
     "filter-tint-density-value",
     "filter-tint-preserve",
     "btn-filter-tint",
+    "btn-filter-find-edges",
+    "btn-filter-solarize",
+    "btn-layer-flip-h",
+    "btn-layer-flip-v",
     "btn-expand-selection",
     "btn-contract-selection",
     "btn-stamp-visible",
@@ -286,6 +290,8 @@ test("the filter panel exposes desaturate, threshold, posterize and swatches", (
   assert.match(html, /id="filter-tint-density" type="range"/);
   assert.match(html, /id="filter-tint-preserve" type="checkbox" checked/);
   assert.match(html, /data-ui="filter-tint"/);
+  assert.match(html, /data-ui="filter-find-edges"/);
+  assert.match(html, /data-ui="filter-solarize"/);
   assert.match(html, /id="swatches-row"/);
   assert.match(html, /data-swatch="#000000"/);
   assert.match(html, /data-swatch="#22d3ee"/);
@@ -299,6 +305,10 @@ test("the crop panel exposes ratio presets and the document row exposes Flatten 
   assert.match(html, /data-ui="flatten"/);
   assert.match(html, /id="btn-stamp-visible"/);
   assert.match(html, /data-ui="stamp-visible"/);
+  assert.match(html, /id="btn-layer-flip-h"/);
+  assert.match(html, /data-ui="layer-flip-h"/);
+  assert.match(html, /id="btn-layer-flip-v"/);
+  assert.match(html, /data-ui="layer-flip-v"/);
 });
 
 test("the adjustments panel exposes a histogram and Auto levels", () => {
@@ -392,6 +402,9 @@ test("editor keyboard shortcuts and paste routing cover retouching and placement
   assert.match(editorSource, /applyNoiseFilter\(\)/);
   assert.match(editorSource, /applyHighPassFilter\(\)/);
   assert.match(editorSource, /applyTintFilter\(\)/);
+  assert.match(editorSource, /applyFindEdgesFilter\(\)/);
+  assert.match(editorSource, /applySolarizeFilter\(\)/);
+  assert.match(editorSource, /flipActiveLayer\(/);
   assert.match(editorSource, /modifySelection\(/);
   assert.match(editorSource, /stampVisible\(\)/);
   assert.match(editorSource, /key === "g" && event\.altKey[\s\S]*?toggleClippingMask/);

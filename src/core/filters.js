@@ -476,3 +476,55 @@ export function applyTint(
   return { width, height, data: out };
 }
 
+export function applyFindEdges(pixels) {
+  const { width, height, data } = pixels;
+  const out = new Uint8ClampedArray(data.length);
+
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      const idx = (y * width + x) * 4;
+      if (x === 0 || x === width - 1 || y === 0 || y === height - 1) {
+        out[idx] = 255;
+        out[idx + 1] = 255;
+        out[idx + 2] = 255;
+        out[idx + 3] = data[idx + 3];
+        continue;
+      }
+
+      for (let c = 0; c < 3; c += 1) {
+        const p00 = data[((y - 1) * width + (x - 1)) * 4 + c];
+        const p01 = data[((y - 1) * width + x) * 4 + c];
+        const p02 = data[((y - 1) * width + (x + 1)) * 4 + c];
+        const p10 = data[(y * width + (x - 1)) * 4 + c];
+        const p12 = data[(y * width + (x + 1)) * 4 + c];
+        const p20 = data[((y + 1) * width + (x - 1)) * 4 + c];
+        const p21 = data[((y + 1) * width + x) * 4 + c];
+        const p22 = data[((y + 1) * width + (x + 1)) * 4 + c];
+
+        const gx = -p00 + p02 - 2 * p10 + 2 * p12 - p20 + p22;
+        const gy = -p00 - 2 * p01 - p02 + p20 + 2 * p21 + p22;
+        const mag = Math.hypot(gx, gy);
+        out[idx + c] = clamp(255 - Math.round(mag), 0, 255);
+      }
+      out[idx + 3] = data[idx + 3];
+    }
+  }
+  return { width, height, data: out };
+}
+
+export function applySolarize(pixels, threshold = 128) {
+  const t = clamp(Math.round(Number(threshold) || 128), 1, 254);
+  const { width, height, data } = pixels;
+  const out = new Uint8ClampedArray(data.length);
+
+  for (let index = 0; index < data.length; index += 4) {
+    for (let c = 0; c < 3; c += 1) {
+      const v = data[index + c];
+      const sol = v > t ? Math.round((255 - v) * (255 / (255 - t))) : Math.round(v * (255 / t));
+      out[index + c] = clamp(sol, 0, 255);
+    }
+    out[index + 3] = data[index + 3];
+  }
+  return { width, height, data: out };
+}
+

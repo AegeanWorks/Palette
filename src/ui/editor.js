@@ -33,6 +33,8 @@ import {
   applyNoise,
   applyHighPass,
   applyTint,
+  applyFindEdges,
+  applySolarize,
   applyDesaturate,
   applyEmboss,
   applyInvert,
@@ -171,7 +173,7 @@ const IDS = [
   "crop-cancel", "btn-layer-add", "btn-layer-image", "btn-layer-duplicate", "btn-layer-merge",
   "btn-layer-lock", "btn-layer-clip", "btn-layer-up", "btn-layer-down", "btn-layer-delete", "layer-opacity",
   "layer-opacity-value", "layer-blend", "layer-list",
-  "btn-resize", "btn-canvas-size", "btn-transform", "btn-flip-h", "btn-flip-v", "btn-rotate",
+  "btn-resize", "btn-canvas-size", "btn-transform", "btn-layer-flip-h", "btn-layer-flip-v", "btn-flip-h", "btn-flip-v", "btn-rotate",
   "btn-flatten", "btn-stamp-visible",
   "adjust-reset", "histogram", "histogram-range", "btn-auto-levels", "adj-brightness",
   "adj-brightness-value", "adj-contrast", "adj-contrast-value",
@@ -190,6 +192,7 @@ const IDS = [
   "filter-high-pass-radius", "filter-high-pass-value", "btn-filter-high-pass",
   "filter-tint-color", "filter-tint-density", "filter-tint-density-value",
   "filter-tint-preserve", "btn-filter-tint",
+  "btn-filter-find-edges", "btn-filter-solarize",
   "status-tool", "status-message",
   "status-cursor", "status-zoom",
   "btn-actual", "new-dialog", "new-form", "new-name", "new-width", "new-height", "new-color",
@@ -2318,6 +2321,32 @@ export class PaletteEditor {
     );
   }
 
+  applyFindEdgesFilter() {
+    this.applyPixelsToActive("Find edges", (pixels) => applyFindEdges(pixels));
+  }
+
+  applySolarizeFilter() {
+    this.applyPixelsToActive("Solarize", (pixels) => applySolarize(pixels));
+  }
+
+  flipActiveLayer(axis) {
+    if (!this.doc) return;
+    this.finishText();
+    const layer = activeLayer(this.doc);
+    if (!layer) return;
+    if (layer.locked) {
+      this.announce(`${layer.name} is locked. Unlock it first.`, { error: true });
+      return;
+    }
+    const before = this.doc;
+    this.doc = updateLayer(this.doc, layer.id, {
+      canvas: flipCanvas(layer.canvas, axis),
+    });
+    const label = axis === "horizontal" ? "Flip layer horizontal" : "Flip layer vertical";
+    this.commit(before, label);
+    this.announce(`${label} applied.`);
+  }
+
   openNewDialog() {
     if (this.isDialogOpen()) return;
     this.finishText();
@@ -3149,6 +3178,8 @@ export class PaletteEditor {
     this.el.btnResize.addEventListener("click", () => this.openResizeDialog());
     this.el.btnCanvasSize.addEventListener("click", () => this.openCanvasDialog());
     this.el.btnTransform.addEventListener("click", () => this.openTransformDialog());
+    this.el.btnLayerFlipH.addEventListener("click", () => this.flipActiveLayer("horizontal"));
+    this.el.btnLayerFlipV.addEventListener("click", () => this.flipActiveLayer("vertical"));
     this.el.btnFlipH.addEventListener("click", () => this.flipDocument("horizontal"));
     this.el.btnFlipV.addEventListener("click", () => this.flipDocument("vertical"));
     this.el.btnRotate.addEventListener("click", () => this.rotateDocument());
@@ -3211,6 +3242,8 @@ export class PaletteEditor {
       this.el.filterTintDensityValue.textContent = this.el.filterTintDensity.value;
     });
     this.el.btnFilterTint.addEventListener("click", () => this.applyTintFilter());
+    this.el.btnFilterFindEdges.addEventListener("click", () => this.applyFindEdgesFilter());
+    this.el.btnFilterSolarize.addEventListener("click", () => this.applySolarizeFilter());
 
     this.el.colorInput.addEventListener("input", () => this.setColor(this.el.colorInput.value));
     this.el.brushSize.addEventListener("input", () => {

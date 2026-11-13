@@ -61,6 +61,14 @@ contract, a dependency, a data format or the architecture; IDs are consecutive a
 - **Decision**: Add pure functions `applyHighPass(pixels, radius)` (using separable $O(W \times H)$ box blur with boundary clamping and 128 neutral gray bias) and `applyTint(pixels, { color, density, preserveLuminosity })` (with ITU-R BT.709 perceptual luminance matching) to `src/core/filters.js`; expose slider `#filter-high-pass-radius`, button `#btn-filter-high-pass` (`data-ui="filter-high-pass"`), color input `#filter-tint-color`, slider `#filter-tint-density`, checkbox `#filter-tint-preserve`, and button `#btn-filter-tint` (`data-ui="filter-tint"`) in `index.html`; wire undoable commands and event listeners in `src/ui/editor.js`; bump Palette to 0.20.0; verify via 111 unit tests and headless browser dogfood.
 - **Consequences**: Photographers and digital artists can perform frequency-separation edge sharpening and optical gelatin color tints directly on layers or bounded selections with full undo/redo support and preserved alpha transparency.
 
+### ADR-008: Add Find Edges and Solarize Filters, and Flip Layer Commands
+- **Date**: 2026-11-14
+- **Status**: Accepted
+- **Context**: Palette lacked contour sketch extraction, darkroom Sabattier solarization, and 1-click active layer horizontal/vertical flipping.
+- **Decision**: Add pure functions `applyFindEdges` (Sobel 3x3 inverted magnitude) and `applySolarize` (Sabattier triangular curve) to `src/core/filters.js`; add `flipActiveLayer(axis)` with buttons `#btn-layer-flip-h` and `#btn-layer-flip-v` to `src/ui/editor.js` and `index.html`; bump Palette to 0.21.0; verify via 113 unit tests and headless browser dogfood.
+- **Consequences**: Artists can extract line contours, create solarized darkroom imagery, and flip individual active layers directly with full undo/redo and selection clipping.
+
+
 
 
 
