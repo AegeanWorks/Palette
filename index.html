@@ -443,6 +443,18 @@
           <label class="field" for="filter-contrast">Contrast <output id="filter-contrast-value" for="filter-contrast">0</output></label>
           <input id="filter-contrast" type="range" min="-100" max="100" step="1" value="0">
           <button class="btn btn-ghost btn-small" id="btn-filter-bc" type="button" data-ui="filter-bc">Apply brightness / contrast</button>
+          <label class="field" for="filter-cb-cr">Cyan / Red <output id="filter-cb-cr-value" for="filter-cb-cr">0</output></label>
+          <input id="filter-cb-cr" type="range" min="-100" max="100" step="1" value="0">
+          <label class="field" for="filter-cb-mg">Magenta / Green <output id="filter-cb-mg-value" for="filter-cb-mg">0</output></label>
+          <input id="filter-cb-mg" type="range" min="-100" max="100" step="1" value="0">
+          <label class="field" for="filter-cb-yb">Yellow / Blue <output id="filter-cb-yb-value" for="filter-cb-yb">0</output></label>
+          <input id="filter-cb-yb" type="range" min="-100" max="100" step="1" value="0">
+          <label class="field" for="filter-cb-preserve"><input id="filter-cb-preserve" type="checkbox" checked> Preserve luminosity</label>
+          <button class="btn btn-ghost btn-small" id="btn-filter-color-balance" type="button" data-ui="filter-color-balance">Apply color balance</button>
+          <label class="field" for="filter-noise-amount">Noise <output id="filter-noise-amount-value" for="filter-noise-amount">15</output>%</label>
+          <input id="filter-noise-amount" type="range" min="1" max="100" step="1" value="15">
+          <label class="field" for="filter-noise-monochrome"><input id="filter-noise-monochrome" type="checkbox" checked> Monochrome</label>
+          <button class="btn btn-ghost btn-small" id="btn-filter-noise" type="button" data-ui="filter-noise">Apply noise</button>
         </div>
       </section>
     </aside>

@@ -105,6 +105,18 @@ test("the shell carries every critical editor surface", () => {
     "filter-contrast",
     "filter-contrast-value",
     "btn-filter-bc",
+    "filter-cb-cr",
+    "filter-cb-cr-value",
+    "filter-cb-mg",
+    "filter-cb-mg-value",
+    "filter-cb-yb",
+    "filter-cb-yb-value",
+    "filter-cb-preserve",
+    "btn-filter-color-balance",
+    "filter-noise-amount",
+    "filter-noise-amount-value",
+    "filter-noise-monochrome",
+    "btn-filter-noise",
     "btn-expand-selection",
     "btn-contract-selection",
     "btn-stamp-visible",
@@ -254,6 +266,12 @@ test("the filter panel exposes desaturate, threshold, posterize and swatches", (
   assert.match(html, /id="filter-brightness" type="range"/);
   assert.match(html, /id="filter-contrast" type="range"/);
   assert.match(html, /data-ui="filter-bc"/);
+  assert.match(html, /id="filter-cb-cr" type="range"/);
+  assert.match(html, /id="filter-cb-preserve" type="checkbox" checked/);
+  assert.match(html, /data-ui="filter-color-balance"/);
+  assert.match(html, /id="filter-noise-amount" type="range"/);
+  assert.match(html, /id="filter-noise-monochrome" type="checkbox" checked/);
+  assert.match(html, /data-ui="filter-noise"/);
   assert.match(html, /id="swatches-row"/);
   assert.match(html, /data-swatch="#000000"/);
   assert.match(html, /data-swatch="#22d3ee"/);
@@ -356,6 +374,8 @@ test("editor keyboard shortcuts and paste routing cover retouching and placement
   assert.match(editorSource, /applySepiaFilter\(\)/);
   assert.match(editorSource, /applyEmbossFilter\(\)/);
   assert.match(editorSource, /applyBrightnessContrastFilter\(\)/);
+  assert.match(editorSource, /applyColorBalanceFilter\(\)/);
+  assert.match(editorSource, /applyNoiseFilter\(\)/);
   assert.match(editorSource, /modifySelection\(/);
   assert.match(editorSource, /stampVisible\(\)/);
   assert.match(editorSource, /key === "g" && event\.altKey[\s\S]*?toggleClippingMask/);

@@ -11,6 +11,8 @@ import {
   applySepia,
   applyEmboss,
   applyBrightnessContrast,
+  applyColorBalance,
+  applyNoise,
   applyPixelate,
   applySharpen,
   applyVignette,
@@ -325,6 +327,82 @@ test("brightness and contrast modifies tone and preserves alpha", () => {
   assert.ok(contrasted.data[4] > 180);
   assert.equal(contrasted.data[3], 190);
   assert.equal(contrasted.data[7], 240);
+});
+
+test("color balance adjusts color channels, preserves luminosity and alpha", () => {
+  const source = pixels(2, 1, 120);
+  source.data[3] = 200;
+  source.data[7] = 220;
+
+  // Neutral settings return clone
+  const neutral = applyColorBalance(source, { cyanRed: 0, magentaGreen: 0, yellowBlue: 0 });
+  assert.notStrictEqual(neutral.data, source.data);
+  assert.equal(neutral.data[0], 120);
+  assert.equal(neutral.data[3], 200);
+
+  // Add Red (+40) with preserveLuminosity
+  const warmer = applyColorBalance(source, { cyanRed: 40, magentaGreen: 0, yellowBlue: 0, preserveLuminosity: true });
+  // R should be higher than original
+  assert.ok(warmer.data[0] > 120);
+  // G and B should be lowered to preserve total luminance
+  assert.ok(warmer.data[1] < 120);
+  assert.ok(warmer.data[2] < 120);
+  assert.equal(warmer.data[3], 200); // alpha preserved
+
+  // Check perceptual luminance is approximately equal
+  const origLuma = 0.2126 * 120 + 0.7152 * 120 + 0.0722 * 120; // 120
+  const warmLuma = 0.2126 * warmer.data[0] + 0.7152 * warmer.data[1] + 0.0722 * warmer.data[2];
+  assert.ok(Math.abs(origLuma - warmLuma) <= 2, `Luminance shifted too much: ${origLuma} vs ${warmLuma}`);
+
+  // Without preserveLuminosity (raw offset)
+  const rawShift = applyColorBalance(source, { cyanRed: 20, magentaGreen: -20, yellowBlue: 10, preserveLuminosity: false });
+  // R offset = 20 * 2.55 = 51 -> 120 + 51 = 171
+  assert.equal(rawShift.data[0], 171);
+  // G offset = -20 * 2.55 = -51 -> 120 - 51 = 69
+  assert.equal(rawShift.data[1], 69);
+  // B offset = 10 * 2.55 = 25.5 -> 120 + 26 = 146
+  assert.equal(rawShift.data[2], 146);
+  assert.equal(rawShift.data[3], 200);
+});
+
+test("noise adds monochrome and colored variation with deterministic seed and preserves alpha", () => {
+  const source = pixels(4, 1, 128);
+  source.data[3] = 195;
+  source.data[7] = 215;
+  source.data[11] = 235;
+  source.data[15] = 255;
+
+  // Monochrome noise with seed 42
+  const mono1 = applyNoise(source, { amount: 20, monochrome: true, seed: 42 });
+  const mono2 = applyNoise(source, { amount: 20, monochrome: true, seed: 42 });
+
+  // Determinism check
+  assert.deepEqual(Array.from(mono1.data), Array.from(mono2.data));
+
+  // Alpha preserved on all pixels
+  assert.equal(mono1.data[3], 195);
+  assert.equal(mono1.data[7], 215);
+  assert.equal(mono1.data[11], 235);
+  assert.equal(mono1.data[15], 255);
+
+  // In monochrome mode, R === G === B for every pixel
+  for (let p = 0; p < 4; p += 1) {
+    const idx = p * 4;
+    assert.equal(mono1.data[idx], mono1.data[idx + 1]);
+    assert.equal(mono1.data[idx + 1], mono1.data[idx + 2]);
+    // Values modified from 128
+    assert.notEqual(mono1.data[idx], 128);
+  }
+
+  // Colored (non-monochrome) noise with seed 42
+  const colorNoise = applyNoise(source, { amount: 30, monochrome: false, seed: 42 });
+  assert.equal(colorNoise.data[3], 195);
+  // Channels should vary independently
+  const hasIndependentChannels =
+    colorNoise.data[0] !== colorNoise.data[1] ||
+    colorNoise.data[1] !== colorNoise.data[2] ||
+    colorNoise.data[4] !== colorNoise.data[5];
+  assert.ok(hasIndependentChannels, "Color noise channels should vary independently");
 });
 
 

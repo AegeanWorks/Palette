@@ -29,6 +29,8 @@ import {
 import {
   DEFAULT_ADJUSTMENTS,
   applyBrightnessContrast,
+  applyColorBalance,
+  applyNoise,
   applyDesaturate,
   applyEmboss,
   applyInvert,
@@ -179,7 +181,11 @@ const IDS = [
   "filter-threshold-value", "btn-filter-threshold", "filter-posterize-steps", "filter-posterize-value",
   "btn-filter-posterize", "btn-filter-sepia", "btn-filter-emboss", "swatches-row", "level-black", "level-black-value", "level-white", "level-white-value",
   "level-gamma", "level-gamma-value", "btn-filter-levels", "filter-brightness", "filter-brightness-value",
-  "filter-contrast", "filter-contrast-value", "btn-filter-bc", "status-tool", "status-message",
+  "filter-contrast", "filter-contrast-value", "btn-filter-bc",
+  "filter-cb-cr", "filter-cb-cr-value", "filter-cb-mg", "filter-cb-mg-value", "filter-cb-yb", "filter-cb-yb-value",
+  "filter-cb-preserve", "btn-filter-color-balance", "filter-noise-amount", "filter-noise-amount-value",
+  "filter-noise-monochrome", "btn-filter-noise",
+  "status-tool", "status-message",
   "status-cursor", "status-zoom",
   "btn-actual", "new-dialog", "new-form", "new-name", "new-width", "new-height", "new-color",
   "new-cancel", "new-create", "export-dialog", "export-form", "export-name", "export-format",
@@ -2273,6 +2279,24 @@ export class PaletteEditor {
     );
   }
 
+  applyColorBalanceFilter() {
+    const cyanRed = Number(this.el.filterCbCr.value) || 0;
+    const magentaGreen = Number(this.el.filterCbMg.value) || 0;
+    const yellowBlue = Number(this.el.filterCbYb.value) || 0;
+    const preserveLuminosity = Boolean(this.el.filterCbPreserve.checked);
+    this.applyPixelsToActive("Color balance", (pixels) =>
+      applyColorBalance(pixels, { cyanRed, magentaGreen, yellowBlue, preserveLuminosity }),
+    );
+  }
+
+  applyNoiseFilter() {
+    const amount = Number(this.el.filterNoiseAmount.value) || 15;
+    const monochrome = Boolean(this.el.filterNoiseMonochrome.checked);
+    this.applyPixelsToActive("Add noise", (pixels) =>
+      applyNoise(pixels, { amount, monochrome }),
+    );
+  }
+
   openNewDialog() {
     if (this.isDialogOpen()) return;
     this.finishText();
@@ -3144,6 +3168,20 @@ export class PaletteEditor {
       this.el.filterContrastValue.textContent = this.el.filterContrast.value;
     });
     this.el.btnFilterBc.addEventListener("click", () => this.applyBrightnessContrastFilter());
+    this.el.filterCbCr.addEventListener("input", () => {
+      this.el.filterCbCrValue.textContent = this.el.filterCbCr.value;
+    });
+    this.el.filterCbMg.addEventListener("input", () => {
+      this.el.filterCbMgValue.textContent = this.el.filterCbMg.value;
+    });
+    this.el.filterCbYb.addEventListener("input", () => {
+      this.el.filterCbYbValue.textContent = this.el.filterCbYb.value;
+    });
+    this.el.btnFilterColorBalance.addEventListener("click", () => this.applyColorBalanceFilter());
+    this.el.filterNoiseAmount.addEventListener("input", () => {
+      this.el.filterNoiseAmountValue.textContent = this.el.filterNoiseAmount.value;
+    });
+    this.el.btnFilterNoise.addEventListener("click", () => this.applyNoiseFilter());
 
     this.el.colorInput.addEventListener("input", () => this.setColor(this.el.colorInput.value));
     this.el.brushSize.addEventListener("input", () => {

@@ -282,3 +282,90 @@ export function applyBrightnessContrast(pixels, { brightness = 0, contrast = 0 }
   return { width, height, data: out };
 }
 
+export function applyColorBalance(
+  pixels,
+  { cyanRed = 0, magentaGreen = 0, yellowBlue = 0, preserveLuminosity = true } = {},
+) {
+  const cr = clamp(Math.round(Number(cyanRed) || 0), -100, 100);
+  const mg = clamp(Math.round(Number(magentaGreen) || 0), -100, 100);
+  const yb = clamp(Math.round(Number(yellowBlue) || 0), -100, 100);
+  const preserve = Boolean(preserveLuminosity);
+  if (cr === 0 && mg === 0 && yb === 0) return clonePixels(pixels);
+
+  const { width, height, data } = pixels;
+  const out = new Uint8ClampedArray(data.length);
+  const rOffset = cr * 2.55;
+  const gOffset = mg * 2.55;
+  const bOffset = yb * 2.55;
+
+  for (let index = 0; index < data.length; index += 4) {
+    const r = data[index];
+    const g = data[index + 1];
+    const b = data[index + 2];
+    const a = data[index + 3];
+
+    const adjR = clamp(Math.round(r + rOffset), 0, 255);
+    const adjG = clamp(Math.round(g + gOffset), 0, 255);
+    const adjB = clamp(Math.round(b + bOffset), 0, 255);
+
+    if (preserve) {
+      const origLuma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      const newLuma = 0.2126 * adjR + 0.7152 * adjG + 0.0722 * adjB;
+      if (newLuma > 0 && origLuma > 0) {
+        const ratio = origLuma / newLuma;
+        out[index] = clamp(Math.round(adjR * ratio), 0, 255);
+        out[index + 1] = clamp(Math.round(adjG * ratio), 0, 255);
+        out[index + 2] = clamp(Math.round(adjB * ratio), 0, 255);
+      } else {
+        out[index] = adjR;
+        out[index + 1] = adjG;
+        out[index + 2] = adjB;
+      }
+    } else {
+      out[index] = adjR;
+      out[index + 1] = adjG;
+      out[index + 2] = adjB;
+    }
+    out[index + 3] = a;
+  }
+  return { width, height, data: out };
+}
+
+export function applyNoise(
+  pixels,
+  { amount = 15, monochrome = true, seed = null } = {},
+) {
+  const amt = clamp(Math.round(Number(amount) || 15), 1, 100);
+  const isMono = Boolean(monochrome);
+  const { width, height, data } = pixels;
+  const out = new Uint8ClampedArray(data.length);
+  const maxDelta = amt * 2.55;
+
+  let rand = Math.random;
+  if (seed !== null && seed !== undefined) {
+    let state = (Number(seed) >>> 0) || 1;
+    rand = () => {
+      state = (Math.imul(1664525, state) + 1013904223) >>> 0;
+      return state / 4294967296;
+    };
+  }
+
+  for (let index = 0; index < data.length; index += 4) {
+    if (isMono) {
+      const delta = Math.round((rand() * 2 - 1) * maxDelta);
+      out[index] = clamp(data[index] + delta, 0, 255);
+      out[index + 1] = clamp(data[index + 1] + delta, 0, 255);
+      out[index + 2] = clamp(data[index + 2] + delta, 0, 255);
+    } else {
+      const deltaR = Math.round((rand() * 2 - 1) * maxDelta);
+      const deltaG = Math.round((rand() * 2 - 1) * maxDelta);
+      const deltaB = Math.round((rand() * 2 - 1) * maxDelta);
+      out[index] = clamp(data[index] + deltaR, 0, 255);
+      out[index + 1] = clamp(data[index + 1] + deltaG, 0, 255);
+      out[index + 2] = clamp(data[index + 2] + deltaB, 0, 255);
+    }
+    out[index + 3] = data[index + 3];
+  }
+  return { width, height, data: out };
+}
+

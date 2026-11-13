@@ -47,5 +47,13 @@ contract, a dependency, a data format or the architecture; IDs are consecutive a
 - **Decision**: Add pure function `expandSelection(selection, delta, width, height)` to `src/core/geometry.js` preserving selection kind/invert flags with boundary clamping and empty guard; add pure function `applyBrightnessContrast(pixels, { brightness, contrast })` to `src/core/filters.js` using photographic contrast curve `(259 * (contrast + 255)) / (255 * (259 - contrast))` and linear brightness shift; expose buttons `#btn-expand-selection` (`data-ui="expand-selection"`) and `#btn-contract-selection` (`data-ui="contract-selection"`), sliders `#filter-brightness` and `#filter-contrast`, and button `#btn-filter-bc` (`data-ui="filter-bc"`) in `index.html`; wire undoable commands and dynamic disabled toggling in `src/ui/editor.js`; bump Palette to 0.18.0; verify via 107 unit tests and headless browser dogfood.
 - **Consequences**: Users can incrementally grow or shrink active selections by 5px increments with document clamping and apply tone curve adjustments to layers or bounded selections with full undo/redo support.
 
+### ADR-006: Add Destructive Color Balance and Add Noise Filters
+- **Date**: 2026-11-13
+- **Status**: Accepted
+- **Context**: Palette lacked professional color grading for balancing RGB channels (Cyan/Red, Magenta/Green, Yellow/Blue) with perceptual luminance preservation, as well as an Add Noise / grain filter for eliminating 8-bit gradient banding and adding photographic texture.
+- **Decision**: Add pure functions `applyColorBalance(pixels, { cyanRed, magentaGreen, yellowBlue, preserveLuminosity })` (with ITU-R BT.709 luminance preservation) and `applyNoise(pixels, { amount, monochrome, seed })` (with PRNG seed support for deterministic tests) to `src/core/filters.js`; expose sliders `#filter-cb-cr`, `#filter-cb-mg`, `#filter-cb-yb`, checkbox `#filter-cb-preserve`, button `#btn-filter-color-balance`, slider `#filter-noise-amount`, checkbox `#filter-noise-monochrome`, and button `#btn-filter-noise` in `index.html`; wire undoable commands and event bindings in `src/ui/editor.js`; bump Palette to 0.19.0; verify via 109 unit tests and headless browser dogfood.
+- **Consequences**: Users can perform color grading, white-balance correction, and film-grain texturing on active layers or active selections with full undo/redo support and preserved alpha transparency.
+
+
 
 

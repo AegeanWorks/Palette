@@ -1603,6 +1603,80 @@ async function main() {
       throw new Error(`Undo did not restore pixel after brightness/contrast filter: ${JSON.stringify(restoredBcPixel)}`);
     }
 
+    // Test color balance filter
+    await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const ctx = layer.canvas.getContext('2d');
+      ctx.fillStyle = '#646464';
+      ctx.fillRect(150, 150, 10, 10);
+      const cr = document.getElementById('filter-cb-cr');
+      const mg = document.getElementById('filter-cb-mg');
+      const yb = document.getElementById('filter-cb-yb');
+      cr.value = '30';
+      cr.dispatchEvent(new Event('input'));
+      mg.value = '0';
+      mg.dispatchEvent(new Event('input'));
+      yb.value = '-20';
+      yb.dispatchEvent(new Event('input'));
+      document.getElementById('filter-cb-preserve').checked = true;
+    })()`);
+    await connection.evaluate("document.getElementById('btn-filter-color-balance').click()");
+    const cbPixel = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const pixel = layer.canvas.getContext('2d').getImageData(150, 150, 1, 1).data;
+      return [pixel[0], pixel[1], pixel[2], pixel[3]];
+    })()`);
+    if (cbPixel[0] <= 100 || cbPixel[2] >= 100 || cbPixel[3] !== 255) {
+      throw new Error(`Color balance filter failed: ${JSON.stringify(cbPixel)}`);
+    }
+    await connection.evaluate("globalThis.palette.undo()");
+    await wait(220);
+    const restoredCbPixel = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const pixel = layer.canvas.getContext('2d').getImageData(150, 150, 1, 1).data;
+      return [pixel[0], pixel[1], pixel[2], pixel[3]];
+    })()`);
+    if (restoredCbPixel[0] !== 100 || restoredCbPixel[1] !== 100 || restoredCbPixel[2] !== 100) {
+      throw new Error(`Undo did not restore pixel after color balance filter: ${JSON.stringify(restoredCbPixel)}`);
+    }
+
+    // Test noise filter
+    await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const ctx = layer.canvas.getContext('2d');
+      ctx.fillStyle = '#646464';
+      ctx.fillRect(160, 160, 10, 10);
+      const noiseInput = document.getElementById('filter-noise-amount');
+      noiseInput.value = '30';
+      noiseInput.dispatchEvent(new Event('input'));
+      document.getElementById('filter-noise-monochrome').checked = true;
+    })()`);
+    await connection.evaluate("document.getElementById('btn-filter-noise').click()");
+    const noisePixel = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const pixel = layer.canvas.getContext('2d').getImageData(160, 160, 1, 1).data;
+      return [pixel[0], pixel[1], pixel[2], pixel[3]];
+    })()`);
+    if (noisePixel[0] !== noisePixel[1] || noisePixel[1] !== noisePixel[2] || noisePixel[3] !== 255) {
+      throw new Error(`Monochrome noise filter failed: ${JSON.stringify(noisePixel)}`);
+    }
+    await connection.evaluate("globalThis.palette.undo()");
+    await wait(220);
+    const restoredNoisePixel = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const pixel = layer.canvas.getContext('2d').getImageData(160, 160, 1, 1).data;
+      return [pixel[0], pixel[1], pixel[2], pixel[3]];
+    })()`);
+    if (restoredNoisePixel[0] !== 100 || restoredNoisePixel[1] !== 100 || restoredNoisePixel[2] !== 100) {
+      throw new Error(`Undo did not restore pixel after noise filter: ${JSON.stringify(restoredNoisePixel)}`);
+    }
+
     // Test zoom shortcuts
     const zoomInitial = await connection.evaluate("globalThis.palette.view.scale");
     await connection.evaluate("globalThis.palette.zoomIn()");
@@ -1790,7 +1864,7 @@ async function main() {
     }
 
     console.log(
-      "[OK] Palette dogfood: layers, blend modes, clipping masks, clone stamp, dodge/burn, paint bucket, invert filter, desaturate/threshold/posterize/sepia/emboss/brightness-contrast filters, swatches, stamp visible, expand/contract selection, keyboard zoom, merge-down blend retention, image placement, gradients, layer locking, marquee selection/invert, clipboard, layer via copy/cut, autosave reload/restore, crop ratios, flatten, canvas size, layer transform, histogram/auto levels, levels, brush, eraser, move, undo, crop, adjustments, shapes, text, filters, resize, zoom, scaled export, project save and dialogs.",
+      "[OK] Palette dogfood: layers, blend modes, clipping masks, clone stamp, dodge/burn, paint bucket, invert filter, desaturate/threshold/posterize/sepia/emboss/brightness-contrast/color-balance/noise filters, swatches, stamp visible, expand/contract selection, keyboard zoom, merge-down blend retention, image placement, gradients, layer locking, marquee selection/invert, clipboard, layer via copy/cut, autosave reload/restore, crop ratios, flatten, canvas size, layer transform, histogram/auto levels, levels, brush, eraser, move, undo, crop, adjustments, shapes, text, filters, resize, zoom, scaled export, project save and dialogs.",
     );
     return 0;
   } catch (error) {
@@ -1807,6 +1881,7 @@ async function main() {
     } else {
       child.kill("SIGTERM");
     }
+    server.closeAllConnections?.();
     await new Promise((resolveClose) => server.close(resolveClose));
     try {
       rmSync(profile, { recursive: true, force: true, maxRetries: 5 });
