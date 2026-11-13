@@ -1,29 +1,22 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "palette-oil-paint-and-layer-rotation",
-    "last_phase": "phase 4",
-    "active_phase": 5,
-    "status": "completed",
-    "updated_at": 1794605887.347306,
-    "owner": "antigravity:1",
-    "started_by": "antigravity:1",
+    "task_id": "palette-hardening-and-shortcuts",
+    "last_phase": "phase 2",
+    "active_phase": 2,
+    "status": "in_progress",
+    "updated_at": 1794606509.1195734,
+    "owner": "gemini",
+    "started_by": "gemini",
     "continuations": [],
-    "completed_at": 1794605930.5950007
+    "impact_assessment": {
+      "why": "Prevent accidental modifications to hidden layers, clear stale selection rects on full-layer flips, and support universal Photoshop muscle memory shortcuts",
+      "benefits": "Better UX parity with standard creative desktop apps and hardened layer transform safety",
+      "risks": "contract: none, backwards compatible; dependency: none, zero dependencies; concurrency: none, single-threaded browser; state: selection cleared on flip to avoid stale coordinates",
+      "mitigation": "Thorough unit tests in tests/ui.test.js and end-to-end headless Chrome dogfood"
+    }
   },
   "checkpoints": [
-    {
-      "task_id": "palette-stamp-and-stylize",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "Completed [1/5]-[5/5]: added Stamp Visible (Ctrl+Alt+Shift+E) in src/ui/editor.js; added Sepia and Emboss filters in src/core/filters.js and src/ui/editor.js; bumped to 0.17.0; verified via 105 unit tests and headless browser dogfood pass.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1794600579.4831247,
-      "timestamp_str": "2026-11-13 23:09:39",
-      "agent": "antigravity:1",
-      "checklists": "passed"
-    },
     {
       "task_id": "palette-stamp-and-stylize",
       "phase": "completed",
@@ -267,6 +260,27 @@
       "timestamp": 1794605930.5950024,
       "timestamp_str": "2026-11-14 00:38:50",
       "agent": "antigravity:1"
+    },
+    {
+      "task_id": "palette-hardening-and-shortcuts",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/2] Harden layer transformations and add standard Photoshop keyboard shortcuts",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1794606509.1195734,
+      "timestamp_str": "2026-11-14 00:48:29",
+      "agent": "gemini",
+      "impact_assessment": {
+        "why": "Prevent accidental modifications to hidden layers, clear stale selection rects on full-layer flips, and support universal Photoshop muscle memory shortcuts",
+        "benefits": "Better UX parity with standard creative desktop apps and hardened layer transform safety",
+        "risks": "contract: none, backwards compatible; dependency: none, zero dependencies; concurrency: none, single-threaded browser; state: selection cleared on flip to avoid stale coordinates",
+        "mitigation": "Thorough unit tests in tests/ui.test.js and end-to-end headless Chrome dogfood"
+      },
+      "plan_digest": "c0344036145684bcdd58fd204bc3b0e9de7ca21286e4ceca417b4ac8a886c932",
+      "handoff": {
+        "next": "begin ui task and implement layer transform guards and keyboard shortcuts in src/ui/editor.js"
+      }
     }
   ]
 }
