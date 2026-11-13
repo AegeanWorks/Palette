@@ -1,39 +1,16 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "palette-stylize-and-transforms",
+    "task_id": "palette-blur-and-dither",
     "last_phase": "phase 4",
-    "active_phase": 5,
-    "status": "completed",
-    "updated_at": 1794604656.5446541,
+    "active_phase": 4,
+    "status": "in_progress",
+    "updated_at": 1794605290.8121545,
     "owner": "antigravity:1",
     "started_by": "antigravity:1",
-    "continuations": [],
-    "completed_at": 1794604691.3166807
+    "continuations": []
   },
   "checkpoints": [
-    {
-      "task_id": "palette-fill-and-shortcuts",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "Completed [1/5]-[5/5]: added Paint bucket tool (K) with scanline/BFS flood fill, tolerance threshold, contiguous/non-contiguous replacement, and selection clipping in src/core/fill.js; added destructive Invert filter in src/core/filters.js and wired filter button; added keyboard zoom shortcuts (+/-); updated shortcut help dialog; bumped to 0.15.0 with 99 tests passing and verified via headless browser dogfood. Evidence: 99/99 npm tests pass, headless browser dogfood passes with bucket fill, invert filter, and keyboard zoom. checklists: passed (test, hygiene, guidelines, secrets).",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1794599268.3447196,
-      "timestamp_str": "2026-11-13 22:47:48",
-      "agent": "antigravity:1",
-      "checklists": "passed"
-    },
-    {
-      "task_id": "palette-fill-and-shortcuts",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'palette-fill-and-shortcuts' completed successfully.",
-      "status": "completed",
-      "timestamp": 1794599467.980873,
-      "timestamp_str": "2026-11-13 22:51:07",
-      "agent": "antigravity:1"
-    },
     {
       "task_id": "palette-filters-and-swatches",
       "phase": "phase 2",
@@ -268,6 +245,35 @@
       "status": "completed",
       "timestamp": 1794604691.316683,
       "timestamp_str": "2026-11-14 00:18:11",
+      "agent": "antigravity:1"
+    },
+    {
+      "task_id": "palette-blur-and-dither",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/5] Plan: M1 core applyBlur and applyDither pure functions with unit tests; M2 UI controls in index.html; M3 editor applyBlurFilter/applyDitherFilter integration and UI tests; M4 headless CDP dogfood pass; M5 docs, ADR-009, version bump and strict gate check",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1794604767.0148683,
+      "timestamp_str": "2026-11-14 00:19:27",
+      "agent": "antigravity:1",
+      "impact_assessment": {
+        "why": "Add destructive box blur and ordered Bayer dithering filters to allow raster smoothing and retro stippled textures",
+        "benefits": "Users can soften backgrounds or selections with adjustable radius, and generate stylized 1-bit or retro dithered illustrations",
+        "risks": "contract: none, additive pure functions and UI controls; dependency: none, pure vanilla JS and Canvas 2D; concurrency: none, synchronous pixel buffer operations; state: none, returns fresh pixel buffers without mutating state",
+        "mitigation": "Boundary clamping in box blur kernel, normalized Bayer matrix thresholds, alpha preservation, and test verification"
+      },
+      "plan_digest": "fdc8e4e115ec31f5b352c6a4a764d316cd2e0c1f8ade8d742c5d7b8223a22b0e"
+    },
+    {
+      "task_id": "palette-blur-and-dither",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "Phase 4 passed under PRINCIPLE-018 R1: 116/116 unit tests passed, dogfood browser CDP passed, ADR-009 recorded; checklists: passed",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1794605290.8121545,
+      "timestamp_str": "2026-11-14 00:28:10",
       "agent": "antigravity:1"
     }
   ]
