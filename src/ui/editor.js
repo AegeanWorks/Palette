@@ -35,6 +35,9 @@ import {
   applyTint,
   applyFindEdges,
   applySolarize,
+  applyBlur,
+  applyDither,
+  applyDuotone,
   applyDesaturate,
   applyEmboss,
   applyInvert,
@@ -192,7 +195,7 @@ const IDS = [
   "filter-high-pass-radius", "filter-high-pass-value", "btn-filter-high-pass",
   "filter-tint-color", "filter-tint-density", "filter-tint-density-value",
   "filter-tint-preserve", "btn-filter-tint",
-  "btn-filter-find-edges", "btn-filter-solarize",
+  "btn-filter-find-edges", "btn-filter-solarize", "filter-duotone-shadow", "filter-duotone-highlight", "btn-filter-duotone", "btn-filter-dither",
   "status-tool", "status-message",
   "status-cursor", "status-zoom",
   "btn-actual", "new-dialog", "new-form", "new-name", "new-width", "new-height", "new-color",
@@ -2218,19 +2221,8 @@ export class PaletteEditor {
   }
 
   applyBlurFilter() {
-    this.finishText();
-    const layer = this.requireActiveLayer();
-    if (!layer) return;
-    const before = this.doc;
     const radius = clamp(Number(this.el.filterBlurRadius.value) || 3, 1, 30);
-    const filtered = createCanvas(layer.canvas.width, layer.canvas.height);
-    const context = context2d(filtered);
-    context.filter = `blur(${radius}px)`;
-    context.drawImage(layer.canvas, 0, 0);
-    const canvas = this.selection ? replaceInsideSelection(layer.canvas, filtered, this.selection) : filtered;
-    this.doc = updateLayer(this.doc, layer.id, { canvas });
-    this.commit(before, `Blur ${radius}px`);
-    this.announce(`Blur ${radius}px applied.`);
+    this.applyPixelsToActive(`Blur ${radius}px`, (pixels) => applyBlur(pixels, radius));
   }
 
   applyPixelateFilter() {
@@ -2327,6 +2319,18 @@ export class PaletteEditor {
 
   applySolarizeFilter() {
     this.applyPixelsToActive("Solarize", (pixels) => applySolarize(pixels));
+  }
+
+  applyDuotoneFilter() {
+    const shadow = this.el.filterDuotoneShadow.value || "#0b1c3d";
+    const highlight = this.el.filterDuotoneHighlight.value || "#ff6b6b";
+    this.applyPixelsToActive("Duotone", (pixels) =>
+      applyDuotone(pixels, { shadow, highlight }),
+    );
+  }
+
+  applyDitherFilter() {
+    this.applyPixelsToActive("Dither", (pixels) => applyDither(pixels, { monochrome: true }));
   }
 
   flipActiveLayer(axis) {
@@ -3244,6 +3248,8 @@ export class PaletteEditor {
     this.el.btnFilterTint.addEventListener("click", () => this.applyTintFilter());
     this.el.btnFilterFindEdges.addEventListener("click", () => this.applyFindEdgesFilter());
     this.el.btnFilterSolarize.addEventListener("click", () => this.applySolarizeFilter());
+    this.el.btnFilterDuotone.addEventListener("click", () => this.applyDuotoneFilter());
+    this.el.btnFilterDither.addEventListener("click", () => this.applyDitherFilter());
 
     this.el.colorInput.addEventListener("input", () => this.setColor(this.el.colorInput.value));
     this.el.brushSize.addEventListener("input", () => {

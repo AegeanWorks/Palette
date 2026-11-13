@@ -1787,6 +1787,52 @@ async function main() {
     await connection.evaluate("globalThis.palette.undo()");
     await wait(220);
 
+    // Test duotone filter
+    await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const ctx = layer.canvas.getContext('2d');
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(160, 160, 10, 10);
+    })()`);
+    await connection.evaluate(`(() => {
+      document.getElementById('filter-duotone-shadow').value = '#000080';
+      document.getElementById('filter-duotone-highlight').value = '#ffff00';
+      document.getElementById('btn-filter-duotone').click();
+    })()`);
+    const duoPixel = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const pixel = layer.canvas.getContext('2d').getImageData(165, 165, 1, 1).data;
+      return [pixel[0], pixel[1], pixel[2], pixel[3]];
+    })()`);
+    if (duoPixel[0] !== 0 || duoPixel[1] !== 0 || duoPixel[2] !== 128) {
+      throw new Error(`Duotone filter failed on black: ${JSON.stringify(duoPixel)}`);
+    }
+    await connection.evaluate("globalThis.palette.undo()");
+    await wait(220);
+
+    // Test dither filter
+    await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const ctx = layer.canvas.getContext('2d');
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(160, 160, 10, 10);
+    })()`);
+    await connection.evaluate("document.getElementById('btn-filter-dither').click()");
+    const ditherPixel = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const pixel = layer.canvas.getContext('2d').getImageData(165, 165, 1, 1).data;
+      return [pixel[0], pixel[1], pixel[2], pixel[3]];
+    })()`);
+    if (ditherPixel[0] !== 0 || ditherPixel[1] !== 0 || ditherPixel[2] !== 0) {
+      throw new Error(`Dither filter failed on black: ${JSON.stringify(ditherPixel)}`);
+    }
+    await connection.evaluate("globalThis.palette.undo()");
+    await wait(220);
+
     // Test flip active layer horizontal
     await connection.evaluate(`(() => {
       const editor = globalThis.palette;
@@ -2011,7 +2057,7 @@ async function main() {
     }
 
     console.log(
-      "[OK] Palette dogfood: layers, blend modes, clipping masks, clone stamp, dodge/burn, paint bucket, invert filter, desaturate/threshold/posterize/sepia/emboss/brightness-contrast/color-balance/noise/high-pass/tint/find-edges/solarize filters, swatches, stamp visible, layer flip h/v, expand/contract selection, keyboard zoom, merge-down blend retention, image placement, gradients, layer locking, marquee selection/invert, clipboard, layer via copy/cut, autosave reload/restore, crop ratios, flatten, canvas size, layer transform, histogram/auto levels, levels, brush, eraser, move, undo, crop, adjustments, shapes, text, filters, resize, zoom, scaled export, project save and dialogs.",
+      "[OK] Palette dogfood: layers, blend modes, clipping masks, clone stamp, dodge/burn, paint bucket, invert filter, desaturate/threshold/posterize/sepia/emboss/brightness-contrast/color-balance/noise/high-pass/tint/find-edges/solarize/duotone/dither filters, swatches, stamp visible, layer flip h/v, expand/contract selection, keyboard zoom, merge-down blend retention, image placement, gradients, layer locking, marquee selection/invert, clipboard, layer via copy/cut, autosave reload/restore, crop ratios, flatten, canvas size, layer transform, histogram/auto levels, levels, brush, eraser, move, undo, crop, adjustments, shapes, text, filters, resize, zoom, scaled export, project save and dialogs.",
     );
     return 0;
   } catch (error) {

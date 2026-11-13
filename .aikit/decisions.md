@@ -68,6 +68,14 @@ contract, a dependency, a data format or the architecture; IDs are consecutive a
 - **Decision**: Add pure functions `applyFindEdges` (Sobel 3x3 inverted magnitude) and `applySolarize` (Sabattier triangular curve) to `src/core/filters.js`; add `flipActiveLayer(axis)` with buttons `#btn-layer-flip-h` and `#btn-layer-flip-v` to `src/ui/editor.js` and `index.html`; bump Palette to 0.21.0; verify via 113 unit tests and headless browser dogfood.
 - **Consequences**: Artists can extract line contours, create solarized darkroom imagery, and flip individual active layers directly with full undo/redo and selection clipping.
 
+### ADR-009: Add Duotone and Bayer Ordered Dither Filters, and Pure Box Blur
+- **Date**: 2026-11-14
+- **Status**: Accepted
+- **Context**: Palette lacked poster-style two-tone gradient color mapping (Duotone) and retro 1-bit / crosshatch stippled halftone textures (Dither), and relied on browser canvas `context.filter = blur(...)` instead of deterministic, pure pixel buffer manipulation.
+- **Decision**: Add pure functions `applyDuotone(pixels, { shadow, highlight })` (perceptual luminance gradient interpolation), `applyDither(pixels, { monochrome })` (4x4 Bayer matrix ordered thresholding), and `applyBlur(pixels, radius)` (separable $O(W \times H)$ box blur) to `src/core/filters.js`; wire controls `#filter-duotone-shadow`, `#filter-duotone-highlight`, `#btn-filter-duotone` (`data-ui="filter-duotone"`), and `#btn-filter-dither` (`data-ui="filter-dither"`) in `index.html`; update `src/ui/editor.js` to route all blur, duotone, and dither commands through `applyPixelsToActive`; bump Palette to 0.22.0; verify via 116 unit tests and headless browser dogfood.
+- **Consequences**: Artists can generate stylized duotone graphic posters and retro dithered illustrations, and apply pure raster box blurs deterministically across layers and selections with full undo/redo and alpha preservation.
+
+
 
 
 

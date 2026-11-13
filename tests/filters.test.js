@@ -17,6 +17,9 @@ import {
   applyTint,
   applyFindEdges,
   applySolarize,
+  applyBlur,
+  applyDither,
+  applyDuotone,
   applyPixelate,
   applySharpen,
   applyVignette,
@@ -527,5 +530,113 @@ test("solarize applies sabattier tonal inversion curve and preserves alpha", () 
   assert.equal(solarized.data[8], 0);
   assert.equal(solarized.data[11], 250); // alpha preserved
 });
+
+test("blur smooths sharp transitions, leaves flat regions intact, and preserves alpha", () => {
+  // Flat image remains identical under blur
+  const flat = pixels(5, 5, 120);
+  flat.data[3] = 180;
+  flat.data[(2 * 5 + 2) * 4 + 3] = 220;
+  const blurredFlat = applyBlur(flat, 2);
+  assert.notStrictEqual(blurredFlat.data, flat.data);
+  const centerIdx = (2 * 5 + 2) * 4;
+  assert.equal(blurredFlat.data[centerIdx], 120);
+  assert.equal(blurredFlat.data[centerIdx + 3], 220); // alpha preserved
+
+  // Step edge gets blurred
+  const step = pixels(5, 5, 0);
+  for (let y = 0; y < 5; y += 1) {
+    for (let x = 3; x < 5; x += 1) {
+      const idx = (y * 5 + x) * 4;
+      step.data[idx] = 200;
+      step.data[idx + 1] = 200;
+      step.data[idx + 2] = 200;
+    }
+  }
+  const blurredStep = applyBlur(step, 1);
+  // Center pixel was 0, but surrounded by 200 on right -> now > 0 and < 200
+  assert.ok(blurredStep.data[centerIdx] > 0 && blurredStep.data[centerIdx] < 200);
+});
+
+test("dither converts continuous tones to bayer pattern and preserves alpha", () => {
+  // 4x4 black image remains 0
+  const black = pixels(4, 4, 0);
+  black.data[3] = 160;
+  const ditheredBlack = applyDither(black, { monochrome: true });
+  assert.notStrictEqual(ditheredBlack.data, black.data);
+  assert.equal(ditheredBlack.data[0], 0);
+  assert.equal(ditheredBlack.data[3], 160); // alpha preserved
+
+  // 4x4 white image remains 255
+  const white = pixels(4, 4, 255);
+  const ditheredWhite = applyDither(white, { monochrome: true });
+  assert.equal(ditheredWhite.data[0], 255);
+
+  // 4x4 midtone (128) yields exact 50% dither pattern (8 black, 8 white pixels)
+  const gray = pixels(4, 4, 128);
+  const ditheredGray = applyDither(gray, { monochrome: true });
+  let whiteCount = 0;
+  let blackCount = 0;
+  for (let i = 0; i < 16; i += 1) {
+    const val = ditheredGray.data[i * 4];
+    if (val === 255) whiteCount += 1;
+    else if (val === 0) blackCount += 1;
+  }
+  assert.equal(whiteCount, 8);
+  assert.equal(blackCount, 8);
+
+  // Color dither decomposes channels independently
+  const colored = pixels(4, 4, 0);
+  colored.data[0] = 255; // Red channel on pixel 0
+  colored.data[1] = 0;   // Green off
+  colored.data[2] = 0;   // Blue off
+  const ditheredColor = applyDither(colored, { monochrome: false });
+  assert.equal(ditheredColor.data[0], 255);
+  assert.equal(ditheredColor.data[1], 0);
+  assert.equal(ditheredColor.data[2], 0);
+});
+
+test("duotone maps shadow and highlight colors across perceptual luminance and preserves alpha", () => {
+  const source = pixels(3, 1, 0);
+  // Pixel 0: pure black (0, 0, 0)
+  source.data[0] = 0;
+  source.data[1] = 0;
+  source.data[2] = 0;
+  source.data[3] = 175;
+  // Pixel 1: pure white (255, 255, 255)
+  source.data[4] = 255;
+  source.data[5] = 255;
+  source.data[6] = 255;
+  source.data[7] = 210;
+  // Pixel 2: midtone gray (128, 128, 128)
+  source.data[8] = 128;
+  source.data[9] = 128;
+  source.data[10] = 128;
+  source.data[11] = 240;
+
+  // Shadow: navy #000080 (r=0, g=0, b=128)
+  // Highlight: bright yellow #ffff00 (r=255, g=255, b=0)
+  const duo = applyDuotone(source, { shadow: "#000080", highlight: "#ffff00" });
+  assert.notStrictEqual(duo.data, source.data);
+
+  // Black maps to pure shadow color
+  assert.equal(duo.data[0], 0);
+  assert.equal(duo.data[1], 0);
+  assert.equal(duo.data[2], 128);
+  assert.equal(duo.data[3], 175); // alpha preserved
+
+  // White maps to pure highlight color
+  assert.equal(duo.data[4], 255);
+  assert.equal(duo.data[5], 255);
+  assert.equal(duo.data[6], 0);
+  assert.equal(duo.data[7], 210); // alpha preserved
+
+  // Midtone interpolates (luma ~ 128/255 = ~0.502)
+  assert.equal(duo.data[8], 128);
+  assert.equal(duo.data[9], 128);
+  assert.equal(duo.data[10], 64);
+  assert.equal(duo.data[11], 240); // alpha preserved
+});
+
+
 
 

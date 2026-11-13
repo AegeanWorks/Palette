@@ -292,6 +292,10 @@ test("the filter panel exposes desaturate, threshold, posterize and swatches", (
   assert.match(html, /data-ui="filter-tint"/);
   assert.match(html, /data-ui="filter-find-edges"/);
   assert.match(html, /data-ui="filter-solarize"/);
+  assert.match(html, /id="filter-duotone-shadow" type="color"/);
+  assert.match(html, /id="filter-duotone-highlight" type="color"/);
+  assert.match(html, /data-ui="filter-duotone"/);
+  assert.match(html, /data-ui="filter-dither"/);
   assert.match(html, /id="swatches-row"/);
   assert.match(html, /data-swatch="#000000"/);
   assert.match(html, /data-swatch="#22d3ee"/);
@@ -404,6 +408,9 @@ test("editor keyboard shortcuts and paste routing cover retouching and placement
   assert.match(editorSource, /applyTintFilter\(\)/);
   assert.match(editorSource, /applyFindEdgesFilter\(\)/);
   assert.match(editorSource, /applySolarizeFilter\(\)/);
+  assert.match(editorSource, /applyDuotoneFilter\(\)/);
+  assert.match(editorSource, /applyDitherFilter\(\)/);
+  assert.match(editorSource, /applyBlurFilter\(\)/);
   assert.match(editorSource, /flipActiveLayer\(/);
   assert.match(editorSource, /modifySelection\(/);
   assert.match(editorSource, /stampVisible\(\)/);

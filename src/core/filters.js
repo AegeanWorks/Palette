@@ -369,13 +369,8 @@ export function applyNoise(
   return { width, height, data: out };
 }
 
-export function applyHighPass(pixels, radius = 10) {
-  const r = clamp(Math.round(Number(radius) || 10), 1, 50);
-  const { width, height, data } = pixels;
-  const out = new Uint8ClampedArray(data.length);
+function boxBlurRGB(data, width, height, r) {
   const windowSize = 2 * r + 1;
-
-  // Horizontal blur pass
   const hBlur = new Float32Array(width * height * 3);
   for (let y = 0; y < height; y += 1) {
     const rowOffset = y * width;
@@ -394,7 +389,7 @@ export function applyHighPass(pixels, radius = 10) {
     }
   }
 
-  // Vertical blur pass + High Pass difference
+  const vBlur = new Float32Array(width * height * 3);
   for (let x = 0; x < width; x += 1) {
     for (let c = 0; c < 3; c += 1) {
       let sum = 0;
@@ -403,24 +398,47 @@ export function applyHighPass(pixels, radius = 10) {
         sum += hBlur[(sampleY * width + x) * 3 + c];
       }
       for (let y = 0; y < height; y += 1) {
-        const blurVal = sum / windowSize;
+        vBlur[(y * width + x) * 3 + c] = sum / windowSize;
         const topY = clamp(y - r, 0, height - 1);
         const bottomY = clamp(y + r + 1, 0, height - 1);
         sum += hBlur[(bottomY * width + x) * 3 + c] - hBlur[(topY * width + x) * 3 + c];
-
-        const idx = (y * width + x) * 4;
-        const orig = data[idx + c];
-        const diff = orig - blurVal;
-        out[idx + c] = clamp(Math.round(128 + diff), 0, 255);
       }
     }
   }
+  return vBlur;
+}
 
-  // Preserve alpha channel
-  for (let idx = 0; idx < data.length; idx += 4) {
-    out[idx + 3] = data[idx + 3];
+export function applyBlur(pixels, radius = 4) {
+  const r = clamp(Math.round(Number(radius) || 4), 1, 50);
+  const { width, height, data } = pixels;
+  const out = new Uint8ClampedArray(data.length);
+  const blur = boxBlurRGB(data, width, height, r);
+
+  for (let idx = 0; idx < width * height; idx += 1) {
+    const p4 = idx * 4;
+    const p3 = idx * 3;
+    out[p4] = clamp(Math.round(blur[p3]), 0, 255);
+    out[p4 + 1] = clamp(Math.round(blur[p3 + 1]), 0, 255);
+    out[p4 + 2] = clamp(Math.round(blur[p3 + 2]), 0, 255);
+    out[p4 + 3] = data[p4 + 3];
   }
+  return { width, height, data: out };
+}
 
+export function applyHighPass(pixels, radius = 10) {
+  const r = clamp(Math.round(Number(radius) || 10), 1, 50);
+  const { width, height, data } = pixels;
+  const out = new Uint8ClampedArray(data.length);
+  const blur = boxBlurRGB(data, width, height, r);
+
+  for (let idx = 0; idx < width * height; idx += 1) {
+    const p4 = idx * 4;
+    const p3 = idx * 3;
+    out[p4] = clamp(Math.round(128 + data[p4] - blur[p3]), 0, 255);
+    out[p4 + 1] = clamp(Math.round(128 + data[p4 + 1] - blur[p3 + 1]), 0, 255);
+    out[p4 + 2] = clamp(Math.round(128 + data[p4 + 2] - blur[p3 + 2]), 0, 255);
+    out[p4 + 3] = data[p4 + 3];
+  }
   return { width, height, data: out };
 }
 
@@ -527,4 +545,66 @@ export function applySolarize(pixels, threshold = 128) {
   }
   return { width, height, data: out };
 }
+
+const BAYER_4X4 = [
+  [0, 8, 2, 10],
+  [12, 4, 14, 6],
+  [3, 11, 1, 9],
+  [15, 7, 13, 5],
+];
+
+export function applyDither(pixels, { monochrome = true } = {}) {
+  const isMono = Boolean(monochrome);
+  const { width, height, data } = pixels;
+  const out = new Uint8ClampedArray(data.length);
+
+  for (let y = 0; y < height; y += 1) {
+    const rowOffset = y * width;
+    for (let x = 0; x < width; x += 1) {
+      const idx = (rowOffset + x) * 4;
+      const bayerVal = BAYER_4X4[y % 4][x % 4];
+      const threshold = ((bayerVal + 0.5) / 16) * 255;
+
+      if (isMono) {
+        const luma = 0.2126 * data[idx] + 0.7152 * data[idx + 1] + 0.0722 * data[idx + 2];
+        const val = luma > threshold ? 255 : 0;
+        out[idx] = val;
+        out[idx + 1] = val;
+        out[idx + 2] = val;
+      } else {
+        out[idx] = data[idx] > threshold ? 255 : 0;
+        out[idx + 1] = data[idx + 1] > threshold ? 255 : 0;
+        out[idx + 2] = data[idx + 2] > threshold ? 255 : 0;
+      }
+      out[idx + 3] = data[idx + 3];
+    }
+  }
+  return { width, height, data: out };
+}
+
+export function applyDuotone(
+  pixels,
+  { shadow = "#0b1c3d", highlight = "#ff6b6b" } = {},
+) {
+  const rgbShadow = hexToRgb(shadow) ?? { r: 11, g: 28, b: 61 };
+  const rgbHighlight = hexToRgb(highlight) ?? { r: 255, g: 107, b: 107 };
+  const { width, height, data } = pixels;
+  const out = new Uint8ClampedArray(data.length);
+
+  for (let index = 0; index < data.length; index += 4) {
+    const r = data[index];
+    const g = data[index + 1];
+    const b = data[index + 2];
+    const a = data[index + 3];
+
+    const luma = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+    out[index] = clamp(Math.round(rgbShadow.r * (1 - luma) + rgbHighlight.r * luma), 0, 255);
+    out[index + 1] = clamp(Math.round(rgbShadow.g * (1 - luma) + rgbHighlight.g * luma), 0, 255);
+    out[index + 2] = clamp(Math.round(rgbShadow.b * (1 - luma) + rgbHighlight.b * luma), 0, 255);
+    out[index + 3] = a;
+  }
+  return { width, height, data: out };
+}
+
+
 
