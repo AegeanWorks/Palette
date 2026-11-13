@@ -1,39 +1,16 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "palette-blur-and-dither",
+    "task_id": "palette-oil-paint-and-layer-rotation",
     "last_phase": "phase 4",
-    "active_phase": 5,
-    "status": "completed",
-    "updated_at": 1794605290.8121545,
+    "active_phase": 4,
+    "status": "in_progress",
+    "updated_at": 1794605887.347306,
     "owner": "antigravity:1",
     "started_by": "antigravity:1",
-    "continuations": [],
-    "completed_at": 1794605332.4566526
+    "continuations": []
   },
   "checkpoints": [
-    {
-      "task_id": "palette-filters-and-swatches",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "Completed [1/5]-[5/5]: added Desaturate, Threshold (monochrome cutoff slider), and Posterize (color channel steps) filters in src/core/filters.js and src/ui/editor.js; added preset color swatches in index.html and src/styles.css; bumped to 0.16.0; verified via 103 unit tests and headless browser dogfood pass.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1794600074.1432521,
-      "timestamp_str": "2026-11-13 23:01:14",
-      "agent": "antigravity:1",
-      "checklists": "passed"
-    },
-    {
-      "task_id": "palette-filters-and-swatches",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'palette-filters-and-swatches' completed successfully.",
-      "status": "completed",
-      "timestamp": 1794600099.2642772,
-      "timestamp_str": "2026-11-13 23:01:39",
-      "agent": "antigravity:1"
-    },
     {
       "task_id": "palette-stamp-and-stylize",
       "phase": "phase 2",
@@ -267,6 +244,35 @@
       "status": "completed",
       "timestamp": 1794605332.456654,
       "timestamp_str": "2026-11-14 00:28:52",
+      "agent": "antigravity:1"
+    },
+    {
+      "task_id": "palette-oil-paint-and-layer-rotation",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/5] Plan: M1 core applyOilPaint and applyMedian pure functions with unit tests; M2 UI controls in index.html; M3 editor rotateActiveLayer/applyOilPaintFilter/applyMedianFilter integration and UI tests; M4 headless CDP dogfood pass; M5 docs, ADR-010, version bump and strict gate check",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1794605563.5691369,
+      "timestamp_str": "2026-11-14 00:32:43",
+      "agent": "antigravity:1",
+      "impact_assessment": {
+        "why": "Add Kuwahara oil paint artistic filter, 3x3 median despeckle filter, and 1-click active layer 90-degree CW/CCW rotation commands",
+        "benefits": "Artists can create painterly oil-canvas stylizations, remove salt-and-pepper noise, and rotate layer artwork in place without opening the transform dialog",
+        "risks": "contract: none, additive pure functions and UI controls; dependency: none, pure vanilla JS and Canvas 2D; concurrency: none, synchronous pixel buffer and canvas operations; state: none, returns fresh pixel buffers and canvas instances without mutating state",
+        "mitigation": "Window boundary clamping in Kuwahara and median algorithms, content-bounds centering in layer rotation, alpha preservation, and full test verification"
+      },
+      "plan_digest": "41f0fb8f4e68596b716b46040bb3d14c88392bdb389b7a5c2c5ffe861329eb2c"
+    },
+    {
+      "task_id": "palette-oil-paint-and-layer-rotation",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "Phase 4 passed under PRINCIPLE-018 R1: 118/118 unit tests passed, dogfood browser CDP passed, ADR-010 recorded; checklists: passed",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1794605887.347306,
+      "timestamp_str": "2026-11-14 00:38:07",
       "agent": "antigravity:1"
     }
   ]
