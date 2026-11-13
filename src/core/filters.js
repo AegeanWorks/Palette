@@ -218,3 +218,49 @@ export function applyPosterize(pixels, levels = 4) {
   return { width, height, data: out };
 }
 
+export function applySepia(pixels, amount = 1) {
+  const parsed = Number(amount);
+  const strength = clamp(Number.isFinite(parsed) ? parsed : 1, 0, 1);
+  if (strength === 0) return clonePixels(pixels);
+  const { width, height, data } = pixels;
+  const out = new Uint8ClampedArray(data.length);
+  for (let index = 0; index < data.length; index += 4) {
+    const r = data[index];
+    const g = data[index + 1];
+    const b = data[index + 2];
+    const sr = clamp(Math.round(r * 0.393 + g * 0.769 + b * 0.189), 0, 255);
+    const sg = clamp(Math.round(r * 0.349 + g * 0.686 + b * 0.168), 0, 255);
+    const sb = clamp(Math.round(r * 0.272 + g * 0.534 + b * 0.131), 0, 255);
+    out[index] = Math.round(r * (1 - strength) + sr * strength);
+    out[index + 1] = Math.round(g * (1 - strength) + sg * strength);
+    out[index + 2] = Math.round(b * (1 - strength) + sb * strength);
+    out[index + 3] = data[index + 3];
+  }
+  return { width, height, data: out };
+}
+
+export function applyEmboss(pixels) {
+  const { width, height, data } = pixels;
+  const out = new Uint8ClampedArray(data.length);
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      const index = (y * width + x) * 4;
+      if (x === 0 || y === 0 || x === width - 1 || y === height - 1) {
+        out[index] = 128;
+        out[index + 1] = 128;
+        out[index + 2] = 128;
+        out[index + 3] = data[index + 3];
+        continue;
+      }
+      const aboveLeft = ((y - 1) * width + x - 1) * 4;
+      const belowRight = ((y + 1) * width + x + 1) * 4;
+      for (let channel = 0; channel < 3; channel += 1) {
+        const diff = data[belowRight + channel] - data[aboveLeft + channel];
+        out[index + channel] = clamp(128 + diff, 0, 255);
+      }
+      out[index + 3] = data[index + 3];
+    }
+  }
+  return { width, height, data: out };
+}
+

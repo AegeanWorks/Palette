@@ -8,6 +8,8 @@ import {
   applyDesaturate,
   applyThreshold,
   applyPosterize,
+  applySepia,
+  applyEmboss,
   applyPixelate,
   applySharpen,
   applyVignette,
@@ -251,4 +253,46 @@ test("posterize quantizes RGB channels to distinct steps while preserving alpha"
   assert.equal(result4.data[3], 190); // alpha preserved
   assert.equal(result4.data[6], 170); // 128 rounds to 170
 });
+
+test("sepia applies warm vintage tone while preserving alpha", () => {
+  const source = pixels(1, 1, 100);
+  source.data[3] = 210;
+
+  // Amount 0 returns clone
+  const neutral = applySepia(source, 0);
+  assert.notStrictEqual(neutral.data, source.data);
+  assert.equal(neutral.data[0], 100);
+  assert.equal(neutral.data[1], 100);
+  assert.equal(neutral.data[2], 100);
+  assert.equal(neutral.data[3], 210);
+
+  // Full sepia: r=135, g=120, b=94
+  const sepia = applySepia(source, 1);
+  assert.equal(sepia.data[0], 135);
+  assert.equal(sepia.data[1], 120);
+  assert.equal(sepia.data[2], 94);
+  assert.equal(sepia.data[3], 210); // alpha preserved
+});
+
+test("emboss calculates directional relief and preserves alpha", () => {
+  const uniform = pixels(3, 3, 150);
+  uniform.data[(1 * 3 + 1) * 4 + 3] = 180;
+  const embossedUniform = applyEmboss(uniform);
+  assert.notStrictEqual(embossedUniform.data, uniform.data);
+  // Center pixel with uniform surrounding has 0 difference -> 128 neutral gray
+  assert.equal(embossedUniform.data[(1 * 3 + 1) * 4], 128);
+  assert.equal(embossedUniform.data[(1 * 3 + 1) * 4 + 1], 128);
+  assert.equal(embossedUniform.data[(1 * 3 + 1) * 4 + 2], 128);
+  assert.equal(embossedUniform.data[(1 * 3 + 1) * 4 + 3], 180);
+
+  // Steeper gradient: top-left dark (0), bottom-right bright (200)
+  const edge = pixels(3, 3, 100);
+  edge.data[0] = 0; // top-left (0, 0)
+  edge.data[(2 * 3 + 2) * 4] = 200; // bottom-right (2, 2)
+  const embossedEdge = applyEmboss(edge);
+  // Center pixel difference: 200 - 0 = 200 -> 128 + 200 clamped to 255
+  assert.equal(embossedEdge.data[(1 * 3 + 1) * 4], 255);
+  assert.equal(embossedEdge.data[0], 128); // edge pixels default to 128
+});
+
 

@@ -1499,6 +1499,47 @@ async function main() {
       document.querySelector('[data-swatch="#22d3ee"]').click();
     })()`);
 
+    // Test sepia filter
+    await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const ctx = layer.canvas.getContext('2d');
+      ctx.fillStyle = '#646464';
+      ctx.fillRect(120, 120, 10, 10);
+    })()`);
+    await connection.evaluate("globalThis.palette.applySepiaFilter()");
+    const sepiaPixel = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const pixel = layer.canvas.getContext('2d').getImageData(120, 120, 1, 1).data;
+      return [pixel[0], pixel[1], pixel[2], pixel[3]];
+    })()`);
+    if (sepiaPixel[0] !== 135 || sepiaPixel[1] !== 120 || sepiaPixel[2] !== 94) {
+      throw new Error(`Sepia filter failed: ${JSON.stringify(sepiaPixel)}`);
+    }
+    await connection.evaluate("globalThis.palette.undo()");
+    await wait(220);
+
+    // Test emboss filter
+    await connection.evaluate("globalThis.palette.applyEmbossFilter()");
+    await connection.evaluate("globalThis.palette.undo()");
+    await wait(220);
+
+    // Test stamp visible
+    const layerCountBefore = await connection.evaluate("globalThis.palette.doc.layers.length");
+    await connection.evaluate("globalThis.palette.stampVisible()");
+    const layerCountAfter = await connection.evaluate("globalThis.palette.doc.layers.length");
+    const topLayerName = await connection.evaluate("globalThis.palette.doc.layers[globalThis.palette.doc.layers.length - 1].name");
+    if (layerCountAfter !== layerCountBefore + 1 || topLayerName !== "Merged visible") {
+      throw new Error(`Stamp visible failed: count=${layerCountAfter}, name=${topLayerName}`);
+    }
+    await connection.evaluate("globalThis.palette.undo()");
+    await wait(220);
+    const layerCountRestored = await connection.evaluate("globalThis.palette.doc.layers.length");
+    if (layerCountRestored !== layerCountBefore) {
+      throw new Error(`Undo did not restore layer count after stamp visible: ${layerCountRestored}`);
+    }
+
     // Test zoom shortcuts
     const zoomInitial = await connection.evaluate("globalThis.palette.view.scale");
     await connection.evaluate("globalThis.palette.zoomIn()");
@@ -1686,7 +1727,7 @@ async function main() {
     }
 
     console.log(
-      "[OK] Palette dogfood: layers, blend modes, clipping masks, clone stamp, dodge/burn, paint bucket, invert filter, desaturate/threshold/posterize filters, swatches, keyboard zoom, merge-down blend retention, image placement, gradients, layer locking, marquee selection/invert, clipboard, layer via copy/cut, autosave reload/restore, crop ratios, flatten, canvas size, layer transform, histogram/auto levels, levels, brush, eraser, move, undo, crop, adjustments, shapes, text, filters, resize, zoom, scaled export, project save and dialogs.",
+      "[OK] Palette dogfood: layers, blend modes, clipping masks, clone stamp, dodge/burn, paint bucket, invert filter, desaturate/threshold/posterize/sepia/emboss filters, swatches, stamp visible, keyboard zoom, merge-down blend retention, image placement, gradients, layer locking, marquee selection/invert, clipboard, layer via copy/cut, autosave reload/restore, crop ratios, flatten, canvas size, layer transform, histogram/auto levels, levels, brush, eraser, move, undo, crop, adjustments, shapes, text, filters, resize, zoom, scaled export, project save and dialogs.",
     );
     return 0;
   } catch (error) {

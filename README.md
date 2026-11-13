@@ -32,13 +32,13 @@ No server, no accounts, no uploads, no build step.
 
 ## ✨ What It Does
 
-- **Layers**: add, duplicate, delete, merge down, flatten, reorder, rename, hide, lock, clip to the layer below, change opacity, transform (scale/rotate/flip around visible content), place another image as a centered layer, and see live thumbnails.
+- **Layers**: add, duplicate, delete, merge down, flatten, stamp visible art into a new layer without flattening (Ctrl+Alt+Shift+E), reorder, rename, hide, lock, clip to the layer below, change opacity, transform (scale/rotate/flip around visible content), place another image as a centered layer, and see live thumbnails.
 - **Blend modes**: normal, multiply, screen, overlay, darken, lighten, color dodge/burn, hard/soft light, difference, exclusion, hue, saturation, color and luminosity, preserved in projects and exports.
 - **Tools**: move, brush, eraser, clone stamp, dodge/burn, paint bucket, crop, marquee selection, text, rectangle, ellipse, line, linear/radial gradient, eyedropper, hand and zoom. Shift constrains squares, circles and 45° lines; Alt-click sets the clone source; K fills contiguous or matching regions; quick color swatches provide instant color access.
 - **Selections**: rectangle or ellipse marquees clip paint, shapes, text, gradients and destructive filters, support selected-pixel moves, delete-selected, select-all, deselect, invert and crop-to-selection. Adjustments remain layer-wide.
 - **Clipboard**: copy/cut the selection or the whole layer, paste as a new layer, and create layers via copy or cut with a single undo step. Pasted art is fitted and centred when the document size changed.
 - **Adjustments**: non-destructive brightness, contrast, saturation, hue, grayscale, sepia, invert and blur stored per layer and visible in exports.
-- **Filters**: blur, pixelate, sharpen, vignette, Invert, Desaturate, Threshold (monochrome cutoff), Posterize (channel tonal steps), Levels (black point, white point and gamma) and Auto levels baked into the active layer or current selection with undo support.
+- **Filters**: blur, pixelate, sharpen, vignette, Invert, Desaturate, Sepia, Emboss, Threshold (monochrome cutoff), Posterize (channel tonal steps), Levels (black point, white point and gamma) and Auto levels baked into the active layer or current selection with undo support.
 - **Histogram**: a live luminance histogram of the active layer with a percentile-derived black/white range and a one-click Auto levels command that samples the active selection when one exists.
 - **Document**: new document with white, transparent or custom background; open or drag-and-drop images; resize, canvas size with nine anchors, flip, rotate 90° and crop with free, 1:1, 4:3, 3:2, 16:9 or 9:16 ratios.
 - **History**: bounded undo/redo for every edit, including blend-mode changes and merge-down, with a memory-conscious per-document limit.
@@ -61,6 +61,7 @@ Everything happens in the browser. Images are never uploaded, and there is no ne
 | `Ctrl/Cmd + Shift + Z` or `Ctrl + Y` | Redo |
 | `Ctrl/Cmd + S` | Save a `.palette` project |
 | `Ctrl/Cmd + Alt + G` | Clip the active layer to the layer below |
+| `Ctrl/Cmd + Alt + Shift + E` | Stamp visible layers into a new layer |
 | `Ctrl/Cmd + O` | Open an image |
 | `Ctrl/Cmd + E` | Export |
 | `[` / `]` | Decrease / increase brush, eraser, clone, or dodge size |
@@ -156,8 +157,9 @@ python tools/sync_editor.py --check
 - **Dodge & burn**: one tool with a mode switch lightens or darkens only the layer's existing pixels through the brush mask and selection; transparent areas stay transparent and each stroke is one undo step.
 - **Paint bucket**: fills a contiguous color region or replaces matching pixels across the layer using an RGBA Euclidean tolerance threshold, respecting active selections and opacity.
 - **Invert filter**: destructive pixel inversion for RGB channels with alpha preservation, clipped to the active marquee.
-- **Creative & monochrome filters**: Desaturate, Threshold (custom luminance cutoff), and Posterize (channel tonal steps) operate directly on RGBA pixel buffers, preserving alpha and respecting active marquee selection clips with undo history.
+- **Creative & monochrome filters**: Desaturate, Sepia (vintage warmth), Emboss (3D relief convolution), Threshold (custom luminance cutoff), and Posterize (channel tonal steps) operate directly on RGBA pixel buffers, preserving alpha and respecting active marquee selection clips with undo history.
 - **Color swatches**: Quick-pick swatches provide instant access to high-contrast and primary hues without opening the OS color dialog.
+- **Stamp visible**: Combines visible layers into a fresh composite layer placed atop the active document, keeping the original stack editable with full undo/redo restoration.
 - **Non-destructive adjustments**: the per-layer adjustment stack is a CSS filter at render/export time, so it can be reset without losing pixels.
 
 ## 📜 License

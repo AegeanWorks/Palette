@@ -98,6 +98,9 @@ test("the shell carries every critical editor surface", () => {
     "filter-posterize-steps",
     "filter-posterize-value",
     "btn-filter-posterize",
+    "btn-filter-sepia",
+    "btn-filter-emboss",
+    "btn-stamp-visible",
     "swatches-row",
   ]) {
     assert.ok(found.has(id), `missing #${id}`);
@@ -231,6 +234,8 @@ test("the filter panel exposes Levels controls", () => {
 
 test("the filter panel exposes desaturate, threshold, posterize and swatches", () => {
   assert.match(html, /data-ui="filter-desaturate"/);
+  assert.match(html, /data-ui="filter-sepia"/);
+  assert.match(html, /data-ui="filter-emboss"/);
   assert.match(html, /id="filter-threshold-cutoff" type="range"/);
   assert.match(html, /data-ui="filter-threshold"/);
   assert.match(html, /id="filter-posterize-steps" type="range"/);
@@ -242,10 +247,12 @@ test("the filter panel exposes desaturate, threshold, posterize and swatches", (
   assert.match(styles, /\.btn-swatch/);
 });
 
-test("the crop panel exposes ratio presets and the document row exposes Flatten", () => {
+test("the crop panel exposes ratio presets and the document row exposes Flatten and Stamp", () => {
   assert.match(html, /id="crop-aspect"[\s\S]*?value="1"[\s\S]*?value="1\.3333333333"/);
   assert.match(html, /id="btn-flatten"/);
   assert.match(html, /data-ui="flatten"/);
+  assert.match(html, /id="btn-stamp-visible"/);
+  assert.match(html, /data-ui="stamp-visible"/);
 });
 
 test("the adjustments panel exposes a histogram and Auto levels", () => {
@@ -332,6 +339,9 @@ test("editor keyboard shortcuts and paste routing cover retouching and placement
   assert.match(editorSource, /applyDesaturateFilter\(\)/);
   assert.match(editorSource, /applyThresholdFilter\(\)/);
   assert.match(editorSource, /applyPosterizeFilter\(\)/);
+  assert.match(editorSource, /applySepiaFilter\(\)/);
+  assert.match(editorSource, /applyEmbossFilter\(\)/);
+  assert.match(editorSource, /stampVisible\(\)/);
   assert.match(editorSource, /key === "g" && event\.altKey[\s\S]*?toggleClippingMask/);
   assert.match(editorSource, /if \(this\.doc\) \{\s*this\.addImageLayer\(file\);\s*\} else \{\s*this\.openImageFile\(file\);\s*\}/);
   assert.match(editorSource, /if \(this\.clipboard\) \{\s*event\.preventDefault\(\);\s*this\.pasteClipboard\(\);\s*\}/);

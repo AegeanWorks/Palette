@@ -29,10 +29,12 @@ import {
 import {
   DEFAULT_ADJUSTMENTS,
   applyDesaturate,
+  applyEmboss,
   applyInvert,
   applyLevels,
   applyPixelate,
   applyPosterize,
+  applySepia,
   applySharpen,
   applyThreshold,
   applyVignette,
@@ -164,7 +166,7 @@ const IDS = [
   "btn-layer-lock", "btn-layer-clip", "btn-layer-up", "btn-layer-down", "btn-layer-delete", "layer-opacity",
   "layer-opacity-value", "layer-blend", "layer-list",
   "btn-resize", "btn-canvas-size", "btn-transform", "btn-flip-h", "btn-flip-v", "btn-rotate",
-  "btn-flatten",
+  "btn-flatten", "btn-stamp-visible",
   "adjust-reset", "histogram", "histogram-range", "btn-auto-levels", "adj-brightness",
   "adj-brightness-value", "adj-contrast", "adj-contrast-value",
   "adj-saturation", "adj-saturation-value", "adj-hue", "adj-hue-value", "adj-grayscale",
@@ -173,7 +175,7 @@ const IDS = [
   "filter-pixel-size", "filter-pixel-value", "btn-filter-pixelate", "btn-filter-sharpen",
   "btn-filter-vignette", "btn-filter-invert", "btn-filter-desaturate", "filter-threshold-cutoff",
   "filter-threshold-value", "btn-filter-threshold", "filter-posterize-steps", "filter-posterize-value",
-  "btn-filter-posterize", "swatches-row", "level-black", "level-black-value", "level-white", "level-white-value",
+  "btn-filter-posterize", "btn-filter-sepia", "btn-filter-emboss", "swatches-row", "level-black", "level-black-value", "level-white", "level-white-value",
   "level-gamma", "level-gamma-value", "btn-filter-levels", "status-tool", "status-message",
   "status-cursor", "status-zoom",
   "btn-actual", "new-dialog", "new-form", "new-name", "new-width", "new-height", "new-color",
@@ -2229,6 +2231,14 @@ export class PaletteEditor {
     this.applyPixelsToActive("Posterize", (pixels) => applyPosterize(pixels, steps));
   }
 
+  applySepiaFilter() {
+    this.applyPixelsToActive("Sepia", (pixels) => applySepia(pixels, 1));
+  }
+
+  applyEmbossFilter() {
+    this.applyPixelsToActive("Emboss", (pixels) => applyEmboss(pixels));
+  }
+
   applyLevelsFilter() {
     const black = Number(this.el.levelBlack.value);
     const white = Number(this.el.levelWhite.value);
@@ -2597,6 +2607,21 @@ export class PaletteEditor {
     this.announce("Flattened all visible layers into one.");
   }
 
+  stampVisible() {
+    if (!this.doc) return;
+    this.finishText();
+    const visible = this.doc.layers.some((layer) => layer.visible);
+    if (!visible) {
+      this.announce("Show at least one layer before stamping.", { error: true });
+      return;
+    }
+    const before = this.doc;
+    const layer = createLayer({ name: "Merged visible", canvas: compositeDocument(this.doc) });
+    this.doc = addLayer(this.doc, layer, this.doc.layers.length);
+    this.commit(before, "Stamp visible");
+    this.announce("Created a merged layer from visible art.");
+  }
+
   setDocumentName(value) {
     if (!this.doc) return;
     const name = cleanDocumentName(value, this.doc.name);
@@ -2847,7 +2872,8 @@ export class PaletteEditor {
         this.el.fileImage.click();
       } else if (key === "e") {
         event.preventDefault();
-        this.openExportDialog();
+        if (event.altKey && event.shiftKey) this.stampVisible();
+        else this.openExportDialog();
       } else if (key === "a") {
         event.preventDefault();
         this.selectAll();
@@ -3055,6 +3081,7 @@ export class PaletteEditor {
     this.el.btnFlipV.addEventListener("click", () => this.flipDocument("vertical"));
     this.el.btnRotate.addEventListener("click", () => this.rotateDocument());
     this.el.btnFlatten.addEventListener("click", () => this.flattenImage());
+    this.el.btnStampVisible.addEventListener("click", () => this.stampVisible());
     this.el.adjustReset.addEventListener("click", () => this.resetAdjustments());
     this.el.btnAutoLevels.addEventListener("click", () => this.autoLevels());
     this.el.cropApply.addEventListener("click", () => this.applyCrop());
@@ -3065,6 +3092,8 @@ export class PaletteEditor {
     this.el.btnFilterVignette.addEventListener("click", () => this.applyVignetteFilter());
     this.el.btnFilterInvert.addEventListener("click", () => this.applyInvertFilter());
     this.el.btnFilterDesaturate.addEventListener("click", () => this.applyDesaturateFilter());
+    this.el.btnFilterSepia.addEventListener("click", () => this.applySepiaFilter());
+    this.el.btnFilterEmboss.addEventListener("click", () => this.applyEmbossFilter());
     this.el.filterThresholdCutoff.addEventListener("input", () => {
       this.el.filterThresholdValue.textContent = this.el.filterThresholdCutoff.value;
     });

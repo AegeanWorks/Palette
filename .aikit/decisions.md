@@ -33,3 +33,11 @@ contract, a dependency, a data format or the architecture; IDs are consecutive a
 - **Decision**: Add pure functions `applyDesaturate`, `applyThreshold`, and `applyPosterize` to `src/core/filters.js` operating on RGBA pixel buffers with alpha preservation and ITU-R BT.709 luminance; expose interactive filter controls and preset color swatches in `index.html` and `src/styles.css`; wire event handlers, undoable commands, and swatch buttons in `editor.js`; bump Palette to 0.16.0; verify with 103 unit tests and headless browser dogfood.
 - **Consequences**: Users can apply stylized high-contrast monochrome and pop-art posterization with selection clipping and full undo/redo, and pick standard colors quickly without triggering the native OS color picker dialog.
 
+### ADR-004: Add Stamp Visible layer command, and Sepia & Emboss filters
+- **Date**: 2026-11-13
+- **Status**: Accepted
+- **Context**: Palette lacked a non-destructive way to merge visible layers into a fresh composite layer without destroying the underlying layer stack, as well as classic vintage sepia and 3D relief emboss filters.
+- **Decision**: Add `stampVisible` to `src/ui/editor.js` with button `#btn-stamp-visible` and shortcut `Ctrl+Alt+Shift+E`; add `applySepia` and `applyEmboss` (convolution with neutral gray bias) to `src/core/filters.js` with buttons `#btn-filter-sepia` and `#btn-filter-emboss`; bump Palette to 0.17.0; verify with 105 unit tests and headless browser dogfood.
+- **Consequences**: Retouchers and artists can create non-destructive composite layers instantly and apply vintage warmth and 3D embossing with full undo/redo and selection clipping.
+
+
