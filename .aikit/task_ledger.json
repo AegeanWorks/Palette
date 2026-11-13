@@ -1,45 +1,16 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "palette-stamp-and-stylize",
+    "task_id": "palette-selection-and-toning",
     "last_phase": "phase 4",
-    "active_phase": 5,
-    "status": "completed",
-    "updated_at": 1794600579.4831247,
+    "active_phase": 4,
+    "status": "in_progress",
+    "updated_at": 1794601837.0164366,
     "owner": "antigravity:1",
     "started_by": "antigravity:1",
-    "continuations": [],
-    "completed_at": 1794600616.787395
+    "continuations": []
   },
   "checkpoints": [
-    {
-      "task_id": "palette-clone-paste-enhancements",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/2] Route external clipboard image paste to addImageLayer when a document exists, and update clone tool overlay to follow active sampling offset during dragging. [2/2] Add test coverage for editor shortcuts and paste routing, verify UI contract, and pass Phase 4 gates.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793520083.9221964,
-      "timestamp_str": "2026-11-01 11:01:23",
-      "agent": "antigravity:1",
-      "impact_assessment": {
-        "why": "Pasting an image when a document is open discarded the document instead of adding a layer; clone crosshair was stationary during painting.",
-        "benefits": "Standard image editor pasting behavior; live feedback on exact clone sampling source; clean verification.",
-        "risks": "contract: no API changes; dependency: web standards clipboard only; concurrency: none; state: uncommitted files must pass checks.",
-        "mitigation": "Preserve openImageFile fallback when no document exists; verify with tests."
-      }
-    },
-    {
-      "task_id": "palette-clone-paste-enhancements",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "Completed [1/2]-[2/2]: route external image paste to addImageLayer when document exists, live-track clone sampling offset in overlay during drag, and add unit test coverage. checklists: passed (test, hygiene, guidelines, secrets).",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793520154.7297564,
-      "timestamp_str": "2026-11-01 11:02:34",
-      "agent": "antigravity:1"
-    },
     {
       "task_id": "palette-clone-paste-enhancements",
       "phase": "completed",
@@ -267,6 +238,35 @@
       "status": "completed",
       "timestamp": 1794600616.7873976,
       "timestamp_str": "2026-11-13 23:10:16",
+      "agent": "antigravity:1"
+    },
+    {
+      "task_id": "palette-selection-and-toning",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/5] Plan: M1 core expandSelection and applyBrightnessContrast with unit tests; M2 UI controls in marquee and filter panels; M3 editor wiring and UI tests; M4 dogfood verification; M5 docs, ADR and gate verification",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1794601049.0675836,
+      "timestamp_str": "2026-11-13 23:17:29",
+      "agent": "antigravity:1",
+      "impact_assessment": {
+        "why": "Add selection modification (expand/contract) and destructive brightness/contrast filter to enable precision selection refinement and selective tonal adjustments",
+        "benefits": "Allows users to expand or shrink selections to remove border artifacts, and selectively adjust brightness and contrast on masked layer regions with undo support",
+        "risks": "contract: none, additive geometry helper and filter; dependency: none, pure vanilla JS and Canvas 2D; concurrency: none, synchronous math and pixel operations; state: none, returns fresh geometry objects and pixel buffers without altering existing history invariants",
+        "mitigation": "Clamp expanded rectangles to document boundaries, discard degenerate selections (<1px), clamp contrast factor to prevent division by zero, and test in unit and CDP suites"
+      },
+      "plan_digest": "a672d7bdf09450451d1a0e6b877d7393b7a70dbc7b13ccf9e13e33d6c73860dd"
+    },
+    {
+      "task_id": "palette-selection-and-toning",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "Phase 4 passed under PRINCIPLE-018 R1: 107/107 unit tests passed, dogfood browser CDP passed, ADR-005 recorded; checklists: passed",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1794601837.0164366,
+      "timestamp_str": "2026-11-13 23:30:37",
       "agent": "antigravity:1"
     }
   ]
