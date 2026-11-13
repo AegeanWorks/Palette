@@ -55,7 +55,7 @@ Everything happens in the browser. Images are never uploaded, and there is no ne
 | `V`, `B`, `E`, `S`, `D`, `K`, `C`, `M`, `T` | Move, brush, eraser, clone stamp, dodge/burn, paint bucket, crop, marquee, text |
 | `R`, `O`, `L`, `G`, `I`, `H`, `Z` | Rectangle, ellipse, line, gradient, eyedropper, hand, zoom |
 | `Ctrl/Cmd + A` / `Ctrl/Cmd + D` | Select all / deselect |
-| `Shift + I` | Invert the selection |
+| `Shift + I` / `Ctrl/Cmd + Shift + I` | Invert the selection |
 | `Delete` / `Backspace` | Clear selected pixels |
 | `Ctrl/Cmd + Z` | Undo |
 | `Ctrl/Cmd + Shift + Z` or `Ctrl + Y` | Redo |
@@ -66,7 +66,7 @@ Everything happens in the browser. Images are never uploaded, and there is no ne
 | `Ctrl/Cmd + E` | Export |
 | `[` / `]` | Decrease / increase brush, eraser, clone, or dodge size |
 | `+` / `-` | Zoom in / Zoom out |
-| `0` / `1` | Fit to view / 100% |
+| `0` / `1` / `Ctrl/Cmd + 0` / `Ctrl/Cmd + 1` | Fit to view / 100% |
 | `Space + drag` | Pan from any tool |
 | Arrow keys | Nudge the active layer 1 px (`Shift` = 10 px) |
 | `Enter` / `Escape` | Apply / cancel crop or text |

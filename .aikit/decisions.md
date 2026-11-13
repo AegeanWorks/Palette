@@ -82,6 +82,14 @@ contract, a dependency, a data format or the architecture; IDs are consecutive a
 - **Decision**: Add pure functions `applyOilPaint(pixels, radius)` (4-quadrant minimum variance Kuwahara smoothing) and `applyMedian(pixels)` (3x3 median despeckling) to `src/core/filters.js`; add `rotateActiveLayer(direction)` to `src/ui/editor.js`; expose slider `#filter-oil-radius`, button `#btn-filter-oil` (`data-ui="filter-oil"`), button `#btn-filter-median` (`data-ui="filter-median"`), button `#btn-layer-rotate-cw` (`data-ui="layer-rotate-cw"`), and button `#btn-layer-rotate-ccw` (`data-ui="layer-rotate-ccw"`) in `index.html`; bump Palette to 0.23.0; verify via 118 unit tests and headless browser dogfood.
 - **Consequences**: Artists can create rich oil-painting effects, clean up noisy images without blurring fine edges, and rotate individual active layers 90° CW/CCW directly with full undo/redo support and preserved alpha transparency.
 
+### ADR-011: Harden Layer Transformations and Standardize Desktop Keyboard Shortcuts
+- **Date**: 2026-11-14
+- **Status**: Accepted
+- **Context**: Inverting full-canvas layers via `flipActiveLayer` left stale selection overlays pinned to outdated coordinate bounds, and hidden layers could be mutated unexpectedly by flip/rotate operations. In addition, standard Photoshop muscle-memory shortcuts (`Ctrl+Shift+I` for Invert Selection, `Ctrl+0` for Fit to Screen, `Ctrl+1` for 100% Zoom) were ignored when the modifier key was pressed.
+- **Decision**: Update `flipActiveLayer` and `rotateActiveLayer` in `src/ui/editor.js` to guard against hidden layers (`!layer.visible`) and explicitly reset stale selections (`this.selection = null;`); enable high-quality image smoothing on layer rotation; wire `Ctrl/Cmd+Shift+I`, `Ctrl/Cmd+0`, and `Ctrl/Cmd+1` keyboard shortcuts in `onKeyDown`; update `index.html` help dialog and `README.md`; bump Palette to 0.23.1; verify via unit tests and headless Chrome dogfood.
+- **Consequences**: Layer flips and rotations are completely safe against hidden layers and stale selections, and creative users can navigate zoom and selections seamlessly using industry-standard Photoshop keyboard shortcuts.
+
+
 
 
 

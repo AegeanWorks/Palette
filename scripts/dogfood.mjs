@@ -1942,6 +1942,57 @@ async function main() {
       throw new Error(`zoomOut did not restore scale: ${zoomInitial} -> ${zoomOutScale}`);
     }
 
+    // Test hidden layer guard on flip and rotate
+    const hiddenGuardCheck = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      layer.visible = false;
+      const historyLenBefore = editor.history.past.length;
+      editor.flipActiveLayer("horizontal");
+      const flipBlocked = editor.history.past.length === historyLenBefore;
+      editor.rotateActiveLayer(1);
+      const rotBlocked = editor.history.past.length === historyLenBefore;
+      layer.visible = true;
+      return { flipBlocked, rotBlocked };
+    })()`);
+    if (!hiddenGuardCheck.flipBlocked || !hiddenGuardCheck.rotBlocked) {
+      throw new Error(`Hidden layer guard failed: ${JSON.stringify(hiddenGuardCheck)}`);
+    }
+
+    // Test Ctrl+Shift+I shortcut for invert selection
+    const shortcutInvert = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      editor.selection = { kind: "rect", rect: { x: 10, y: 10, w: 20, h: 20 } };
+      const event = new KeyboardEvent("keydown", { key: "i", ctrlKey: true, shiftKey: true, bubbles: true });
+      editor.onKeyDown(event);
+      const inverted = editor.selection?.invert === true;
+      const event2 = new KeyboardEvent("keydown", { key: "i", ctrlKey: true, shiftKey: true, bubbles: true });
+      editor.onKeyDown(event2);
+      const restored = !editor.selection?.invert;
+      editor.deselect();
+      return { inverted, restored };
+    })()`);
+    if (!shortcutInvert.inverted || !shortcutInvert.restored) {
+      throw new Error(`Ctrl+Shift+I shortcut failed: ${JSON.stringify(shortcutInvert)}`);
+    }
+
+    // Test Ctrl+0 and Ctrl+1 shortcuts
+    const zoomKeys = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      editor.view.scale = 0.5;
+      const event0 = new KeyboardEvent("keydown", { key: "0", ctrlKey: true, bubbles: true });
+      editor.onKeyDown(event0);
+      const scaleFit = editor.view.scale;
+      const event1 = new KeyboardEvent("keydown", { key: "1", ctrlKey: true, bubbles: true });
+      editor.onKeyDown(event1);
+      const scaleActual = editor.view.scale;
+      editor.fitView();
+      return { scaleFit, scaleActual };
+    })()`);
+    if (zoomKeys.scaleActual !== 1) {
+      throw new Error(`Ctrl+1 shortcut did not set 100% zoom: ${JSON.stringify(zoomKeys)}`);
+    }
+
     await connection.evaluate(`(() => {
       const editor = globalThis.palette;
       const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);

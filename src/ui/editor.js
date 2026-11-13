@@ -2352,6 +2352,10 @@ export class PaletteEditor {
     this.finishText();
     const layer = activeLayer(this.doc);
     if (!layer) return;
+    if (!layer.visible) {
+      this.announce(`${layer.name} is hidden. Show it first.`, { error: true });
+      return;
+    }
     if (layer.locked) {
       this.announce(`${layer.name} is locked. Unlock it first.`, { error: true });
       return;
@@ -2360,6 +2364,7 @@ export class PaletteEditor {
     this.doc = updateLayer(this.doc, layer.id, {
       canvas: flipCanvas(layer.canvas, axis),
     });
+    this.selection = null;
     const label = axis === "horizontal" ? "Flip layer horizontal" : "Flip layer vertical";
     this.commit(before, label);
     this.announce(`${label} applied.`);
@@ -2370,6 +2375,10 @@ export class PaletteEditor {
     this.finishText();
     const layer = activeLayer(this.doc);
     if (!layer) return;
+    if (!layer.visible) {
+      this.announce(`${layer.name} is hidden. Show it first.`, { error: true });
+      return;
+    }
     if (layer.locked) {
       this.announce(`${layer.name} is locked. Unlock it first.`, { error: true });
       return;
@@ -2383,6 +2392,8 @@ export class PaletteEditor {
     context.save();
     context.translate(centerX, centerY);
     context.rotate((direction * Math.PI) / 2);
+    context.imageSmoothingEnabled = true;
+    context.imageSmoothingQuality = "high";
     context.drawImage(layer.canvas, -centerX, -centerY);
     context.restore();
     this.doc = updateLayer(this.doc, layer.id, { canvas: output });
@@ -3026,6 +3037,15 @@ export class PaletteEditor {
       } else if (key === "d") {
         event.preventDefault();
         this.deselect();
+      } else if (key === "i" && event.shiftKey) {
+        event.preventDefault();
+        this.invertSelection();
+      } else if (key === "0") {
+        event.preventDefault();
+        this.fitView();
+      } else if (key === "1") {
+        event.preventDefault();
+        this.actualSize();
       } else if (key === "c") {
         event.preventDefault();
         this.copySelection();

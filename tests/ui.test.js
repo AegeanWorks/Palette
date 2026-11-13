@@ -421,7 +421,13 @@ test("editor keyboard shortcuts and paste routing cover retouching and placement
   assert.match(editorSource, /applyMedianFilter\(\)/);
   assert.match(editorSource, /applyBlurFilter\(\)/);
   assert.match(editorSource, /flipActiveLayer\(/);
+  assert.match(editorSource, /if \(!layer\.visible\) \{\s*this\.announce\(`\$\{layer\.name\} is hidden\. Show it first\./);
+  assert.match(editorSource, /flipCanvas\(layer\.canvas, axis\),\s*\}\);\s*this\.selection = null;/);
   assert.match(editorSource, /rotateActiveLayer\(/);
+  assert.match(editorSource, /context\.imageSmoothingEnabled = true;\s*context\.imageSmoothingQuality = "high";\s*context\.drawImage/);
+  assert.match(editorSource, /key === "i" && event\.shiftKey[\s\S]*?invertSelection\(\)/);
+  assert.match(editorSource, /key === "0"[\s\S]*?fitView\(\)/);
+  assert.match(editorSource, /key === "1"[\s\S]*?actualSize\(\)/);
   assert.match(editorSource, /modifySelection\(/);
   assert.match(editorSource, /stampVisible\(\)/);
   assert.match(editorSource, /key === "g" && event\.altKey[\s\S]*?toggleClippingMask/);
