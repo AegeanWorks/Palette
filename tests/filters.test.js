@@ -13,6 +13,8 @@ import {
   applyBrightnessContrast,
   applyColorBalance,
   applyNoise,
+  applyHighPass,
+  applyTint,
   applyPixelate,
   applySharpen,
   applyVignette,
@@ -403,6 +405,66 @@ test("noise adds monochrome and colored variation with deterministic seed and pr
     colorNoise.data[1] !== colorNoise.data[2] ||
     colorNoise.data[4] !== colorNoise.data[5];
   assert.ok(hasIndependentChannels, "Color noise channels should vary independently");
+});
+
+test("high pass retains high-frequency edge detail, neutralizes flat areas, and preserves alpha", () => {
+  // Uniform 5x5 image -> everywhere diff is 0, so output is exactly 128 neutral gray
+  const uniform = pixels(5, 5, 140);
+  uniform.data[3] = 190;
+  uniform.data[(2 * 5 + 2) * 4 + 3] = 210;
+  const hpUniform = applyHighPass(uniform, 2);
+  assert.notStrictEqual(hpUniform.data, uniform.data);
+  for (let i = 0; i < hpUniform.data.length; i += 4) {
+    assert.equal(hpUniform.data[i], 128);
+    assert.equal(hpUniform.data[i + 1], 128);
+    assert.equal(hpUniform.data[i + 2], 128);
+  }
+  // Alpha preserved
+  assert.equal(hpUniform.data[3], 190);
+  assert.equal(hpUniform.data[(2 * 5 + 2) * 4 + 3], 210);
+
+  // High contrast center point (center = 240, surrounding = 40)
+  const edge = pixels(5, 5, 40);
+  const centerIdx = (2 * 5 + 2) * 4;
+  edge.data[centerIdx] = 240;
+  edge.data[centerIdx + 1] = 240;
+  edge.data[centerIdx + 2] = 240;
+
+  const hpEdge = applyHighPass(edge, 1);
+  // Center pixel is higher than local blur -> highlight (> 128)
+  assert.ok(hpEdge.data[centerIdx] > 128, `Expected center > 128, got ${hpEdge.data[centerIdx]}`);
+  // Immediately adjacent pixel has orig=40 < blur -> shadow (< 128)
+  const adjIdx = (2 * 5 + 1) * 4;
+  assert.ok(hpEdge.data[adjIdx] < 128, `Expected adjacent < 128, got ${hpEdge.data[adjIdx]}`);
+});
+
+test("tint blends optical color filter, preserves luminosity and alpha", () => {
+  const source = pixels(2, 1, 100);
+  source.data[3] = 180;
+  source.data[7] = 220;
+
+  // Warm tint (#ec8a15: r=236, g=138, b=21) with preserveLuminosity
+  const warm = applyTint(source, { color: "#ec8a15", density: 40, preserveLuminosity: true });
+  assert.notStrictEqual(warm.data, source.data);
+  // Red channel increased, blue channel decreased
+  assert.ok(warm.data[0] > 100);
+  assert.ok(warm.data[2] < 100);
+  assert.equal(warm.data[3], 180); // alpha preserved
+
+  // Perceptual luminance check
+  const origLuma = 0.2126 * 100 + 0.7152 * 100 + 0.0722 * 100; // 100
+  const warmLuma = 0.2126 * warm.data[0] + 0.7152 * warm.data[1] + 0.0722 * warm.data[2];
+  assert.ok(Math.abs(origLuma - warmLuma) <= 2, `Luminance shifted too much: ${origLuma} vs ${warmLuma}`);
+
+  // Without preserveLuminosity (raw blend with blue #0073e6: r=0, g=115, b=230)
+  const coolRaw = applyTint(source, { color: "#0073e6", density: 50, preserveLuminosity: false });
+  // r = 100 * 0.5 + 0 * 0.5 = 50
+  assert.equal(coolRaw.data[0], 50);
+  // g = 100 * 0.5 + 115 * 0.5 = 107.5 -> 108
+  assert.equal(coolRaw.data[1], 108);
+  // b = 100 * 0.5 + 230 * 0.5 = 165
+  assert.equal(coolRaw.data[2], 165);
+  assert.equal(coolRaw.data[3], 180);
 });
 
 

@@ -117,6 +117,14 @@ test("the shell carries every critical editor surface", () => {
     "filter-noise-amount-value",
     "filter-noise-monochrome",
     "btn-filter-noise",
+    "filter-high-pass-radius",
+    "filter-high-pass-value",
+    "btn-filter-high-pass",
+    "filter-tint-color",
+    "filter-tint-density",
+    "filter-tint-density-value",
+    "filter-tint-preserve",
+    "btn-filter-tint",
     "btn-expand-selection",
     "btn-contract-selection",
     "btn-stamp-visible",
@@ -272,6 +280,12 @@ test("the filter panel exposes desaturate, threshold, posterize and swatches", (
   assert.match(html, /id="filter-noise-amount" type="range"/);
   assert.match(html, /id="filter-noise-monochrome" type="checkbox" checked/);
   assert.match(html, /data-ui="filter-noise"/);
+  assert.match(html, /id="filter-high-pass-radius" type="range"/);
+  assert.match(html, /data-ui="filter-high-pass"/);
+  assert.match(html, /id="filter-tint-color" type="color"/);
+  assert.match(html, /id="filter-tint-density" type="range"/);
+  assert.match(html, /id="filter-tint-preserve" type="checkbox" checked/);
+  assert.match(html, /data-ui="filter-tint"/);
   assert.match(html, /id="swatches-row"/);
   assert.match(html, /data-swatch="#000000"/);
   assert.match(html, /data-swatch="#22d3ee"/);
@@ -376,6 +390,8 @@ test("editor keyboard shortcuts and paste routing cover retouching and placement
   assert.match(editorSource, /applyBrightnessContrastFilter\(\)/);
   assert.match(editorSource, /applyColorBalanceFilter\(\)/);
   assert.match(editorSource, /applyNoiseFilter\(\)/);
+  assert.match(editorSource, /applyHighPassFilter\(\)/);
+  assert.match(editorSource, /applyTintFilter\(\)/);
   assert.match(editorSource, /modifySelection\(/);
   assert.match(editorSource, /stampVisible\(\)/);
   assert.match(editorSource, /key === "g" && event\.altKey[\s\S]*?toggleClippingMask/);

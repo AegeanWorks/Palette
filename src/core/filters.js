@@ -1,4 +1,4 @@
-import { clamp } from "./color.js";
+import { clamp, hexToRgb } from "./color.js";
 
 export const DEFAULT_ADJUSTMENTS = Object.freeze({
   brightness: 0,
@@ -365,6 +365,113 @@ export function applyNoise(
       out[index + 2] = clamp(data[index + 2] + deltaB, 0, 255);
     }
     out[index + 3] = data[index + 3];
+  }
+  return { width, height, data: out };
+}
+
+export function applyHighPass(pixels, radius = 10) {
+  const r = clamp(Math.round(Number(radius) || 10), 1, 50);
+  const { width, height, data } = pixels;
+  const out = new Uint8ClampedArray(data.length);
+  const windowSize = 2 * r + 1;
+
+  // Horizontal blur pass
+  const hBlur = new Float32Array(width * height * 3);
+  for (let y = 0; y < height; y += 1) {
+    const rowOffset = y * width;
+    for (let c = 0; c < 3; c += 1) {
+      let sum = 0;
+      for (let k = -r; k <= r; k += 1) {
+        const sampleX = clamp(k, 0, width - 1);
+        sum += data[(rowOffset + sampleX) * 4 + c];
+      }
+      for (let x = 0; x < width; x += 1) {
+        hBlur[(rowOffset + x) * 3 + c] = sum / windowSize;
+        const leftX = clamp(x - r, 0, width - 1);
+        const rightX = clamp(x + r + 1, 0, width - 1);
+        sum += data[(rowOffset + rightX) * 4 + c] - data[(rowOffset + leftX) * 4 + c];
+      }
+    }
+  }
+
+  // Vertical blur pass + High Pass difference
+  for (let x = 0; x < width; x += 1) {
+    for (let c = 0; c < 3; c += 1) {
+      let sum = 0;
+      for (let k = -r; k <= r; k += 1) {
+        const sampleY = clamp(k, 0, height - 1);
+        sum += hBlur[(sampleY * width + x) * 3 + c];
+      }
+      for (let y = 0; y < height; y += 1) {
+        const blurVal = sum / windowSize;
+        const topY = clamp(y - r, 0, height - 1);
+        const bottomY = clamp(y + r + 1, 0, height - 1);
+        sum += hBlur[(bottomY * width + x) * 3 + c] - hBlur[(topY * width + x) * 3 + c];
+
+        const idx = (y * width + x) * 4;
+        const orig = data[idx + c];
+        const diff = orig - blurVal;
+        out[idx + c] = clamp(Math.round(128 + diff), 0, 255);
+      }
+    }
+  }
+
+  // Preserve alpha channel
+  for (let idx = 0; idx < data.length; idx += 4) {
+    out[idx + 3] = data[idx + 3];
+  }
+
+  return { width, height, data: out };
+}
+
+export function applyTint(
+  pixels,
+  { color = "#ec8a15", density = 25, preserveLuminosity = true } = {},
+) {
+  const rgb = hexToRgb(color) ?? { r: 236, g: 138, b: 21 };
+  const d = clamp(Math.round(Number(density) || 25), 1, 100);
+  const weight = d / 100;
+  const preserve = Boolean(preserveLuminosity);
+  const { width, height, data } = pixels;
+  const out = new Uint8ClampedArray(data.length);
+
+  for (let index = 0; index < data.length; index += 4) {
+    const r = data[index];
+    const g = data[index + 1];
+    const b = data[index + 2];
+    const a = data[index + 3];
+
+    if (a === 0) {
+      out[index] = r;
+      out[index + 1] = g;
+      out[index + 2] = b;
+      out[index + 3] = 0;
+      continue;
+    }
+
+    const tintR = r * (1 - weight) + rgb.r * weight;
+    const tintG = g * (1 - weight) + rgb.g * weight;
+    const tintB = b * (1 - weight) + rgb.b * weight;
+
+    if (preserve) {
+      const origLuma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      const tintLuma = 0.2126 * tintR + 0.7152 * tintG + 0.0722 * tintB;
+      if (tintLuma > 0 && origLuma > 0) {
+        const ratio = origLuma / tintLuma;
+        out[index] = clamp(Math.round(tintR * ratio), 0, 255);
+        out[index + 1] = clamp(Math.round(tintG * ratio), 0, 255);
+        out[index + 2] = clamp(Math.round(tintB * ratio), 0, 255);
+      } else {
+        out[index] = clamp(Math.round(tintR), 0, 255);
+        out[index + 1] = clamp(Math.round(tintG), 0, 255);
+        out[index + 2] = clamp(Math.round(tintB), 0, 255);
+      }
+    } else {
+      out[index] = clamp(Math.round(tintR), 0, 255);
+      out[index + 1] = clamp(Math.round(tintG), 0, 255);
+      out[index + 2] = clamp(Math.round(tintB), 0, 255);
+    }
+    out[index + 3] = a;
   }
   return { width, height, data: out };
 }

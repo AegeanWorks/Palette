@@ -455,6 +455,15 @@
           <input id="filter-noise-amount" type="range" min="1" max="100" step="1" value="15">
           <label class="field" for="filter-noise-monochrome"><input id="filter-noise-monochrome" type="checkbox" checked> Monochrome</label>
           <button class="btn btn-ghost btn-small" id="btn-filter-noise" type="button" data-ui="filter-noise">Apply noise</button>
+          <label class="field" for="filter-high-pass-radius">High pass <output id="filter-high-pass-value" for="filter-high-pass-radius">10</output> px</label>
+          <input id="filter-high-pass-radius" type="range" min="1" max="50" step="1" value="10">
+          <button class="btn btn-ghost btn-small" id="btn-filter-high-pass" type="button" data-ui="filter-high-pass">Apply high pass</button>
+          <label class="field" for="filter-tint-color">Photo tint</label>
+          <input id="filter-tint-color" type="color" value="#ec8a15">
+          <label class="field" for="filter-tint-density">Tint density <output id="filter-tint-density-value" for="filter-tint-density">25</output>%</label>
+          <input id="filter-tint-density" type="range" min="1" max="100" step="1" value="25">
+          <label class="field" for="filter-tint-preserve"><input id="filter-tint-preserve" type="checkbox" checked> Preserve luminosity</label>
+          <button class="btn btn-ghost btn-small" id="btn-filter-tint" type="button" data-ui="filter-tint">Apply photo tint</button>
         </div>
       </section>
     </aside>

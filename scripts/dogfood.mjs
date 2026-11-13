@@ -1677,6 +1677,74 @@ async function main() {
       throw new Error(`Undo did not restore pixel after noise filter: ${JSON.stringify(restoredNoisePixel)}`);
     }
 
+    // Test high pass filter
+    await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const ctx = layer.canvas.getContext('2d');
+      ctx.fillStyle = '#646464';
+      ctx.fillRect(150, 150, 50, 50);
+      const hpRadius = document.getElementById('filter-high-pass-radius');
+      hpRadius.value = '5';
+      hpRadius.dispatchEvent(new Event('input'));
+    })()`);
+    await connection.evaluate("document.getElementById('btn-filter-high-pass').click()");
+    const hpPixel = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const pixel = layer.canvas.getContext('2d').getImageData(170, 170, 1, 1).data;
+      return [pixel[0], pixel[1], pixel[2], pixel[3]];
+    })()`);
+    if (hpPixel[0] !== 128 || hpPixel[1] !== 128 || hpPixel[2] !== 128 || hpPixel[3] !== 255) {
+      throw new Error(`High pass filter failed: ${JSON.stringify(hpPixel)}`);
+    }
+    await connection.evaluate("globalThis.palette.undo()");
+    await wait(220);
+    const restoredHpPixel = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const pixel = layer.canvas.getContext('2d').getImageData(170, 170, 1, 1).data;
+      return [pixel[0], pixel[1], pixel[2], pixel[3]];
+    })()`);
+    if (restoredHpPixel[0] !== 100 || restoredHpPixel[1] !== 100 || restoredHpPixel[2] !== 100) {
+      throw new Error(`Undo did not restore pixel after high pass filter: ${JSON.stringify(restoredHpPixel)}`);
+    }
+
+    // Test photo tint filter
+    await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const ctx = layer.canvas.getContext('2d');
+      ctx.fillStyle = '#646464';
+      ctx.fillRect(180, 180, 10, 10);
+      document.getElementById('filter-tint-color').value = '#ec8a15';
+      const tintDensity = document.getElementById('filter-tint-density');
+      tintDensity.value = '35';
+      tintDensity.dispatchEvent(new Event('input'));
+      document.getElementById('filter-tint-preserve').checked = true;
+    })()`);
+    await connection.evaluate("document.getElementById('btn-filter-tint').click()");
+    const tintPixel = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const pixel = layer.canvas.getContext('2d').getImageData(180, 180, 1, 1).data;
+      return [pixel[0], pixel[1], pixel[2], pixel[3]];
+    })()`);
+    if (tintPixel[0] <= 100 || tintPixel[2] >= 100 || tintPixel[3] !== 255) {
+      throw new Error(`Photo tint filter failed: ${JSON.stringify(tintPixel)}`);
+    }
+    await connection.evaluate("globalThis.palette.undo()");
+    await wait(220);
+    const restoredTintPixel = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const pixel = layer.canvas.getContext('2d').getImageData(180, 180, 1, 1).data;
+      return [pixel[0], pixel[1], pixel[2], pixel[3]];
+    })()`);
+    if (restoredTintPixel[0] !== 100 || restoredTintPixel[1] !== 100 || restoredTintPixel[2] !== 100) {
+      throw new Error(`Undo did not restore pixel after photo tint filter: ${JSON.stringify(restoredTintPixel)}`);
+    }
+
     // Test zoom shortcuts
     const zoomInitial = await connection.evaluate("globalThis.palette.view.scale");
     await connection.evaluate("globalThis.palette.zoomIn()");
@@ -1864,7 +1932,7 @@ async function main() {
     }
 
     console.log(
-      "[OK] Palette dogfood: layers, blend modes, clipping masks, clone stamp, dodge/burn, paint bucket, invert filter, desaturate/threshold/posterize/sepia/emboss/brightness-contrast/color-balance/noise filters, swatches, stamp visible, expand/contract selection, keyboard zoom, merge-down blend retention, image placement, gradients, layer locking, marquee selection/invert, clipboard, layer via copy/cut, autosave reload/restore, crop ratios, flatten, canvas size, layer transform, histogram/auto levels, levels, brush, eraser, move, undo, crop, adjustments, shapes, text, filters, resize, zoom, scaled export, project save and dialogs.",
+      "[OK] Palette dogfood: layers, blend modes, clipping masks, clone stamp, dodge/burn, paint bucket, invert filter, desaturate/threshold/posterize/sepia/emboss/brightness-contrast/color-balance/noise/high-pass/tint filters, swatches, stamp visible, expand/contract selection, keyboard zoom, merge-down blend retention, image placement, gradients, layer locking, marquee selection/invert, clipboard, layer via copy/cut, autosave reload/restore, crop ratios, flatten, canvas size, layer transform, histogram/auto levels, levels, brush, eraser, move, undo, crop, adjustments, shapes, text, filters, resize, zoom, scaled export, project save and dialogs.",
     );
     return 0;
   } catch (error) {

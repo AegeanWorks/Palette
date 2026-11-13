@@ -31,6 +31,8 @@ import {
   applyBrightnessContrast,
   applyColorBalance,
   applyNoise,
+  applyHighPass,
+  applyTint,
   applyDesaturate,
   applyEmboss,
   applyInvert,
@@ -185,6 +187,9 @@ const IDS = [
   "filter-cb-cr", "filter-cb-cr-value", "filter-cb-mg", "filter-cb-mg-value", "filter-cb-yb", "filter-cb-yb-value",
   "filter-cb-preserve", "btn-filter-color-balance", "filter-noise-amount", "filter-noise-amount-value",
   "filter-noise-monochrome", "btn-filter-noise",
+  "filter-high-pass-radius", "filter-high-pass-value", "btn-filter-high-pass",
+  "filter-tint-color", "filter-tint-density", "filter-tint-density-value",
+  "filter-tint-preserve", "btn-filter-tint",
   "status-tool", "status-message",
   "status-cursor", "status-zoom",
   "btn-actual", "new-dialog", "new-form", "new-name", "new-width", "new-height", "new-color",
@@ -2297,6 +2302,22 @@ export class PaletteEditor {
     );
   }
 
+  applyHighPassFilter() {
+    const radius = Number(this.el.filterHighPassRadius.value) || 10;
+    this.applyPixelsToActive(`High pass ${radius}px`, (pixels) =>
+      applyHighPass(pixels, radius),
+    );
+  }
+
+  applyTintFilter() {
+    const color = this.el.filterTintColor.value || "#ec8a15";
+    const density = Number(this.el.filterTintDensity.value) || 25;
+    const preserveLuminosity = Boolean(this.el.filterTintPreserve.checked);
+    this.applyPixelsToActive("Photo tint", (pixels) =>
+      applyTint(pixels, { color, density, preserveLuminosity }),
+    );
+  }
+
   openNewDialog() {
     if (this.isDialogOpen()) return;
     this.finishText();
@@ -3182,6 +3203,14 @@ export class PaletteEditor {
       this.el.filterNoiseAmountValue.textContent = this.el.filterNoiseAmount.value;
     });
     this.el.btnFilterNoise.addEventListener("click", () => this.applyNoiseFilter());
+    this.el.filterHighPassRadius.addEventListener("input", () => {
+      this.el.filterHighPassValue.textContent = this.el.filterHighPassRadius.value;
+    });
+    this.el.btnFilterHighPass.addEventListener("click", () => this.applyHighPassFilter());
+    this.el.filterTintDensity.addEventListener("input", () => {
+      this.el.filterTintDensityValue.textContent = this.el.filterTintDensity.value;
+    });
+    this.el.btnFilterTint.addEventListener("click", () => this.applyTintFilter());
 
     this.el.colorInput.addEventListener("input", () => this.setColor(this.el.colorInput.value));
     this.el.brushSize.addEventListener("input", () => {
