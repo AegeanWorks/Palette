@@ -3,32 +3,15 @@
   "active_task": {
     "task_id": "palette-hardening-and-shortcuts",
     "last_phase": "phase 4",
-    "active_phase": 4,
-    "status": "in_progress",
+    "active_phase": 5,
+    "status": "completed",
     "updated_at": 1794606793.8810525,
     "owner": "gemini",
     "started_by": "gemini",
-    "continuations": []
+    "continuations": [],
+    "completed_at": 1794606827.0950348
   },
   "checkpoints": [
-    {
-      "task_id": "palette-selection-and-toning",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/5] Plan: M1 core expandSelection and applyBrightnessContrast with unit tests; M2 UI controls in marquee and filter panels; M3 editor wiring and UI tests; M4 dogfood verification; M5 docs, ADR and gate verification",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1794601049.0675836,
-      "timestamp_str": "2026-11-13 23:17:29",
-      "agent": "antigravity:1",
-      "impact_assessment": {
-        "why": "Add selection modification (expand/contract) and destructive brightness/contrast filter to enable precision selection refinement and selective tonal adjustments",
-        "benefits": "Allows users to expand or shrink selections to remove border artifacts, and selectively adjust brightness and contrast on masked layer regions with undo support",
-        "risks": "contract: none, additive geometry helper and filter; dependency: none, pure vanilla JS and Canvas 2D; concurrency: none, synchronous math and pixel operations; state: none, returns fresh geometry objects and pixel buffers without altering existing history invariants",
-        "mitigation": "Clamp expanded rectangles to document boundaries, discard degenerate selections (<1px), clamp contrast factor to prevent division by zero, and test in unit and CDP suites"
-      },
-      "plan_digest": "a672d7bdf09450451d1a0e6b877d7393b7a70dbc7b13ccf9e13e33d6c73860dd"
-    },
     {
       "task_id": "palette-selection-and-toning",
       "phase": "phase 4",
@@ -277,6 +260,16 @@
       "timestamp_str": "2026-11-14 00:53:13",
       "agent": "gemini",
       "checklists": "passed"
+    },
+    {
+      "task_id": "palette-hardening-and-shortcuts",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'palette-hardening-and-shortcuts' completed successfully.",
+      "status": "completed",
+      "timestamp": 1794606827.0950363,
+      "timestamp_str": "2026-11-14 00:53:47",
+      "agent": "gemini"
     }
   ]
 }
