@@ -163,3 +163,15 @@ export function applyLevels(pixels, { black = 0, white = 255, gamma = 1 } = {}) 
   }
   return { width, height, data: out };
 }
+
+export function applyInvert(pixels) {
+  const { width, height, data } = pixels;
+  const out = new Uint8ClampedArray(data.length);
+  for (let index = 0; index < data.length; index += 4) {
+    out[index] = 255 - data[index];
+    out[index + 1] = 255 - data[index + 1];
+    out[index + 2] = 255 - data[index + 2];
+    out[index + 3] = data[index + 3];
+  }
+  return { width, height, data: out };
+}

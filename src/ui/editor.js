@@ -28,12 +28,14 @@ import {
 } from "../core/export.js";
 import {
   DEFAULT_ADJUSTMENTS,
+  applyInvert,
   applyLevels,
   applyPixelate,
   applySharpen,
   applyVignette,
   buildCssFilter,
 } from "../core/filters.js";
+import { floodFillPixels } from "../core/fill.js";
 import {
   anchorOffset,
   clampRect,
@@ -114,6 +116,7 @@ const TOOL_META = Object.freeze({
   eraser: { label: "Eraser", cursor: "crosshair", hint: "Erase pixels from the active layer." },
   clone: { label: "Clone stamp", cursor: "crosshair", hint: "Alt-click a source, then drag to clone from it." },
   dodge: { label: "Dodge & burn", cursor: "crosshair", hint: "Drag to lighten or darken existing pixels." },
+  bucket: { label: "Paint bucket", cursor: "crosshair", hint: "Click an area to fill with the active colour." },
   crop: { label: "Crop", cursor: "crosshair", hint: "Drag a region, then confirm." },
   marquee: { label: "Marquee", cursor: "crosshair", hint: "Drag to select a region. Ctrl+A selects all; Ctrl+D deselects." },
   text: { label: "Text", cursor: "text", hint: "Click the canvas, type a line, then press Add." },
@@ -142,7 +145,7 @@ const IDS = [
   "btn-undo", "btn-redo", "btn-help", "file-image", "file-layer", "file-project", "stage-wrap", "doc-frame",
   "stage", "overlay", "text-editor", "text-input", "text-commit", "text-cancel", "drop-hint",
   "stage-note", "btn-zoom-out", "btn-fit", "btn-zoom-in", "color-row", "color-input", "color-hex",
-  "tool-hint",   "options-brush", "options-eraser", "options-clone", "options-dodge", "options-shape", "options-text", "options-gradient",
+  "tool-hint",   "options-brush", "options-eraser", "options-clone", "options-dodge", "options-bucket", "options-shape", "options-text", "options-gradient",
   "options-marquee", "options-crop", "options-move", "marquee-shape", "crop-aspect", "btn-select-all", "btn-deselect",
   "btn-crop-selection", "btn-invert-selection", "btn-copy", "btn-cut", "btn-paste",
   "btn-layer-via-copy", "btn-layer-via-cut", "brush-size", "brush-size-value", "brush-hardness",
@@ -150,6 +153,7 @@ const IDS = [
   "eraser-hardness", "eraser-hardness-value", "eraser-opacity", "eraser-opacity-value", "shape-fill",
   "clone-size", "clone-size-value", "clone-hardness", "clone-hardness-value", "clone-opacity", "clone-opacity-value",
   "dodge-mode", "dodge-size", "dodge-size-value", "dodge-hardness", "dodge-hardness-value", "dodge-strength", "dodge-strength-value",
+  "bucket-tolerance", "bucket-tolerance-value", "bucket-opacity", "bucket-opacity-value", "bucket-contiguous",
   "shape-outline", "shape-outline-color", "shape-outline-hex", "shape-width", "shape-width-value",
   "text-font", "text-size", "text-size-value", "text-weight", "gradient-type", "gradient-end",
   "gradient-end-hex", "gradient-fade", "gradient-opacity", "gradient-opacity-value", "crop-apply",
@@ -164,7 +168,7 @@ const IDS = [
   "adj-grayscale-value", "adj-sepia", "adj-sepia-value", "adj-invert", "adj-invert-value",
   "adj-blur", "adj-blur-value", "filter-blur-radius", "filter-blur-value", "btn-filter-blur",
   "filter-pixel-size", "filter-pixel-value", "btn-filter-pixelate", "btn-filter-sharpen",
-  "btn-filter-vignette", "level-black", "level-black-value", "level-white", "level-white-value",
+  "btn-filter-vignette", "btn-filter-invert", "level-black", "level-black-value", "level-white", "level-white-value",
   "level-gamma", "level-gamma-value", "btn-filter-levels", "status-tool", "status-message",
   "status-cursor", "status-zoom",
   "btn-actual", "new-dialog", "new-form", "new-name", "new-width", "new-height", "new-color",
@@ -352,6 +356,7 @@ export class PaletteEditor {
       eraser: { size: 40, hardness: 0.6, opacity: 1 },
       clone: { size: 48, hardness: 0.6, opacity: 1 },
       dodge: { mode: "dodge", size: 64, hardness: 0.5, strength: 0.2 },
+      bucket: { tolerance: 32, opacity: 1, contiguous: true },
       shape: { fill: true, outline: true, width: 4, outlineColor: "#e9eefb" },
       gradient: { type: "linear", to: "#a78bfa", fade: true, opacity: 1 },
       marquee: { kind: "rect" },
@@ -551,6 +556,7 @@ export class PaletteEditor {
       eraser: this.el.optionsEraser,
       clone: this.el.optionsClone,
       dodge: this.el.optionsDodge,
+      bucket: this.el.optionsBucket,
       shape: this.el.optionsShape,
       text: this.el.optionsText,
       gradient: this.el.optionsGradient,
@@ -559,7 +565,7 @@ export class PaletteEditor {
       move: this.el.optionsMove,
     };
     for (const [name, node] of Object.entries(groups)) node.hidden = name !== this.tool && !(name === "shape" && ["rect", "ellipse", "line"].includes(this.tool));
-    const usesColor = ["brush", "text", "rect", "ellipse", "line", "gradient", "eyedropper"].includes(this.tool);
+    const usesColor = ["brush", "text", "rect", "ellipse", "line", "gradient", "eyedropper", "bucket"].includes(this.tool);
     this.el.colorRow.hidden = !usesColor;
     const meta = TOOL_META[this.tool] ?? TOOL_META.move;
     this.el.toolHint.textContent = meta.hint;
@@ -571,7 +577,7 @@ export class PaletteEditor {
   }
 
   syncOptionControls() {
-    const { brush, eraser, clone, dodge, shape, gradient, text } = this.options;
+    const { brush, eraser, clone, dodge, bucket, shape, gradient, text } = this.options;
     this.el.brushSize.value = String(brush.size);
     this.el.brushSizeValue.textContent = String(brush.size);
     this.el.brushHardness.value = String(Math.round(brush.hardness * 100));
@@ -596,6 +602,11 @@ export class PaletteEditor {
     this.el.dodgeHardnessValue.textContent = String(Math.round(dodge.hardness * 100));
     this.el.dodgeStrength.value = String(Math.round(dodge.strength * 100));
     this.el.dodgeStrengthValue.textContent = String(Math.round(dodge.strength * 100));
+    this.el.bucketTolerance.value = String(bucket.tolerance);
+    this.el.bucketToleranceValue.textContent = String(bucket.tolerance);
+    this.el.bucketOpacity.value = String(Math.round(bucket.opacity * 100));
+    this.el.bucketOpacityValue.textContent = String(Math.round(bucket.opacity * 100));
+    this.el.bucketContiguous.checked = Boolean(bucket.contiguous);
     this.el.shapeFill.checked = shape.fill;
     this.el.shapeOutline.checked = shape.outline;
     this.el.shapeWidth.value = String(shape.width);
@@ -733,6 +744,14 @@ export class PaletteEditor {
   zoomBy(factor) {
     const rect = this.el.stageWrap.getBoundingClientRect();
     this.zoomAtPoint({ x: rect.width / 2, y: rect.height / 2 }, factor);
+  }
+
+  zoomIn() {
+    this.zoomBy(1.25);
+  }
+
+  zoomOut() {
+    this.zoomBy(0.8);
   }
 
   zoomAtPoint(screen, factor) {
@@ -1059,6 +1078,10 @@ export class PaletteEditor {
     }
     if (this.tool === "eyedropper") {
       this.pickColor(point);
+      return;
+    }
+    if (this.tool === "bucket") {
+      this.fillArea(point);
       return;
     }
     if (!this.pointInsideDoc(point)) return;
@@ -1784,6 +1807,29 @@ export class PaletteEditor {
     this.announce(`Picked ${hex}.`);
   }
 
+  fillArea(point) {
+    if (!this.pointInsideDoc(point)) return;
+    this.finishText();
+    const layer = this.requireActiveLayer();
+    if (!layer) return;
+    const px = Math.floor(point.x);
+    const py = Math.floor(point.y);
+    const before = this.doc;
+    const pixels = getPixels(layer.canvas);
+    const filled = floodFillPixels(pixels, px, py, this.options.color, {
+      tolerance: this.options.bucket.tolerance,
+      opacity: this.options.bucket.opacity,
+      contiguous: this.options.bucket.contiguous,
+      selection: this.selection,
+    });
+    const replacement = createCanvas(layer.canvas.width, layer.canvas.height);
+    putPixels(replacement, filled);
+    this.doc = updateLayer(this.doc, layer.id, { canvas: replacement });
+    this.commit(before, "Paint bucket");
+    this.scheduleRender();
+    this.announce("Filled area.");
+  }
+
   setColor(value) {
     const hex = normalizeHex(value, this.options.color);
     this.options.color = hex;
@@ -2158,6 +2204,10 @@ export class PaletteEditor {
 
   applyVignetteFilter() {
     this.applyPixelsToActive("Vignette", (pixels) => applyVignette(pixels, 0.6));
+  }
+
+  applyInvertFilter() {
+    this.applyPixelsToActive("Invert colours", (pixels) => applyInvert(pixels));
   }
 
   applyLevelsFilter() {
@@ -2801,6 +2851,12 @@ export class PaletteEditor {
       } else if (key === "g" && event.altKey) {
         event.preventDefault();
         this.toggleClippingMask();
+      } else if (key === "+" || key === "=") {
+        event.preventDefault();
+        this.zoomIn();
+      } else if (key === "-" || key === "_") {
+        event.preventDefault();
+        this.zoomOut();
       }
       return;
     }
@@ -2815,6 +2871,7 @@ export class PaletteEditor {
       e: "eraser",
       s: "clone",
       d: "dodge",
+      k: "bucket",
       c: "crop",
       m: "marquee",
       t: "text",
@@ -2830,6 +2887,16 @@ export class PaletteEditor {
     if (tool && !event.altKey) {
       event.preventDefault();
       this.setTool(tool);
+      return;
+    }
+    if (event.key === "+" || event.key === "=") {
+      event.preventDefault();
+      this.zoomIn();
+      return;
+    }
+    if (event.key === "-" || event.key === "_") {
+      event.preventDefault();
+      this.zoomOut();
       return;
     }
     if (event.key === "[" || event.key === "]") {
@@ -2977,6 +3044,7 @@ export class PaletteEditor {
     this.el.btnFilterPixelate.addEventListener("click", () => this.applyPixelateFilter());
     this.el.btnFilterSharpen.addEventListener("click", () => this.applySharpenFilter());
     this.el.btnFilterVignette.addEventListener("click", () => this.applyVignetteFilter());
+    this.el.btnFilterInvert.addEventListener("click", () => this.applyInvertFilter());
     this.el.btnFilterLevels.addEventListener("click", () => this.applyLevelsFilter());
 
     this.el.colorInput.addEventListener("input", () => this.setColor(this.el.colorInput.value));
@@ -3034,6 +3102,17 @@ export class PaletteEditor {
     this.el.dodgeStrength.addEventListener("input", () => {
       this.options.dodge.strength = Number(this.el.dodgeStrength.value) / 100;
       this.el.dodgeStrengthValue.textContent = this.el.dodgeStrength.value;
+    });
+    this.el.bucketTolerance.addEventListener("input", () => {
+      this.options.bucket.tolerance = Number(this.el.bucketTolerance.value);
+      this.el.bucketToleranceValue.textContent = this.el.bucketTolerance.value;
+    });
+    this.el.bucketOpacity.addEventListener("input", () => {
+      this.options.bucket.opacity = Number(this.el.bucketOpacity.value) / 100;
+      this.el.bucketOpacityValue.textContent = this.el.bucketOpacity.value;
+    });
+    this.el.bucketContiguous.addEventListener("change", () => {
+      this.options.bucket.contiguous = this.el.bucketContiguous.checked;
     });
     this.el.shapeFill.addEventListener("change", () => {
       this.options.shape.fill = this.el.shapeFill.checked;

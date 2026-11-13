@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import {
   DEFAULT_ADJUSTMENTS,
   applyLevels,
+  applyInvert,
   applyPixelate,
   applySharpen,
   applyVignette,
@@ -123,4 +124,27 @@ test("levels gamma brightens midtones and clamps invalid ranges", () => {
   const safe = applyLevels(source, { black: 200, white: 10, gamma: 99 });
   assert.equal(safe.width, 1);
   assert.equal(safe.data[3], 255);
+});
+
+test("invert inverts RGB channels while preserving alpha", () => {
+  const source = pixels(2, 1, 0);
+  source.data[0] = 50;
+  source.data[1] = 100;
+  source.data[2] = 200;
+  source.data[3] = 180;
+  source.data[4] = 255;
+  source.data[5] = 0;
+  source.data[6] = 128;
+  source.data[7] = 255;
+
+  const inverted = applyInvert(source);
+  assert.notStrictEqual(inverted.data, source.data);
+  assert.equal(inverted.data[0], 205);
+  assert.equal(inverted.data[1], 155);
+  assert.equal(inverted.data[2], 55);
+  assert.equal(inverted.data[3], 180); // alpha preserved
+  assert.equal(inverted.data[4], 0);
+  assert.equal(inverted.data[5], 255);
+  assert.equal(inverted.data[6], 127);
+  assert.equal(inverted.data[7], 255);
 });

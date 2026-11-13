@@ -169,6 +169,27 @@ async function drag(connection, from, to) {
   await wait(140);
 }
 
+async function click(connection, point) {
+  await connection.send("Input.dispatchMouseEvent", {
+    type: "mousePressed",
+    x: point.x,
+    y: point.y,
+    button: "left",
+    buttons: 1,
+    clickCount: 1,
+  });
+  await wait(40);
+  await connection.send("Input.dispatchMouseEvent", {
+    type: "mouseReleased",
+    x: point.x,
+    y: point.y,
+    button: "left",
+    buttons: 0,
+    clickCount: 1,
+  });
+  await wait(140);
+}
+
 async function editorState(connection) {
   return connection.evaluate(`(() => {
     const editor = globalThis.palette;
@@ -245,7 +266,7 @@ async function main() {
         undo: editor?.history?.canUndo ?? null,
       };
     })()`);
-    if (initial.layers !== 3 || initial.tools !== 15 || initial.name !== "Welcome to Palette") {
+    if (initial.layers !== 3 || initial.tools !== 16 || initial.name !== "Welcome to Palette") {
       throw new Error(`The welcome document did not mount: ${JSON.stringify(initial)}`);
     }
     if (!initial.size || initial.size[0] !== 1280 || initial.size[1] !== 800 || initial.undo !== false) {
@@ -1335,6 +1356,95 @@ async function main() {
       editor.scheduleRender();
     })()`);
 
+    await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const context = layer.canvas.getContext('2d');
+      globalThis.__bucketBackup = context.getImageData(0, 0, layer.canvas.width, layer.canvas.height);
+      context.save();
+      context.filter = 'none';
+      context.clearRect(0, 0, layer.canvas.width, layer.canvas.height);
+      context.fillStyle = 'rgb(255,255,255)';
+      context.fillRect(100, 100, 100, 100);
+      context.restore();
+      editor.setTool('bucket');
+      editor.setColor('#ff00aa');
+      editor.options.bucket.tolerance = 20;
+      editor.options.bucket.contiguous = true;
+      editor.syncOptionControls();
+      editor.scheduleRender();
+    })()`);
+    const bucketClickPoint = await pointInDocument(connection, 120, 120);
+    await click(connection, bucketClickPoint);
+    const bucketFilled = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const filledPixel = layer.canvas.getContext('2d').getImageData(120, 120, 1, 1).data;
+      const outsidePixel = layer.canvas.getContext('2d').getImageData(50, 50, 1, 1).data;
+      return {
+        filled: [filledPixel[0], filledPixel[1], filledPixel[2], filledPixel[3]],
+        outside: [outsidePixel[0], outsidePixel[1], outsidePixel[2], outsidePixel[3]],
+        undo: editor.history.canUndo,
+      };
+    })()`);
+    if (
+      bucketFilled.filled[0] !== 255 ||
+      bucketFilled.filled[1] !== 0 ||
+      bucketFilled.filled[2] !== 170 ||
+      bucketFilled.outside[3] !== 0 ||
+      !bucketFilled.undo
+    ) {
+      throw new Error(`Paint bucket did not fill expected region: ${JSON.stringify(bucketFilled)}`);
+    }
+    await connection.evaluate("globalThis.palette.undo()");
+    await wait(220);
+    const bucketUndone = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const pixel = layer.canvas.getContext('2d').getImageData(120, 120, 1, 1).data;
+      return [pixel[0], pixel[1], pixel[2], pixel[3]];
+    })()`);
+    if (bucketUndone[0] !== 255 || bucketUndone[1] !== 255 || bucketUndone[2] !== 255) {
+      throw new Error(`Undo did not restore before bucket fill: ${JSON.stringify(bucketUndone)}`);
+    }
+
+    // Test invert filter
+    await connection.evaluate("globalThis.palette.applyInvertFilter()");
+    const invertedPixel = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const pixel = layer.canvas.getContext('2d').getImageData(120, 120, 1, 1).data;
+      return [pixel[0], pixel[1], pixel[2], pixel[3]];
+    })()`);
+    if (invertedPixel[0] !== 0 || invertedPixel[1] !== 0 || invertedPixel[2] !== 0 || invertedPixel[3] !== 255) {
+      throw new Error(`Invert filter did not invert pixels: ${JSON.stringify(invertedPixel)}`);
+    }
+    await connection.evaluate("globalThis.palette.undo()");
+    await wait(220);
+
+    // Test zoom shortcuts
+    const zoomInitial = await connection.evaluate("globalThis.palette.view.scale");
+    await connection.evaluate("globalThis.palette.zoomIn()");
+    const zoomInScale = await connection.evaluate("globalThis.palette.view.scale");
+    if (zoomInScale <= zoomInitial) {
+      throw new Error(`zoomIn did not increase scale: ${zoomInitial} -> ${zoomInScale}`);
+    }
+    await connection.evaluate("globalThis.palette.zoomOut()");
+    const zoomOutScale = await connection.evaluate("globalThis.palette.view.scale");
+    if (Math.abs(zoomOutScale - zoomInitial) > 0.01) {
+      throw new Error(`zoomOut did not restore scale: ${zoomInitial} -> ${zoomOutScale}`);
+    }
+
+    await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      layer.canvas.getContext('2d').putImageData(globalThis.__bucketBackup, 0, 0);
+      delete globalThis.__bucketBackup;
+      editor.setTool('move');
+      editor.renderLayerList();
+      editor.scheduleRender();
+    })()`);
+
     const clipping = await connection.evaluate(`(async () => {
       const { compositeDocument } = await import('/src/ui/canvas.js');
       const editor = globalThis.palette;
@@ -1499,7 +1609,7 @@ async function main() {
     }
 
     console.log(
-      "[OK] Palette dogfood: layers, blend modes, clipping masks, clone stamp, dodge/burn, merge-down blend retention, image placement, gradients, layer locking, marquee selection/invert, clipboard, layer via copy/cut, autosave reload/restore, crop ratios, flatten, canvas size, layer transform, histogram/auto levels, levels, brush, eraser, move, undo, crop, adjustments, shapes, text, filters, resize, zoom, scaled export, project save and dialogs.",
+      "[OK] Palette dogfood: layers, blend modes, clipping masks, clone stamp, dodge/burn, paint bucket, invert filter, keyboard zoom, merge-down blend retention, image placement, gradients, layer locking, marquee selection/invert, clipboard, layer via copy/cut, autosave reload/restore, crop ratios, flatten, canvas size, layer transform, histogram/auto levels, levels, brush, eraser, move, undo, crop, adjustments, shapes, text, filters, resize, zoom, scaled export, project save and dialogs.",
     );
     return 0;
   } catch (error) {

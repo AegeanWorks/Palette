@@ -34,11 +34,11 @@ No server, no accounts, no uploads, no build step.
 
 - **Layers**: add, duplicate, delete, merge down, flatten, reorder, rename, hide, lock, clip to the layer below, change opacity, transform (scale/rotate/flip around visible content), place another image as a centered layer, and see live thumbnails.
 - **Blend modes**: normal, multiply, screen, overlay, darken, lighten, color dodge/burn, hard/soft light, difference, exclusion, hue, saturation, color and luminosity, preserved in projects and exports.
-- **Tools**: move, brush, eraser, clone stamp, dodge/burn, crop, marquee selection, text, rectangle, ellipse, line, linear/radial gradient, eyedropper, hand and zoom. Shift constrains squares, circles and 45° lines; Alt-click sets the clone source.
+- **Tools**: move, brush, eraser, clone stamp, dodge/burn, paint bucket, crop, marquee selection, text, rectangle, ellipse, line, linear/radial gradient, eyedropper, hand and zoom. Shift constrains squares, circles and 45° lines; Alt-click sets the clone source; K fills contiguous or matching regions.
 - **Selections**: rectangle or ellipse marquees clip paint, shapes, text, gradients and destructive filters, support selected-pixel moves, delete-selected, select-all, deselect, invert and crop-to-selection. Adjustments remain layer-wide.
 - **Clipboard**: copy/cut the selection or the whole layer, paste as a new layer, and create layers via copy or cut with a single undo step. Pasted art is fitted and centred when the document size changed.
 - **Adjustments**: non-destructive brightness, contrast, saturation, hue, grayscale, sepia, invert and blur stored per layer and visible in exports.
-- **Filters**: blur, pixelate, sharpen, vignette, Levels (black point, white point and gamma) and Auto levels baked into the active layer or current selection with undo support.
+- **Filters**: blur, pixelate, sharpen, vignette, Invert, Levels (black point, white point and gamma) and Auto levels baked into the active layer or current selection with undo support.
 - **Histogram**: a live luminance histogram of the active layer with a percentile-derived black/white range and a one-click Auto levels command that samples the active selection when one exists.
 - **Document**: new document with white, transparent or custom background; open or drag-and-drop images; resize, canvas size with nine anchors, flip, rotate 90° and crop with free, 1:1, 4:3, 3:2, 16:9 or 9:16 ratios.
 - **History**: bounded undo/redo for every edit, including blend-mode changes and merge-down, with a memory-conscious per-document limit.
@@ -52,7 +52,7 @@ Everything happens in the browser. Images are never uploaded, and there is no ne
 
 | Keys | Action |
 |---|---|
-| `V`, `B`, `E`, `S`, `C`, `M`, `T` | Move, brush, eraser, clone stamp, dodge/burn, crop, marquee, text |
+| `V`, `B`, `E`, `S`, `D`, `K`, `C`, `M`, `T` | Move, brush, eraser, clone stamp, dodge/burn, paint bucket, crop, marquee, text |
 | `R`, `O`, `L`, `G`, `I`, `H`, `Z` | Rectangle, ellipse, line, gradient, eyedropper, hand, zoom |
 | `Ctrl/Cmd + A` / `Ctrl/Cmd + D` | Select all / deselect |
 | `Shift + I` | Invert the selection |
@@ -63,7 +63,8 @@ Everything happens in the browser. Images are never uploaded, and there is no ne
 | `Ctrl/Cmd + Alt + G` | Clip the active layer to the layer below |
 | `Ctrl/Cmd + O` | Open an image |
 | `Ctrl/Cmd + E` | Export |
-| `[` / `]` | Decrease / increase brush or eraser size |
+| `[` / `]` | Decrease / increase brush, eraser, clone, or dodge size |
+| `+` / `-` | Zoom in / Zoom out |
 | `0` / `1` | Fit to view / 100% |
 | `Space + drag` | Pan from any tool |
 | Arrow keys | Nudge the active layer 1 px (`Shift` = 10 px) |
@@ -86,7 +87,8 @@ palette/
 │   │   ├── color.js           <- hex/RGB helpers and clamping
 │   │   ├── document.js        <- document and layer model
 │   │   ├── export.js          <- format, quality and file-name rules
-│   │   ├── filters.js         <- adjustments, sharpen, vignette, pixelate
+│   │   ├── fill.js            <- flood fill, tolerance, contiguous and selection clipping
+│   │   ├── filters.js         <- adjustments, sharpen, vignette, pixelate, invert
 │   │   ├── geometry.js        <- rects, viewport math and zoom
 │   │   ├── gradient.js        <- gradient types, stops and drag thresholds
 │   │   ├── histogram.js       <- tonal counts and percentile ranges
@@ -122,7 +124,7 @@ palette/
 
 ```bash
 npm test          # core, server and static-contract suites
-npm run dogfood   # real headless browser: autosave reload/restore, selections/invert, clipboard, layer via copy/cut, clipping masks, clone stamp, dodge/burn, crop ratios, flatten, canvas size, layer transform, histogram/auto levels, gradients, levels, locks, placement, brush, eraser, move, shapes, text, filters, resize, zoom, scaled export and project save
+npm run dogfood   # real headless browser: autosave reload/restore, selections/invert, clipboard, layer via copy/cut, clipping masks, clone stamp, dodge/burn, paint bucket, invert filter, keyboard zoom, crop ratios, flatten, canvas size, layer transform, histogram/auto levels, gradients, levels, locks, placement, brush, eraser, move, shapes, text, filters, resize, zoom, scaled export and project save
 ```
 
 The dogfood pass starts the real static server, launches an installed Edge/Chrome, drives the UI through the DevTools protocol, and fails on a page error. It also verifies that PNG export and `.palette` project save download real files. It skips cleanly when no Chromium browser is available.
@@ -152,6 +154,8 @@ python tools/sync_editor.py --check
 - **Placement**: the Layers panel's image button decodes a local image, fits it inside the current document without upscaling, centers it above the active layer, and commits the placement as one undoable step.
 - **Clone stamp**: Alt-click stores a source point, then each stroke samples a snapshot of the active layer through the brush mask and selection, so cloned pixels never feed back into the same stroke.
 - **Dodge & burn**: one tool with a mode switch lightens or darkens only the layer's existing pixels through the brush mask and selection; transparent areas stay transparent and each stroke is one undo step.
+- **Paint bucket**: fills a contiguous color region or replaces matching pixels across the layer using an RGBA Euclidean tolerance threshold, respecting active selections and opacity.
+- **Invert filter**: destructive pixel inversion for RGB channels with alpha preservation, clipped to the active marquee.
 - **Non-destructive adjustments**: the per-layer adjustment stack is a CSS filter at render/export time, so it can be reset without losing pixels.
 
 ## 📜 License

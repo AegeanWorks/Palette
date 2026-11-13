@@ -86,6 +86,11 @@ test("the shell carries every critical editor surface", () => {
     "restore-discard",
     "crop-apply",
     "crop-cancel",
+    "options-bucket",
+    "bucket-tolerance",
+    "bucket-opacity",
+    "bucket-contiguous",
+    "btn-filter-invert",
   ]) {
     assert.ok(found.has(id), `missing #${id}`);
   }
@@ -99,6 +104,7 @@ test("every tool and panel control is named once", () => {
     "eraser",
     "clone",
     "dodge",
+    "bucket",
     "crop",
     "marquee",
     "text",
@@ -167,6 +173,14 @@ test("the clone panel exposes size, hardness and opacity", () => {
   assert.match(html, /id="clone-hardness" type="range"/);
   assert.match(html, /id="clone-opacity" type="range"/);
   assert.match(html, /Alt-click a source point/);
+});
+
+test("the bucket panel exposes tolerance, opacity and contiguous", () => {
+  assert.match(html, /data-ui="tool-bucket"/);
+  assert.match(html, /id="options-bucket"/);
+  assert.match(html, /id="bucket-tolerance" type="range"/);
+  assert.match(html, /id="bucket-opacity" type="range"/);
+  assert.match(html, /id="bucket-contiguous" type="checkbox"/);
 });
 
 test("the gradient panel exposes type, end colour, fade and opacity", () => {
@@ -288,9 +302,12 @@ test("every local module import resolves", () => {
 
 test("editor keyboard shortcuts and paste routing cover retouching and placement", () => {
   const editorSource = readFileSync(resolve(root, "src/ui/editor.js"), "utf8");
-  for (const tool of ["move", "brush", "eraser", "clone", "dodge", "crop", "marquee", "text", "rect", "ellipse", "line", "gradient", "eyedropper", "hand", "zoom"]) {
+  for (const tool of ["move", "brush", "eraser", "clone", "dodge", "bucket", "crop", "marquee", "text", "rect", "ellipse", "line", "gradient", "eyedropper", "hand", "zoom"]) {
     assert.match(editorSource, new RegExp(`\\b${tool}\\b`));
   }
+  assert.match(editorSource, /k:\s*"bucket"/);
+  assert.match(editorSource, /key === "\+" \|\| key === "="/);
+  assert.match(editorSource, /applyInvertFilter\(\)/);
   assert.match(editorSource, /key === "g" && event\.altKey[\s\S]*?toggleClippingMask/);
   assert.match(editorSource, /if \(this\.doc\) \{\s*this\.addImageLayer\(file\);\s*\} else \{\s*this\.openImageFile\(file\);\s*\}/);
   assert.match(editorSource, /if \(this\.clipboard\) \{\s*event\.preventDefault\(\);\s*this\.pasteClipboard\(\);\s*\}/);
