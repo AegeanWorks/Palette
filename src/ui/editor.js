@@ -28,6 +28,7 @@ import {
 } from "../core/export.js";
 import {
   DEFAULT_ADJUSTMENTS,
+  applyBrightnessContrast,
   applyDesaturate,
   applyEmboss,
   applyInvert,
@@ -49,6 +50,7 @@ import {
   constrainSquare,
   containRect,
   docToScreen,
+  expandSelection,
   fitView,
   isUsableRect,
   normalizeRect,
@@ -152,7 +154,7 @@ const IDS = [
   "stage-note", "btn-zoom-out", "btn-fit", "btn-zoom-in", "color-row", "color-input", "color-hex",
   "tool-hint",   "options-brush", "options-eraser", "options-clone", "options-dodge", "options-bucket", "options-shape", "options-text", "options-gradient",
   "options-marquee", "options-crop", "options-move", "marquee-shape", "crop-aspect", "btn-select-all", "btn-deselect",
-  "btn-crop-selection", "btn-invert-selection", "btn-copy", "btn-cut", "btn-paste",
+  "btn-crop-selection", "btn-invert-selection", "btn-expand-selection", "btn-contract-selection", "btn-copy", "btn-cut", "btn-paste",
   "btn-layer-via-copy", "btn-layer-via-cut", "brush-size", "brush-size-value", "brush-hardness",
   "brush-hardness-value", "brush-opacity", "brush-opacity-value", "eraser-size", "eraser-size-value",
   "eraser-hardness", "eraser-hardness-value", "eraser-opacity", "eraser-opacity-value", "shape-fill",
@@ -176,7 +178,8 @@ const IDS = [
   "btn-filter-vignette", "btn-filter-invert", "btn-filter-desaturate", "filter-threshold-cutoff",
   "filter-threshold-value", "btn-filter-threshold", "filter-posterize-steps", "filter-posterize-value",
   "btn-filter-posterize", "btn-filter-sepia", "btn-filter-emboss", "swatches-row", "level-black", "level-black-value", "level-white", "level-white-value",
-  "level-gamma", "level-gamma-value", "btn-filter-levels", "status-tool", "status-message",
+  "level-gamma", "level-gamma-value", "btn-filter-levels", "filter-brightness", "filter-brightness-value",
+  "filter-contrast", "filter-contrast-value", "btn-filter-bc", "status-tool", "status-message",
   "status-cursor", "status-zoom",
   "btn-actual", "new-dialog", "new-form", "new-name", "new-width", "new-height", "new-color",
   "new-cancel", "new-create", "export-dialog", "export-form", "export-name", "export-format",
@@ -493,6 +496,8 @@ export class PaletteEditor {
     this.el.cropCancel.disabled = !this.cropRect;
     this.el.btnDeselect.disabled = !this.selection;
     this.el.btnCropSelection.disabled = !this.selection || Boolean(this.selection.invert);
+    this.el.btnExpandSelection.disabled = !this.selection;
+    this.el.btnContractSelection.disabled = !this.selection;
     this.el.btnInvertSelection.setAttribute("aria-pressed", this.selection?.invert ? "true" : "false");
     this.el.btnPaste.disabled = !this.clipboard;
     this.scheduleHistogram();
@@ -1655,6 +1660,20 @@ export class PaletteEditor {
     this.applyCrop();
   }
 
+  modifySelection(delta) {
+    if (!this.doc || !this.selection) return;
+    const modified = expandSelection(this.selection, delta, this.doc.width, this.doc.height);
+    if (!modified) {
+      this.announce("Contracted selection disappeared.", { error: true });
+      this.deselect();
+      return;
+    }
+    this.selection = modified;
+    this.refreshUI();
+    this.scheduleOverlay();
+    this.announce(`Selection ${delta >= 0 ? "expanded" : "contracted"} by ${Math.abs(delta)}px.`);
+  }
+
   clearSelectedPixels() {
     if (!this.selection) return;
     this.finishText();
@@ -2244,6 +2263,14 @@ export class PaletteEditor {
     const white = Number(this.el.levelWhite.value);
     const gamma = Number(this.el.levelGamma.value);
     this.applyPixelsToActive("Levels", (pixels) => applyLevels(pixels, { black, white, gamma }));
+  }
+
+  applyBrightnessContrastFilter() {
+    const brightness = Number(this.el.filterBrightness.value) || 0;
+    const contrast = Number(this.el.filterContrast.value) || 0;
+    this.applyPixelsToActive("Brightness / contrast", (pixels) =>
+      applyBrightnessContrast(pixels, { brightness, contrast }),
+    );
   }
 
   openNewDialog() {
@@ -3110,6 +3137,13 @@ export class PaletteEditor {
       });
     }
     this.el.btnFilterLevels.addEventListener("click", () => this.applyLevelsFilter());
+    this.el.filterBrightness.addEventListener("input", () => {
+      this.el.filterBrightnessValue.textContent = this.el.filterBrightness.value;
+    });
+    this.el.filterContrast.addEventListener("input", () => {
+      this.el.filterContrastValue.textContent = this.el.filterContrast.value;
+    });
+    this.el.btnFilterBc.addEventListener("click", () => this.applyBrightnessContrastFilter());
 
     this.el.colorInput.addEventListener("input", () => this.setColor(this.el.colorInput.value));
     this.el.brushSize.addEventListener("input", () => {
@@ -3221,6 +3255,8 @@ export class PaletteEditor {
     this.el.btnDeselect.addEventListener("click", () => this.deselect());
     this.el.btnInvertSelection.addEventListener("click", () => this.invertSelection());
     this.el.btnCropSelection.addEventListener("click", () => this.cropToSelection());
+    this.el.btnExpandSelection.addEventListener("click", () => this.modifySelection(5));
+    this.el.btnContractSelection.addEventListener("click", () => this.modifySelection(-5));
     this.el.btnCopy.addEventListener("click", () => this.copySelection());
     this.el.btnCut.addEventListener("click", () => this.cutSelection());
     this.el.btnPaste.addEventListener("click", () => this.pasteClipboard());

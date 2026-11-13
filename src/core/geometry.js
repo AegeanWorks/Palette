@@ -91,6 +91,26 @@ export function selectionFromDrag(kind, start, end, width, height, constrain = f
   return { kind: kind === "ellipse" ? "ellipse" : "rect", rect: roundRect(clamped) };
 }
 
+export function expandSelection(selection, delta, width, height) {
+  if (!selection || !selection.rect) return null;
+  const change = Math.round(Number(delta) || 0);
+  if (change === 0) return { ...selection, rect: { ...selection.rect } };
+  const raw = {
+    x: selection.rect.x - change,
+    y: selection.rect.y - change,
+    w: selection.rect.w + change * 2,
+    h: selection.rect.h + change * 2,
+  };
+  if (raw.w < 1 || raw.h < 1) return null;
+  const clamped = clampRect(raw, width, height);
+  if (clamped.w < 1 || clamped.h < 1) return null;
+  return {
+    kind: selection.kind === "ellipse" ? "ellipse" : "rect",
+    rect: roundRect(clamped),
+    ...(selection.invert ? { invert: true } : {}),
+  };
+}
+
 export function containRect(sourceWidth, sourceHeight, boxWidth, boxHeight, allowUpscale = false) {
   const sourceW = Math.max(1, Number(sourceWidth) || 1);
   const sourceH = Math.max(1, Number(sourceHeight) || 1);

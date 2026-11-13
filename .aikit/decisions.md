@@ -40,4 +40,12 @@ contract, a dependency, a data format or the architecture; IDs are consecutive a
 - **Decision**: Add `stampVisible` to `src/ui/editor.js` with button `#btn-stamp-visible` and shortcut `Ctrl+Alt+Shift+E`; add `applySepia` and `applyEmboss` (convolution with neutral gray bias) to `src/core/filters.js` with buttons `#btn-filter-sepia` and `#btn-filter-emboss`; bump Palette to 0.17.0; verify with 105 unit tests and headless browser dogfood.
 - **Consequences**: Retouchers and artists can create non-destructive composite layers instantly and apply vintage warmth and 3D embossing with full undo/redo and selection clipping.
 
+### ADR-005: Add Selection Expand/Contract and Destructive Brightness/Contrast Filter
+- **Date**: 2026-11-13
+- **Status**: Accepted
+- **Context**: Palette lacked marquee boundary expansion/contraction for refining selections by fixed margins (e.g., expanding a feathered border or shrinking an object mask), as well as a destructive Brightness/Contrast filter applicable directly to pixel buffers or selected regions.
+- **Decision**: Add pure function `expandSelection(selection, delta, width, height)` to `src/core/geometry.js` preserving selection kind/invert flags with boundary clamping and empty guard; add pure function `applyBrightnessContrast(pixels, { brightness, contrast })` to `src/core/filters.js` using photographic contrast curve `(259 * (contrast + 255)) / (255 * (259 - contrast))` and linear brightness shift; expose buttons `#btn-expand-selection` (`data-ui="expand-selection"`) and `#btn-contract-selection` (`data-ui="contract-selection"`), sliders `#filter-brightness` and `#filter-contrast`, and button `#btn-filter-bc` (`data-ui="filter-bc"`) in `index.html`; wire undoable commands and dynamic disabled toggling in `src/ui/editor.js`; bump Palette to 0.18.0; verify via 107 unit tests and headless browser dogfood.
+- **Consequences**: Users can incrementally grow or shrink active selections by 5px increments with document clamping and apply tone curve adjustments to layers or bounded selections with full undo/redo support.
+
+
 

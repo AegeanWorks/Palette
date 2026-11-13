@@ -264,3 +264,21 @@ export function applyEmboss(pixels) {
   return { width, height, data: out };
 }
 
+export function applyBrightnessContrast(pixels, { brightness = 0, contrast = 0 } = {}) {
+  const b = clamp(Math.round(Number(brightness) || 0), -100, 100);
+  const c = clamp(Math.round(Number(contrast) || 0), -100, 100);
+  if (b === 0 && c === 0) return clonePixels(pixels);
+  const { width, height, data } = pixels;
+  const out = new Uint8ClampedArray(data.length);
+  const factor = (259 * (c + 255)) / (255 * (259 - c));
+  const bOffset = b * 2.55;
+  for (let index = 0; index < data.length; index += 4) {
+    for (let channel = 0; channel < 3; channel += 1) {
+      const val = factor * (data[index + channel] - 128) + 128 + bOffset;
+      out[index + channel] = clamp(Math.round(val), 0, 255);
+    }
+    out[index + 3] = data[index + 3];
+  }
+  return { width, height, data: out };
+}
+

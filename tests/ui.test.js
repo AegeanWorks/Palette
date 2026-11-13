@@ -100,6 +100,13 @@ test("the shell carries every critical editor surface", () => {
     "btn-filter-posterize",
     "btn-filter-sepia",
     "btn-filter-emboss",
+    "filter-brightness",
+    "filter-brightness-value",
+    "filter-contrast",
+    "filter-contrast-value",
+    "btn-filter-bc",
+    "btn-expand-selection",
+    "btn-contract-selection",
     "btn-stamp-visible",
     "swatches-row",
   ]) {
@@ -208,6 +215,10 @@ test("the marquee panel exposes shape and selection commands", () => {
   assert.match(html, /id="btn-deselect"/);
   assert.match(html, /id="btn-invert-selection"/);
   assert.match(html, /id="btn-crop-selection"/);
+  assert.match(html, /id="btn-expand-selection"/);
+  assert.match(html, /id="btn-contract-selection"/);
+  assert.match(html, /data-ui="expand-selection"/);
+  assert.match(html, /data-ui="contract-selection"/);
   assert.match(html, /id="btn-copy"/);
   assert.match(html, /id="btn-cut"/);
   assert.match(html, /id="btn-paste" type="button" data-ui="paste" disabled/);
@@ -240,6 +251,9 @@ test("the filter panel exposes desaturate, threshold, posterize and swatches", (
   assert.match(html, /data-ui="filter-threshold"/);
   assert.match(html, /id="filter-posterize-steps" type="range"/);
   assert.match(html, /data-ui="filter-posterize"/);
+  assert.match(html, /id="filter-brightness" type="range"/);
+  assert.match(html, /id="filter-contrast" type="range"/);
+  assert.match(html, /data-ui="filter-bc"/);
   assert.match(html, /id="swatches-row"/);
   assert.match(html, /data-swatch="#000000"/);
   assert.match(html, /data-swatch="#22d3ee"/);
@@ -341,6 +355,8 @@ test("editor keyboard shortcuts and paste routing cover retouching and placement
   assert.match(editorSource, /applyPosterizeFilter\(\)/);
   assert.match(editorSource, /applySepiaFilter\(\)/);
   assert.match(editorSource, /applyEmbossFilter\(\)/);
+  assert.match(editorSource, /applyBrightnessContrastFilter\(\)/);
+  assert.match(editorSource, /modifySelection\(/);
   assert.match(editorSource, /stampVisible\(\)/);
   assert.match(editorSource, /key === "g" && event\.altKey[\s\S]*?toggleClippingMask/);
   assert.match(editorSource, /if \(this\.doc\) \{\s*this\.addImageLayer\(file\);\s*\} else \{\s*this\.openImageFile\(file\);\s*\}/);

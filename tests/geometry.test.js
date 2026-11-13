@@ -16,6 +16,7 @@ import {
   pointInRect,
   screenToDoc,
   selectionFromDrag,
+  expandSelection,
   zoomAt,
 } from "../src/core/geometry.js";
 
@@ -88,6 +89,34 @@ test("marquee drags normalise, constrain, clamp and reject tiny regions", () => 
     h: 20,
   });
   assert.equal(selectionFromDrag("rect", { x: 10, y: 10 }, { x: 10, y: 10 }, 100, 100), null);
+});
+
+test("expandSelection expands, contracts, clamps, and preserves invert and kind", () => {
+  const rectSel = { kind: "rect", rect: { x: 20, y: 20, w: 50, h: 50 } };
+  // Expand by +5px
+  const expanded = expandSelection(rectSel, 5, 100, 100);
+  assert.deepEqual(expanded, { kind: "rect", rect: { x: 15, y: 15, w: 60, h: 60 } });
+
+  // Contract by -5px
+  const contracted = expandSelection(rectSel, -5, 100, 100);
+  assert.deepEqual(contracted, { kind: "rect", rect: { x: 25, y: 25, w: 40, h: 40 } });
+
+  // Clamp to canvas bounds
+  const clamped = expandSelection(rectSel, 30, 100, 100);
+  assert.deepEqual(clamped, { kind: "rect", rect: { x: 0, y: 0, w: 100, h: 100 } });
+
+  // Contract beyond existence returns null
+  assert.equal(expandSelection(rectSel, -30, 100, 100), null);
+
+  // Preserve ellipse and invert
+  const ellipseInvert = { kind: "ellipse", rect: { x: 10, y: 10, w: 30, h: 30 }, invert: true };
+  const expandedEllipse = expandSelection(ellipseInvert, 5, 100, 100);
+  assert.equal(expandedEllipse.kind, "ellipse");
+  assert.equal(expandedEllipse.invert, true);
+  assert.deepEqual(expandedEllipse.rect, { x: 5, y: 5, w: 40, h: 40 });
+
+  // Null input returns null
+  assert.equal(expandSelection(null, 5, 100, 100), null);
 });
 
 test("containment keeps small art at natural size and scales large art down", () => {

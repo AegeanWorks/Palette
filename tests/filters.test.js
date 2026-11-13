@@ -10,6 +10,7 @@ import {
   applyPosterize,
   applySepia,
   applyEmboss,
+  applyBrightnessContrast,
   applyPixelate,
   applySharpen,
   applyVignette,
@@ -293,6 +294,37 @@ test("emboss calculates directional relief and preserves alpha", () => {
   // Center pixel difference: 200 - 0 = 200 -> 128 + 200 clamped to 255
   assert.equal(embossedEdge.data[(1 * 3 + 1) * 4], 255);
   assert.equal(embossedEdge.data[0], 128); // edge pixels default to 128
+});
+
+test("brightness and contrast modifies tone and preserves alpha", () => {
+  const source = pixels(2, 1, 100);
+  source.data[3] = 190;
+  source.data[4] = 180;
+  source.data[7] = 240;
+
+  // Neutral settings return clone
+  const neutral = applyBrightnessContrast(source, { brightness: 0, contrast: 0 });
+  assert.notStrictEqual(neutral.data, source.data);
+  assert.equal(neutral.data[0], 100);
+  assert.equal(neutral.data[3], 190);
+  assert.equal(neutral.data[4], 180);
+  assert.equal(neutral.data[7], 240);
+
+  // Increase brightness (+20)
+  const brighter = applyBrightnessContrast(source, { brightness: 20, contrast: 0 });
+  // 100 + 20 * 2.55 = 100 + 51 = 151
+  assert.equal(brighter.data[0], 151);
+  assert.equal(brighter.data[3], 190); // alpha preserved
+
+  // Increase contrast (+50)
+  const contrasted = applyBrightnessContrast(source, { brightness: 0, contrast: 50 });
+  // factor = (259 * 305) / (255 * 209) = 1.4822
+  // low value 100: 1.4822 * (100 - 128) + 128 = 128 - 41.5 = 86
+  // high value 180: 1.4822 * (180 - 128) + 128 = 128 + 77 = 205
+  assert.ok(contrasted.data[0] < 100);
+  assert.ok(contrasted.data[4] > 180);
+  assert.equal(contrasted.data[3], 190);
+  assert.equal(contrasted.data[7], 240);
 });
 
 

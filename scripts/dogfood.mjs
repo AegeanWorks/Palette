@@ -1540,6 +1540,69 @@ async function main() {
       throw new Error(`Undo did not restore layer count after stamp visible: ${layerCountRestored}`);
     }
 
+    // Test selection expand and contract
+    await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      editor.selection = { kind: "rect", rect: { x: 50, y: 50, w: 100, h: 80 } };
+      editor.refreshUI();
+      editor.render();
+    })()`);
+    const expandBtnDisabled = await connection.evaluate("document.getElementById('btn-expand-selection').disabled");
+    if (expandBtnDisabled) {
+      throw new Error("Expand selection button should be enabled when selection is active");
+    }
+    await connection.evaluate("document.getElementById('btn-expand-selection').click()");
+    const expandedDims = await connection.evaluate("({ w: globalThis.palette.selection.rect.w, h: globalThis.palette.selection.rect.h })");
+    if (expandedDims.w !== 110 || expandedDims.h !== 90) {
+      throw new Error(`Selection expand failed: ${JSON.stringify(expandedDims)}`);
+    }
+    await connection.evaluate("document.getElementById('btn-contract-selection').click()");
+    const contractedDims = await connection.evaluate("({ w: globalThis.palette.selection.rect.w, h: globalThis.palette.selection.rect.h })");
+    if (contractedDims.w !== 100 || contractedDims.h !== 80) {
+      throw new Error(`Selection contract failed: ${JSON.stringify(contractedDims)}`);
+    }
+    await connection.evaluate("globalThis.palette.deselect()");
+    const expandBtnDisabledAfter = await connection.evaluate("document.getElementById('btn-expand-selection').disabled");
+    if (!expandBtnDisabledAfter) {
+      throw new Error("Expand selection button should be disabled after deselect");
+    }
+
+    // Test brightness and contrast filter
+    await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const ctx = layer.canvas.getContext('2d');
+      ctx.fillStyle = '#646464';
+      ctx.fillRect(140, 140, 10, 10);
+      const bSlider = document.getElementById('filter-brightness');
+      const cSlider = document.getElementById('filter-contrast');
+      bSlider.value = '20';
+      bSlider.dispatchEvent(new Event('input'));
+      cSlider.value = '20';
+      cSlider.dispatchEvent(new Event('input'));
+    })()`);
+    await connection.evaluate("document.getElementById('btn-filter-bc').click()");
+    const bcPixel = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const pixel = layer.canvas.getContext('2d').getImageData(140, 140, 1, 1).data;
+      return [pixel[0], pixel[1], pixel[2], pixel[3]];
+    })()`);
+    if (bcPixel[0] !== 146 || bcPixel[1] !== 146 || bcPixel[2] !== 146) {
+      throw new Error(`Brightness/contrast filter failed: ${JSON.stringify(bcPixel)}`);
+    }
+    await connection.evaluate("globalThis.palette.undo()");
+    await wait(220);
+    const restoredBcPixel = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const pixel = layer.canvas.getContext('2d').getImageData(140, 140, 1, 1).data;
+      return [pixel[0], pixel[1], pixel[2], pixel[3]];
+    })()`);
+    if (restoredBcPixel[0] !== 100 || restoredBcPixel[1] !== 100 || restoredBcPixel[2] !== 100) {
+      throw new Error(`Undo did not restore pixel after brightness/contrast filter: ${JSON.stringify(restoredBcPixel)}`);
+    }
+
     // Test zoom shortcuts
     const zoomInitial = await connection.evaluate("globalThis.palette.view.scale");
     await connection.evaluate("globalThis.palette.zoomIn()");
@@ -1727,7 +1790,7 @@ async function main() {
     }
 
     console.log(
-      "[OK] Palette dogfood: layers, blend modes, clipping masks, clone stamp, dodge/burn, paint bucket, invert filter, desaturate/threshold/posterize/sepia/emboss filters, swatches, stamp visible, keyboard zoom, merge-down blend retention, image placement, gradients, layer locking, marquee selection/invert, clipboard, layer via copy/cut, autosave reload/restore, crop ratios, flatten, canvas size, layer transform, histogram/auto levels, levels, brush, eraser, move, undo, crop, adjustments, shapes, text, filters, resize, zoom, scaled export, project save and dialogs.",
+      "[OK] Palette dogfood: layers, blend modes, clipping masks, clone stamp, dodge/burn, paint bucket, invert filter, desaturate/threshold/posterize/sepia/emboss/brightness-contrast filters, swatches, stamp visible, expand/contract selection, keyboard zoom, merge-down blend retention, image placement, gradients, layer locking, marquee selection/invert, clipboard, layer via copy/cut, autosave reload/restore, crop ratios, flatten, canvas size, layer transform, histogram/auto levels, levels, brush, eraser, move, undo, crop, adjustments, shapes, text, filters, resize, zoom, scaled export, project save and dialogs.",
     );
     return 0;
   } catch (error) {
