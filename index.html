@@ -369,6 +369,8 @@
           <button class="btn btn-ghost btn-small" id="btn-transform" type="button" data-ui="transform-layer">Transform</button>
           <button class="btn btn-ghost btn-small" id="btn-layer-flip-h" type="button" data-ui="layer-flip-h">Flip layer H</button>
           <button class="btn btn-ghost btn-small" id="btn-layer-flip-v" type="button" data-ui="layer-flip-v">Flip layer V</button>
+          <button class="btn btn-ghost btn-small" id="btn-layer-rotate-cw" type="button" data-ui="layer-rotate-cw">Rotate layer 90° CW</button>
+          <button class="btn btn-ghost btn-small" id="btn-layer-rotate-ccw" type="button" data-ui="layer-rotate-ccw">Rotate layer 90° CCW</button>
           <button class="btn btn-ghost btn-small" id="btn-flip-h" type="button" data-ui="flip-horizontal">Flip H</button>
           <button class="btn btn-ghost btn-small" id="btn-flip-v" type="button" data-ui="flip-vertical">Flip V</button>
           <button class="btn btn-ghost btn-small" id="btn-rotate" type="button" data-ui="rotate">Rotate 90°</button>
@@ -474,6 +476,10 @@
           <input id="filter-duotone-highlight" type="color" value="#ff6b6b">
           <button class="btn btn-ghost btn-small" id="btn-filter-duotone" type="button" data-ui="filter-duotone">Apply duotone</button>
           <button class="btn btn-ghost btn-small" id="btn-filter-dither" type="button" data-ui="filter-dither">Dither</button>
+          <label class="field" for="filter-oil-radius">Oil paint <output id="filter-oil-value" for="filter-oil-radius">2</output> px</label>
+          <input id="filter-oil-radius" type="range" min="1" max="5" step="1" value="2">
+          <button class="btn btn-ghost btn-small" id="btn-filter-oil" type="button" data-ui="filter-oil">Apply oil paint</button>
+          <button class="btn btn-ghost btn-small" id="btn-filter-median" type="button" data-ui="filter-median">Median despeckle</button>
         </div>
       </section>
     </aside>

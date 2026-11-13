@@ -296,6 +296,9 @@ test("the filter panel exposes desaturate, threshold, posterize and swatches", (
   assert.match(html, /id="filter-duotone-highlight" type="color"/);
   assert.match(html, /data-ui="filter-duotone"/);
   assert.match(html, /data-ui="filter-dither"/);
+  assert.match(html, /id="filter-oil-radius" type="range"/);
+  assert.match(html, /data-ui="filter-oil"/);
+  assert.match(html, /data-ui="filter-median"/);
   assert.match(html, /id="swatches-row"/);
   assert.match(html, /data-swatch="#000000"/);
   assert.match(html, /data-swatch="#22d3ee"/);
@@ -313,6 +316,10 @@ test("the crop panel exposes ratio presets and the document row exposes Flatten 
   assert.match(html, /data-ui="layer-flip-h"/);
   assert.match(html, /id="btn-layer-flip-v"/);
   assert.match(html, /data-ui="layer-flip-v"/);
+  assert.match(html, /id="btn-layer-rotate-cw"/);
+  assert.match(html, /data-ui="layer-rotate-cw"/);
+  assert.match(html, /id="btn-layer-rotate-ccw"/);
+  assert.match(html, /data-ui="layer-rotate-ccw"/);
 });
 
 test("the adjustments panel exposes a histogram and Auto levels", () => {
@@ -410,8 +417,11 @@ test("editor keyboard shortcuts and paste routing cover retouching and placement
   assert.match(editorSource, /applySolarizeFilter\(\)/);
   assert.match(editorSource, /applyDuotoneFilter\(\)/);
   assert.match(editorSource, /applyDitherFilter\(\)/);
+  assert.match(editorSource, /applyOilPaintFilter\(\)/);
+  assert.match(editorSource, /applyMedianFilter\(\)/);
   assert.match(editorSource, /applyBlurFilter\(\)/);
   assert.match(editorSource, /flipActiveLayer\(/);
+  assert.match(editorSource, /rotateActiveLayer\(/);
   assert.match(editorSource, /modifySelection\(/);
   assert.match(editorSource, /stampVisible\(\)/);
   assert.match(editorSource, /key === "g" && event\.altKey[\s\S]*?toggleClippingMask/);

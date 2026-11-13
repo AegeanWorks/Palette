@@ -1833,6 +1833,65 @@ async function main() {
     await connection.evaluate("globalThis.palette.undo()");
     await wait(220);
 
+    // Test oil paint filter
+    await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const ctx = layer.canvas.getContext('2d');
+      ctx.fillStyle = 'rgb(120, 120, 120)';
+      ctx.fillRect(140, 140, 40, 40);
+    })()`);
+    await connection.evaluate("document.getElementById('btn-filter-oil').click()");
+    const oilPixel = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const pixel = layer.canvas.getContext('2d').getImageData(160, 160, 1, 1).data;
+      return [pixel[0], pixel[1], pixel[2], pixel[3]];
+    })()`);
+    if (oilPixel[0] !== 120 || oilPixel[1] !== 120 || oilPixel[2] !== 120) {
+      throw new Error(`Oil paint filter failed in flat region: ${JSON.stringify(oilPixel)}`);
+    }
+    await connection.evaluate("globalThis.palette.undo()");
+    await wait(220);
+
+    // Test median filter
+    await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const ctx = layer.canvas.getContext('2d');
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(150, 150, 20, 20);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(160, 160, 1, 1);
+    })()`);
+    await connection.evaluate("document.getElementById('btn-filter-median').click()");
+    const medianPixel = await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const pixel = layer.canvas.getContext('2d').getImageData(160, 160, 1, 1).data;
+      return [pixel[0], pixel[1], pixel[2], pixel[3]];
+    })()`);
+    if (medianPixel[0] !== 0 || medianPixel[1] !== 0 || medianPixel[2] !== 0) {
+      throw new Error(`Median filter failed to remove noise spike: ${JSON.stringify(medianPixel)}`);
+    }
+    await connection.evaluate("globalThis.palette.undo()");
+    await wait(220);
+
+    // Test rotate active layer 90 deg CW
+    await connection.evaluate(`(() => {
+      const editor = globalThis.palette;
+      const layer = editor.doc.layers.find((item) => item.id === editor.doc.activeLayerId);
+      const ctx = layer.canvas.getContext('2d');
+      ctx.fillStyle = '#00ff00';
+      ctx.fillRect(50, 50, 40, 10);
+    })()`);
+    await connection.evaluate("document.getElementById('btn-layer-rotate-cw').click()");
+    await wait(220);
+    const rotAfter = await connection.evaluate("globalThis.palette.history.canUndo");
+    if (!rotAfter) throw new Error("Rotate layer 90 CW did not commit to history");
+    await connection.evaluate("globalThis.palette.undo()");
+    await wait(220);
+
     // Test flip active layer horizontal
     await connection.evaluate(`(() => {
       const editor = globalThis.palette;
@@ -2057,7 +2116,7 @@ async function main() {
     }
 
     console.log(
-      "[OK] Palette dogfood: layers, blend modes, clipping masks, clone stamp, dodge/burn, paint bucket, invert filter, desaturate/threshold/posterize/sepia/emboss/brightness-contrast/color-balance/noise/high-pass/tint/find-edges/solarize/duotone/dither filters, swatches, stamp visible, layer flip h/v, expand/contract selection, keyboard zoom, merge-down blend retention, image placement, gradients, layer locking, marquee selection/invert, clipboard, layer via copy/cut, autosave reload/restore, crop ratios, flatten, canvas size, layer transform, histogram/auto levels, levels, brush, eraser, move, undo, crop, adjustments, shapes, text, filters, resize, zoom, scaled export, project save and dialogs.",
+      "[OK] Palette dogfood: layers, blend modes, clipping masks, clone stamp, dodge/burn, paint bucket, invert filter, desaturate/threshold/posterize/sepia/emboss/brightness-contrast/color-balance/noise/high-pass/tint/find-edges/solarize/duotone/dither/oil-paint/median filters, swatches, stamp visible, layer flip h/v, layer rotate cw/ccw, expand/contract selection, keyboard zoom, merge-down blend retention, image placement, gradients, layer locking, marquee selection/invert, clipboard, layer via copy/cut, autosave reload/restore, crop ratios, flatten, canvas size, layer transform, histogram/auto levels, levels, brush, eraser, move, undo, crop, adjustments, shapes, text, filters, resize, zoom, scaled export, project save and dialogs.",
     );
     return 0;
   } catch (error) {

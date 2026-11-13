@@ -20,6 +20,8 @@ import {
   applyBlur,
   applyDither,
   applyDuotone,
+  applyOilPaint,
+  applyMedian,
   applyPixelate,
   applySharpen,
   applyVignette,
@@ -636,6 +638,61 @@ test("duotone maps shadow and highlight colors across perceptual luminance and p
   assert.equal(duo.data[10], 64);
   assert.equal(duo.data[11], 240); // alpha preserved
 });
+
+test("oil paint smoothes textures while preserving edges and alpha", () => {
+  // Flat image remains identical under oil paint
+  const flat = pixels(5, 5, 80);
+  flat.data[3] = 190;
+  flat.data[(2 * 5 + 2) * 4 + 3] = 230;
+  const paintedFlat = applyOilPaint(flat, 2);
+  assert.notStrictEqual(paintedFlat.data, flat.data);
+  const centerIdx = (2 * 5 + 2) * 4;
+  assert.equal(paintedFlat.data[centerIdx], 80);
+  assert.equal(paintedFlat.data[centerIdx + 3], 230); // alpha preserved
+
+  // Step edge: left half 0, right half 200
+  const step = pixels(5, 5, 0);
+  for (let y = 0; y < 5; y += 1) {
+    for (let x = 3; x < 5; x += 1) {
+      const idx = (y * 5 + x) * 4;
+      step.data[idx] = 200;
+      step.data[idx + 1] = 200;
+      step.data[idx + 2] = 200;
+    }
+  }
+  // Pixel at (1, 2) is left of the edge. Top-left quadrant has variance 0 and mean 0.
+  const paintedStep = applyOilPaint(step, 1);
+  const leftIdx = (2 * 5 + 1) * 4;
+  assert.equal(paintedStep.data[leftIdx], 0);
+  // Pixel at (3, 2) is right of the edge. Top-right quadrant has variance 0 and mean 200.
+  const rightIdx = (2 * 5 + 3) * 4;
+  assert.equal(paintedStep.data[rightIdx], 200);
+});
+
+test("median filter removes impulse noise and preserves alpha", () => {
+  // 5x5 zero image with isolated impulse noise in center (2, 2)
+  const noisy = pixels(5, 5, 0);
+  noisy.data[3] = 180;
+  const centerIdx = (2 * 5 + 2) * 4;
+  noisy.data[centerIdx] = 255;
+  noisy.data[centerIdx + 1] = 255;
+  noisy.data[centerIdx + 2] = 255;
+  noisy.data[centerIdx + 3] = 240;
+
+  const filtered = applyMedian(noisy);
+  assert.notStrictEqual(filtered.data, noisy.data);
+  // Impulse spike at center has been eliminated by median (surrounded by 8 zeros)
+  assert.equal(filtered.data[centerIdx], 0);
+  assert.equal(filtered.data[centerIdx + 1], 0);
+  assert.equal(filtered.data[centerIdx + 2], 0);
+  assert.equal(filtered.data[centerIdx + 3], 240); // alpha preserved
+
+  // Flat image remains unaffected
+  const flat = pixels(3, 3, 140);
+  const filteredFlat = applyMedian(flat);
+  assert.equal(filteredFlat.data[0], 140);
+});
+
 
 
 

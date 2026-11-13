@@ -38,6 +38,8 @@ import {
   applyBlur,
   applyDither,
   applyDuotone,
+  applyOilPaint,
+  applyMedian,
   applyDesaturate,
   applyEmboss,
   applyInvert,
@@ -176,7 +178,7 @@ const IDS = [
   "crop-cancel", "btn-layer-add", "btn-layer-image", "btn-layer-duplicate", "btn-layer-merge",
   "btn-layer-lock", "btn-layer-clip", "btn-layer-up", "btn-layer-down", "btn-layer-delete", "layer-opacity",
   "layer-opacity-value", "layer-blend", "layer-list",
-  "btn-resize", "btn-canvas-size", "btn-transform", "btn-layer-flip-h", "btn-layer-flip-v", "btn-flip-h", "btn-flip-v", "btn-rotate",
+  "btn-resize", "btn-canvas-size", "btn-transform", "btn-layer-flip-h", "btn-layer-flip-v", "btn-layer-rotate-cw", "btn-layer-rotate-ccw", "btn-flip-h", "btn-flip-v", "btn-rotate",
   "btn-flatten", "btn-stamp-visible",
   "adjust-reset", "histogram", "histogram-range", "btn-auto-levels", "adj-brightness",
   "adj-brightness-value", "adj-contrast", "adj-contrast-value",
@@ -196,6 +198,7 @@ const IDS = [
   "filter-tint-color", "filter-tint-density", "filter-tint-density-value",
   "filter-tint-preserve", "btn-filter-tint",
   "btn-filter-find-edges", "btn-filter-solarize", "filter-duotone-shadow", "filter-duotone-highlight", "btn-filter-duotone", "btn-filter-dither",
+  "filter-oil-radius", "filter-oil-value", "btn-filter-oil", "btn-filter-median",
   "status-tool", "status-message",
   "status-cursor", "status-zoom",
   "btn-actual", "new-dialog", "new-form", "new-name", "new-width", "new-height", "new-color",
@@ -2333,6 +2336,17 @@ export class PaletteEditor {
     this.applyPixelsToActive("Dither", (pixels) => applyDither(pixels, { monochrome: true }));
   }
 
+  applyOilPaintFilter() {
+    const radius = Number(this.el.filterOilRadius.value) || 2;
+    this.applyPixelsToActive(`Oil paint ${radius}px`, (pixels) =>
+      applyOilPaint(pixels, radius),
+    );
+  }
+
+  applyMedianFilter() {
+    this.applyPixelsToActive("Median despeckle", (pixels) => applyMedian(pixels));
+  }
+
   flipActiveLayer(axis) {
     if (!this.doc) return;
     this.finishText();
@@ -2347,6 +2361,33 @@ export class PaletteEditor {
       canvas: flipCanvas(layer.canvas, axis),
     });
     const label = axis === "horizontal" ? "Flip layer horizontal" : "Flip layer vertical";
+    this.commit(before, label);
+    this.announce(`${label} applied.`);
+  }
+
+  rotateActiveLayer(direction = 1) {
+    if (!this.doc) return;
+    this.finishText();
+    const layer = activeLayer(this.doc);
+    if (!layer) return;
+    if (layer.locked) {
+      this.announce(`${layer.name} is locked. Unlock it first.`, { error: true });
+      return;
+    }
+    const bounds = findContentBounds(getPixels(layer.canvas), 8);
+    const centerX = bounds ? bounds.x + bounds.w / 2 : this.doc.width / 2;
+    const centerY = bounds ? bounds.y + bounds.h / 2 : this.doc.height / 2;
+    const before = this.doc;
+    const output = createCanvas(this.doc.width, this.doc.height);
+    const context = context2d(output);
+    context.save();
+    context.translate(centerX, centerY);
+    context.rotate((direction * Math.PI) / 2);
+    context.drawImage(layer.canvas, -centerX, -centerY);
+    context.restore();
+    this.doc = updateLayer(this.doc, layer.id, { canvas: output });
+    this.selection = null;
+    const label = direction > 0 ? "Rotate layer 90° CW" : "Rotate layer 90° CCW";
     this.commit(before, label);
     this.announce(`${label} applied.`);
   }
@@ -3184,6 +3225,8 @@ export class PaletteEditor {
     this.el.btnTransform.addEventListener("click", () => this.openTransformDialog());
     this.el.btnLayerFlipH.addEventListener("click", () => this.flipActiveLayer("horizontal"));
     this.el.btnLayerFlipV.addEventListener("click", () => this.flipActiveLayer("vertical"));
+    this.el.btnLayerRotateCw.addEventListener("click", () => this.rotateActiveLayer(1));
+    this.el.btnLayerRotateCcw.addEventListener("click", () => this.rotateActiveLayer(-1));
     this.el.btnFlipH.addEventListener("click", () => this.flipDocument("horizontal"));
     this.el.btnFlipV.addEventListener("click", () => this.flipDocument("vertical"));
     this.el.btnRotate.addEventListener("click", () => this.rotateDocument());
@@ -3250,6 +3293,11 @@ export class PaletteEditor {
     this.el.btnFilterSolarize.addEventListener("click", () => this.applySolarizeFilter());
     this.el.btnFilterDuotone.addEventListener("click", () => this.applyDuotoneFilter());
     this.el.btnFilterDither.addEventListener("click", () => this.applyDitherFilter());
+    this.el.filterOilRadius.addEventListener("input", () => {
+      this.el.filterOilValue.textContent = this.el.filterOilRadius.value;
+    });
+    this.el.btnFilterOil.addEventListener("click", () => this.applyOilPaintFilter());
+    this.el.btnFilterMedian.addEventListener("click", () => this.applyMedianFilter());
 
     this.el.colorInput.addEventListener("input", () => this.setColor(this.el.colorInput.value));
     this.el.brushSize.addEventListener("input", () => {

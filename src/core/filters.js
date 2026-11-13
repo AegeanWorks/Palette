@@ -606,5 +606,131 @@ export function applyDuotone(
   return { width, height, data: out };
 }
 
+export function applyOilPaint(pixels, radius = 2) {
+  const r = clamp(Math.round(Number(radius) || 2), 1, 5);
+  const { width, height, data } = pixels;
+  const out = new Uint8ClampedArray(data.length);
+
+  const quadrants = [
+    [-r, 0, -r, 0], // Top-Left
+    [0, r, -r, 0],  // Top-Right
+    [-r, 0, 0, r],  // Bottom-Left
+    [0, r, 0, r],   // Bottom-Right
+  ];
+  const count = (r + 1) * (r + 1);
+
+  for (let y = 0; y < height; y += 1) {
+    const rowOffset = y * width;
+    for (let x = 0; x < width; x += 1) {
+      const idx = (rowOffset + x) * 4;
+      if (data[idx + 3] === 0) {
+        out[idx] = data[idx];
+        out[idx + 1] = data[idx + 1];
+        out[idx + 2] = data[idx + 2];
+        out[idx + 3] = 0;
+        continue;
+      }
+
+      let minVariance = Infinity;
+      let bestR = data[idx];
+      let bestG = data[idx + 1];
+      let bestB = data[idx + 2];
+
+      for (let q = 0; q < 4; q += 1) {
+        const [xStart, xEnd, yStart, yEnd] = quadrants[q];
+        let sumR = 0, sumG = 0, sumB = 0;
+        let sumSqR = 0, sumSqG = 0, sumSqB = 0;
+
+        for (let dy = yStart; dy <= yEnd; dy += 1) {
+          const py = clamp(y + dy, 0, height - 1);
+          const pyOffset = py * width;
+          for (let dx = xStart; dx <= xEnd; dx += 1) {
+            const px = clamp(x + dx, 0, width - 1);
+            const sIdx = (pyOffset + px) * 4;
+            const pr = data[sIdx];
+            const pg = data[sIdx + 1];
+            const pb = data[sIdx + 2];
+
+            sumR += pr;
+            sumG += pg;
+            sumB += pb;
+            sumSqR += pr * pr;
+            sumSqG += pg * pg;
+            sumSqB += pb * pb;
+          }
+        }
+
+        const mR = sumR / count;
+        const mG = sumG / count;
+        const mB = sumB / count;
+        const variance =
+          (sumSqR / count - mR * mR) +
+          (sumSqG / count - mG * mG) +
+          (sumSqB / count - mB * mB);
+
+        if (variance < minVariance) {
+          minVariance = variance;
+          bestR = mR;
+          bestG = mG;
+          bestB = mB;
+        }
+      }
+
+      out[idx] = clamp(Math.round(bestR), 0, 255);
+      out[idx + 1] = clamp(Math.round(bestG), 0, 255);
+      out[idx + 2] = clamp(Math.round(bestB), 0, 255);
+      out[idx + 3] = data[idx + 3];
+    }
+  }
+  return { width, height, data: out };
+}
+
+export function applyMedian(pixels) {
+  const { width, height, data } = pixels;
+  const out = new Uint8ClampedArray(data.length);
+  const rBuf = new Uint8Array(9);
+  const gBuf = new Uint8Array(9);
+  const bBuf = new Uint8Array(9);
+
+  for (let y = 0; y < height; y += 1) {
+    const rowOffset = y * width;
+    for (let x = 0; x < width; x += 1) {
+      const idx = (rowOffset + x) * 4;
+      if (data[idx + 3] === 0) {
+        out[idx] = data[idx];
+        out[idx + 1] = data[idx + 1];
+        out[idx + 2] = data[idx + 2];
+        out[idx + 3] = 0;
+        continue;
+      }
+
+      let n = 0;
+      for (let dy = -1; dy <= 1; dy += 1) {
+        const py = clamp(y + dy, 0, height - 1);
+        const pyOffset = py * width;
+        for (let dx = -1; dx <= 1; dx += 1) {
+          const px = clamp(x + dx, 0, width - 1);
+          const sIdx = (pyOffset + px) * 4;
+          rBuf[n] = data[sIdx];
+          gBuf[n] = data[sIdx + 1];
+          bBuf[n] = data[sIdx + 2];
+          n += 1;
+        }
+      }
+
+      rBuf.sort();
+      gBuf.sort();
+      bBuf.sort();
+
+      out[idx] = rBuf[4];
+      out[idx + 1] = gBuf[4];
+      out[idx + 2] = bBuf[4];
+      out[idx + 3] = data[idx + 3];
+    }
+  }
+  return { width, height, data: out };
+}
+
+
 
 

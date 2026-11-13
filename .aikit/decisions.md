@@ -75,6 +75,14 @@ contract, a dependency, a data format or the architecture; IDs are consecutive a
 - **Decision**: Add pure functions `applyDuotone(pixels, { shadow, highlight })` (perceptual luminance gradient interpolation), `applyDither(pixels, { monochrome })` (4x4 Bayer matrix ordered thresholding), and `applyBlur(pixels, radius)` (separable $O(W \times H)$ box blur) to `src/core/filters.js`; wire controls `#filter-duotone-shadow`, `#filter-duotone-highlight`, `#btn-filter-duotone` (`data-ui="filter-duotone"`), and `#btn-filter-dither` (`data-ui="filter-dither"`) in `index.html`; update `src/ui/editor.js` to route all blur, duotone, and dither commands through `applyPixelsToActive`; bump Palette to 0.22.0; verify via 116 unit tests and headless browser dogfood.
 - **Consequences**: Artists can generate stylized duotone graphic posters and retro dithered illustrations, and apply pure raster box blurs deterministically across layers and selections with full undo/redo and alpha preservation.
 
+### ADR-010: Add Oil Paint and Median Despeckle Filters, and Layer Rotation Commands
+- **Date**: 2026-11-14
+- **Status**: Accepted
+- **Context**: Palette lacked artistic painterly stylization (Kuwahara filter), non-linear salt-and-pepper noise removal (Median filter), and 1-click active layer 90° clockwise/counter-clockwise rotation in place around visible content bounds.
+- **Decision**: Add pure functions `applyOilPaint(pixels, radius)` (4-quadrant minimum variance Kuwahara smoothing) and `applyMedian(pixels)` (3x3 median despeckling) to `src/core/filters.js`; add `rotateActiveLayer(direction)` to `src/ui/editor.js`; expose slider `#filter-oil-radius`, button `#btn-filter-oil` (`data-ui="filter-oil"`), button `#btn-filter-median` (`data-ui="filter-median"`), button `#btn-layer-rotate-cw` (`data-ui="layer-rotate-cw"`), and button `#btn-layer-rotate-ccw` (`data-ui="layer-rotate-ccw"`) in `index.html`; bump Palette to 0.23.0; verify via 118 unit tests and headless browser dogfood.
+- **Consequences**: Artists can create rich oil-painting effects, clean up noisy images without blurring fine edges, and rotate individual active layers 90° CW/CCW directly with full undo/redo support and preserved alpha transparency.
+
+
 
 
 
