@@ -126,6 +126,13 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("a Clear selection button exposes the Delete action", () => {
+  assert.match(html, /id="btn-clear-selection"[^>]*data-ui="clear-selection"[^>]*disabled[^>]*title="Clear pixels inside the selection \(Delete\)"/);
+  assert.match(editor, /"btn-contract-selection", "btn-clear-selection"/);
+  assert.match(editor, /btnClearSelection\.disabled = !this\.selection/);
+  assert.match(editor, /btnClearSelection\.addEventListener\("click", \(\) => this\.clearSelectedPixels\(\)\)/);
+});
+
 test("Ctrl+Shift+O opens a project and is advertised everywhere", () => {
   assert.match(editor, /key === "o"[\s\S]{0,160}if \(event\.shiftKey\) this\.el\.fileProject\.click\(\)/);
   assert.match(editor, /btnOpenProject: "Control\+Shift\+O Meta\+Shift\+O"/);

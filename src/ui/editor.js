@@ -214,7 +214,7 @@ const IDS = [
   "stage-note", "btn-zoom-out", "btn-fit", "btn-zoom-in", "color-row", "color-input", "color-hex",
   "tool-hint",   "options-brush", "options-eraser", "options-clone", "options-dodge", "options-bucket", "options-shape", "options-text", "options-gradient",
   "options-marquee", "options-crop", "options-move", "marquee-shape", "crop-aspect", "btn-select-all", "btn-deselect",
-  "btn-crop-selection", "btn-invert-selection", "btn-expand-selection", "btn-contract-selection", "btn-copy", "btn-cut", "btn-paste",
+  "btn-crop-selection", "btn-invert-selection", "btn-expand-selection", "btn-contract-selection", "btn-clear-selection", "btn-copy", "btn-cut", "btn-paste",
   "btn-layer-via-copy", "btn-layer-via-cut", "brush-size", "brush-size-value", "brush-hardness",
   "brush-hardness-value", "brush-opacity", "brush-opacity-value", "eraser-size", "eraser-size-value",
   "eraser-hardness", "eraser-hardness-value", "eraser-opacity", "eraser-opacity-value", "shape-fill",
@@ -582,6 +582,7 @@ export class PaletteEditor {
     this.el.btnCropSelection.disabled = !this.selection || Boolean(this.selection.invert);
     this.el.btnExpandSelection.disabled = !this.selection;
     this.el.btnContractSelection.disabled = !this.selection;
+    this.el.btnClearSelection.disabled = !this.selection;
     this.el.btnInvertSelection.setAttribute("aria-pressed", this.selection?.invert ? "true" : "false");
     const selectionRect = this.selection?.rect;
     if (this.el.statusSelection) {
@@ -3674,6 +3675,7 @@ export class PaletteEditor {
     this.el.btnInvertSelection.addEventListener("click", () => this.invertSelection());
     this.el.btnCropSelection.addEventListener("click", () => this.cropToSelection());
     this.el.btnExpandSelection.addEventListener("click", () => this.modifySelection(5));
+    this.el.btnClearSelection.addEventListener("click", () => this.clearSelectedPixels());
     this.el.btnContractSelection.addEventListener("click", () => this.modifySelection(-5));
     this.el.btnCopy.addEventListener("click", () => this.copySelection());
     this.el.btnCut.addEventListener("click", () => this.cutSelection());
