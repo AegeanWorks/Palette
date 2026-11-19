@@ -181,6 +181,26 @@ const ADJUSTMENTS = [
   "blur",
 ];
 
+// Actions that bake pixels into the active layer. They cannot run while the
+// layer is locked, so they are disabled alongside opacity/blend/adjustments.
+const DESTRUCTIVE_ACTIONS = [
+  "btnAutoLevels",
+  "btnFilterBlur", "btnFilterPixelate", "btnFilterSharpen", "btnFilterVignette",
+  "btnFilterInvert", "btnFilterDesaturate", "btnFilterSepia", "btnFilterEmboss",
+  "btnFilterThreshold", "btnFilterPosterize", "btnFilterLevels", "btnFilterBc",
+  "btnFilterColorBalance", "btnFilterNoise", "btnFilterHighPass", "btnFilterTint",
+  "btnFilterFindEdges", "btnFilterSolarize", "btnFilterDuotone", "btnFilterDither",
+  "btnFilterOil", "btnFilterMedian",
+  // Layer-level transforms also reject hidden/locked layers.
+  "btnTransform", "btnLayerFlipH", "btnLayerFlipV", "btnLayerRotateCw", "btnLayerRotateCcw",
+  // Filter parameter inputs are inert too while the layer cannot be edited.
+  "filterBlurRadius", "filterPixelSize", "filterThresholdCutoff", "filterPosterizeSteps",
+  "filterBrightness", "filterContrast", "filterCbCr", "filterCbMg", "filterCbYb",
+  "filterCbPreserve", "filterNoiseAmount", "filterNoiseMonochrome", "filterHighPassRadius",
+  "filterTintColor", "filterTintDensity", "filterTintPreserve", "filterDuotoneShadow",
+  "filterDuotoneHighlight", "filterOilRadius", "levelBlack", "levelWhite", "levelGamma",
+];
+
 const IDS = [
   "doc-name", "doc-dirty", "doc-size", "btn-new", "btn-open", "btn-open-project", "btn-save", "btn-export",
   "btn-undo", "btn-redo", "btn-help", "file-image", "file-layer", "file-project", "stage-wrap", "doc-frame",
@@ -225,11 +245,11 @@ const IDS = [
   "status-tool", "status-layer", "status-selection", "status-message",
   "status-cursor", "status-zoom",
   "btn-actual", "new-dialog", "new-form", "new-name", "new-width", "new-height", "new-color",
-  "new-cancel", "new-create", "export-dialog", "export-form", "export-name", "export-format",
+  "new-cancel", "new-create", "new-size", "export-dialog", "export-form", "export-name", "export-format",
   "export-quality-row", "export-quality", "export-quality-value", "export-scale", "export-size",
   "export-cancel", "export-confirm", "resize-dialog", "resize-form", "resize-width", "resize-height",
-  "resize-lock", "resize-cancel", "resize-confirm", "canvas-dialog", "canvas-form", "canvas-width",
-  "canvas-height", "canvas-cancel", "canvas-confirm", "transform-dialog", "transform-form",
+  "resize-lock", "resize-size", "resize-cancel", "resize-confirm", "canvas-dialog", "canvas-form", "canvas-width",
+  "canvas-height", "canvas-size", "canvas-cancel", "canvas-confirm", "transform-dialog", "transform-form",
   "transform-scale-x", "transform-scale-y", "transform-rotation", "transform-rotation-value",
   "transform-flip-h", "transform-flip-v", "transform-cancel", "transform-confirm",
   "help-dialog", "help-close",
@@ -564,6 +584,7 @@ export class PaletteEditor {
         const mode = this.selection.invert ? " (inverted)" : "";
         this.el.statusSelection.textContent =
           `Selection ${Math.round(selectionRect.w)}×${Math.round(selectionRect.h)}${mode}`;
+        this.el.statusSelection.dataset.inverted = this.selection.invert ? "true" : "false";
       }
     }
     this.el.btnPaste.disabled = !this.clipboard;
@@ -653,6 +674,9 @@ export class PaletteEditor {
       : "Delete layer";
     this.el.layerOpacity.disabled = layer.locked;
     this.el.layerBlend.disabled = layer.locked;
+    for (const name of DESTRUCTIVE_ACTIONS) {
+      if (this.el[name]) this.el[name].disabled = layer.locked;
+    }
     for (const key of ADJUSTMENTS) {
       const input = this.el[`adj${key[0].toUpperCase()}${key.slice(1)}`];
       const output = this.el[`adj${key[0].toUpperCase()}${key.slice(1)}Value`];
@@ -762,6 +786,7 @@ export class PaletteEditor {
       item.dataset.active = layer.id === this.doc.activeLayerId ? "true" : "false";
       item.dataset.locked = layer.locked ? "true" : "false";
       item.dataset.clipped = layer.clipToBelow ? "true" : "false";
+      item.dataset.visible = layer.visible ? "true" : "false";
 
       const visibility = this.root.createElement("button");
       visibility.type = "button";
@@ -819,6 +844,9 @@ export class PaletteEditor {
   updateZoomLabel() {
     const percent = this.view.scale * 100;
     this.el.statusZoom.textContent = `${percent < 10 ? percent.toFixed(1) : Math.round(percent)}%`;
+    if (this.el.btnActual) {
+      this.el.btnActual.setAttribute("aria-pressed", Math.abs(this.view.scale - 1) < 0.001 ? "true" : "false");
+    }
   }
 
   updateCursor() {
@@ -2508,6 +2536,7 @@ export class PaletteEditor {
   openNewDialog() {
     if (this.isDialogOpen()) return;
     this.finishText();
+    this.syncNewSize();
     this.el.newDialog.showModal();
     this.el.newName.focus();
     this.el.newName.select();
@@ -2521,6 +2550,18 @@ export class PaletteEditor {
     if (!this.hasUnsavedChanges()) return true;
     if (typeof globalThis.confirm !== "function") return true;
     return globalThis.confirm(`Discard the current edit and ${action}?`);
+  }
+
+  syncNewSize() {
+    if (!this.el.newSize) return;
+    const requestedWidth = requestedDimension(this.el.newWidth.value, 1280);
+    const requestedHeight = requestedDimension(this.el.newHeight.value, 800);
+    const { width, height } = boundedDimensions(requestedWidth, requestedHeight);
+    const capped = width !== requestedWidth || height !== requestedHeight;
+    this.el.newSize.textContent = capped
+      ? `${requestedWidth} × ${requestedHeight} will be capped to ${width} × ${height} pixels`
+      : `${width} × ${height} pixels`;
+    this.el.newSize.dataset.tone = capped ? "warn" : "muted";
   }
 
   createNewDocument() {
@@ -2716,6 +2757,18 @@ export class PaletteEditor {
     }
   }
 
+  syncDimensionSize(readout, widthInput, heightInput, fallbackWidth, fallbackHeight) {
+    if (!readout) return;
+    const requestedWidth = requestedDimension(widthInput.value, fallbackWidth);
+    const requestedHeight = requestedDimension(heightInput.value, fallbackHeight);
+    const { width, height } = boundedDimensions(requestedWidth, requestedHeight);
+    const capped = width !== requestedWidth || height !== requestedHeight;
+    readout.textContent = capped
+      ? `${requestedWidth} × ${requestedHeight} will be capped to ${width} × ${height} pixels`
+      : `${width} × ${height} pixels`;
+    readout.dataset.tone = capped ? "warn" : "muted";
+  }
+
   openResizeDialog() {
     if (this.isDialogOpen()) return;
     this.finishText();
@@ -2723,6 +2776,7 @@ export class PaletteEditor {
     this.el.resizeWidth.value = String(this.doc.width);
     this.el.resizeHeight.value = String(this.doc.height);
     this.el.resizeLock.checked = true;
+    this.syncDimensionSize(this.el.resizeSize, this.el.resizeWidth, this.el.resizeHeight, this.doc.width, this.doc.height);
     this.el.resizeDialog.showModal();
     this.el.resizeWidth.focus();
     this.el.resizeWidth.select();
@@ -2735,6 +2789,7 @@ export class PaletteEditor {
     this.el.canvasHeight.value = String(this.doc.height);
     const center = this.root.querySelector('input[name="canvas-anchor"][value="center"]');
     if (center) center.checked = true;
+    this.syncDimensionSize(this.el.canvasSize, this.el.canvasWidth, this.el.canvasHeight, this.doc.width, this.doc.height);
     this.el.canvasDialog.showModal();
     this.el.canvasWidth.focus();
     this.el.canvasWidth.select();
@@ -3649,6 +3704,8 @@ export class PaletteEditor {
       event.preventDefault();
       this.createNewDocument();
     });
+    this.el.newWidth.addEventListener("input", () => this.syncNewSize());
+    this.el.newHeight.addEventListener("input", () => this.syncNewSize());
     this.el.newColor.addEventListener("input", () => {
       const radio = this.root.querySelector('input[name="new-background"][value="color"]');
       if (radio) radio.checked = true;
@@ -3678,15 +3735,21 @@ export class PaletteEditor {
       this.el.transformRotationValue.textContent = this.el.transformRotation.value;
     });
     this.el.resizeWidth.addEventListener("input", () => {
-      if (!this.el.resizeLock.checked || !this.resizeAspect) return;
-      const width = Number(this.el.resizeWidth.value);
-      if (width > 0) this.el.resizeHeight.value = String(Math.max(1, Math.round(width / this.resizeAspect)));
+      if (this.el.resizeLock.checked && this.resizeAspect) {
+        const width = Number(this.el.resizeWidth.value);
+        if (width > 0) this.el.resizeHeight.value = String(Math.max(1, Math.round(width / this.resizeAspect)));
+      }
+      this.syncDimensionSize(this.el.resizeSize, this.el.resizeWidth, this.el.resizeHeight, this.doc.width, this.doc.height);
     });
     this.el.resizeHeight.addEventListener("input", () => {
-      if (!this.el.resizeLock.checked || !this.resizeAspect) return;
-      const height = Number(this.el.resizeHeight.value);
-      if (height > 0) this.el.resizeWidth.value = String(Math.max(1, Math.round(height * this.resizeAspect)));
+      if (this.el.resizeLock.checked && this.resizeAspect) {
+        const height = Number(this.el.resizeHeight.value);
+        if (height > 0) this.el.resizeWidth.value = String(Math.max(1, Math.round(height * this.resizeAspect)));
+      }
+      this.syncDimensionSize(this.el.resizeSize, this.el.resizeWidth, this.el.resizeHeight, this.doc.width, this.doc.height);
     });
+    this.el.canvasWidth.addEventListener("input", () => this.syncDimensionSize(this.el.canvasSize, this.el.canvasWidth, this.el.canvasHeight, this.doc.width, this.doc.height));
+    this.el.canvasHeight.addEventListener("input", () => this.syncDimensionSize(this.el.canvasSize, this.el.canvasWidth, this.el.canvasHeight, this.doc.width, this.doc.height));
     for (const button of this.root.querySelectorAll("[data-close]")) {
       button.addEventListener("click", () => button.closest("dialog")?.close());
     }

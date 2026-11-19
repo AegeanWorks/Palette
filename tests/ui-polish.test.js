@@ -116,6 +116,72 @@ test("layer count changes are announced to assistive tech", () => {
   assert.match(html, /id="layer-count"[^>]*aria-live="polite"/);
 });
 
+test("the actual-size button shows a pressed state at 100% zoom", () => {
+  assert.match(editor, /btnActual\.setAttribute\("aria-pressed", Math\.abs\(this\.view\.scale - 1\) < 0\.001/);
+});
+
+test("an inverted selection gets a distinct status colour", () => {
+  assert.match(editor, /statusSelection\.dataset\.inverted = this\.selection\.invert \? "true" : "false"/);
+  assert.match(styles, /\.status-selection\[data-inverted="true"\]\s*\{[^}]*color:\s*var\(--violet\)/);
+});
+
+test("a locked layer disables the layer-level transform buttons", () => {
+  const start = editor.indexOf("const DESTRUCTIVE_ACTIONS");
+  const list = editor.slice(start, editor.indexOf("];", start));
+  for (const name of ["btnTransform", "btnLayerFlipH", "btnLayerFlipV", "btnLayerRotateCw", "btnLayerRotateCcw"]) {
+    assert.match(list, new RegExp(`"${name}"`), `${name} must be disabled on a locked layer`);
+  }
+});
+
+test("Resize and Canvas dialogs preview the effective size and capping warning", () => {
+  assert.match(html, /id="resize-size"[^>]*aria-live="polite"/);
+  assert.match(html, /id="canvas-size"[^>]*aria-live="polite"/);
+  assert.match(editor, /"resize-lock", "resize-size"/);
+  assert.match(editor, /"canvas-height", "canvas-size"/);
+  assert.match(editor, /syncDimensionSize\(readout, widthInput, heightInput, fallbackWidth, fallbackHeight\)/);
+  assert.match(editor, /readout\.textContent = capped/);
+  assert.match(editor, /canvasWidth\.addEventListener\("input", \(\) => this\.syncDimensionSize/);
+});
+
+test("the New dialog previews the effective size and capping warning", () => {
+  assert.match(html, /id="new-size"[^>]*aria-live="polite"/);
+  assert.match(editor, /"new-cancel", "new-create", "new-size"/);
+  assert.match(editor, /syncNewSize\(\)\s*\{[\s\S]{0,500}boundedDimensions\(requestedWidth, requestedHeight\)/);
+  assert.match(editor, /will be capped to \$\{width\} × \$\{height\} pixels/);
+  assert.match(editor, /newWidth\.addEventListener\("input", \(\) => this\.syncNewSize\(\)\)/);
+  assert.match(styles, /\.dialog-note\[data-tone="warn"\]\s*\{[^}]*color:\s*var\(--pink\)/);
+});
+
+test("toggle buttons show a visible pressed state", () => {
+  assert.match(styles, /\.icon-btn\[aria-pressed="true"\],\s*\.btn\[aria-pressed="true"\]/);
+  assert.match(styles, /\.btn\[aria-pressed="true"\]\s*\{|aria-pressed="true"\][\s\S]{0,120}background:\s*rgba\(34, 211, 238/);
+});
+
+test("hidden layers dim their row in the Layers panel", () => {
+  assert.match(editor, /item\.dataset\.visible = layer\.visible \? "true" : "false"/);
+  assert.match(styles, /\.layer-item\[data-visible="false"\] \.layer-thumb/);
+  assert.match(styles, /\.layer-item\[data-visible="false"\] \.layer-name\s*\{[^}]*opacity:\s*0\.4/);
+});
+
+test("the autosave status has a tone-driven dot and announces changes", () => {
+  assert.match(html, /id="status-autosave"[^>]*aria-live="polite"/);
+  assert.match(styles, /\.status-autosave\s*\{[^}]*display:\s*inline-flex/);
+  assert.match(styles, /\.status-autosave::before\s*\{[^}]*border-radius:\s*50%/);
+  assert.match(styles, /\.status-autosave::before\s*\{[^}]*background:\s*currentColor/);
+});
+
+test("a locked layer disables the destructive filter buttons and their inputs", () => {
+  const start = editor.indexOf("const DESTRUCTIVE_ACTIONS");
+  const list = editor.slice(start, editor.indexOf("];", start));
+  assert.match(list, /"btnFilterBlur"/);
+  assert.match(list, /"btnFilterMedian"/);
+  assert.match(list, /"btnTransform", "btnLayerFlipH", "btnLayerFlipV", "btnLayerRotateCw", "btnLayerRotateCcw"/);
+  assert.match(list, /"filterBlurRadius"/);
+  assert.match(list, /"filterTintColor"/);
+  assert.match(list, /"levelGamma"/);
+  assert.match(editor, /for \(const name of DESTRUCTIVE_ACTIONS\)[\s\S]{0,160}this\.el\[name\]\.disabled = layer\.locked/);
+});
+
 test("a locked layer disables its opacity and blend controls", () => {
   assert.match(editor, /layerOpacity\.disabled = layer\.locked/);
   assert.match(editor, /layerBlend\.disabled = layer\.locked/);

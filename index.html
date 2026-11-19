@@ -500,7 +500,7 @@
       <span id="status-message" role="status" aria-live="polite">Ready</span>
     </div>
     <div class="status-right">
-      <span id="status-autosave" class="status-autosave" data-tone="muted" title="Autosave status">Autosave…</span>
+      <span id="status-autosave" class="status-autosave" data-tone="muted" title="Autosave status" aria-live="polite">Autosave…</span>
       <span id="status-cursor" class="mono" title="Pointer position in document pixels">—, —</span>
       <span class="status-divider" aria-hidden="true"></span>
       <span id="status-zoom" class="mono" title="Current zoom level">100%</span>
@@ -528,6 +528,7 @@
         <input id="new-height" type="number" min="1" max="8192" step="1" value="800" required>
       </div>
     </div>
+    <p class="dialog-note" id="new-size" aria-live="polite">1280 × 800 pixels</p>
     <fieldset class="radio-set">
       <legend>Background</legend>
       <label><input type="radio" name="new-background" value="white" checked> White</label>
@@ -599,6 +600,7 @@
       </div>
     </div>
     <label class="check"><input id="resize-lock" type="checkbox" checked> Keep aspect ratio</label>
+    <p class="dialog-note" id="resize-size" aria-live="polite">1280 × 800 pixels</p>
     <p class="dialog-note">Every layer is resampled with the high-quality browser filter.</p>
     <div class="dialog-actions">
       <button class="btn btn-ghost" id="resize-cancel" type="button" data-close>Cancel</button>
@@ -620,6 +622,7 @@
         <input id="canvas-height" type="number" min="1" max="8192" step="1" required>
       </div>
     </div>
+    <p class="dialog-note" id="canvas-size" aria-live="polite">1280 × 800 pixels</p>
     <fieldset class="anchor-fieldset">
       <legend>Anchor</legend>
       <div class="anchor-grid">

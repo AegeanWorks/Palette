@@ -291,6 +291,14 @@ select:disabled {
   cursor: default;
 }
 
+/* Toggle buttons (lock, clip, invert) must show their on-state, not only announce it. */
+.icon-btn[aria-pressed="true"],
+.btn[aria-pressed="true"] {
+  color: var(--cyan);
+  border-color: rgba(103, 232, 249, 0.45);
+  background: rgba(34, 211, 238, 0.14);
+}
+
 .icon-btn-danger:hover {
   color: var(--danger);
   border-color: rgba(251, 113, 133, 0.35);
@@ -710,6 +718,12 @@ select:focus {
   background: linear-gradient(120deg, rgba(34, 211, 238, 0.1), rgba(167, 139, 250, 0.08));
 }
 
+/* A hidden layer reads as inactive at a glance, not just via the eye icon. */
+.layer-item[data-visible="false"] .layer-thumb,
+.layer-item[data-visible="false"] .layer-name {
+  opacity: 0.4;
+}
+
 .layer-visibility {
   display: grid;
   place-items: center;
@@ -922,12 +936,30 @@ select:focus {
   font-weight: 600;
 }
 
+/* Inverted selections affect everything outside the region — make that mode obvious. */
+.status-selection[data-inverted="true"] {
+  color: var(--violet);
+}
+
 #status-message[data-tone="error"] {
   color: var(--danger);
 }
 
 .status-autosave {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   color: var(--dim);
+}
+
+.status-autosave::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.12);
 }
 
 .status-autosave[data-tone="ok"] {
@@ -980,6 +1012,10 @@ select:focus {
   margin: 0;
   color: var(--dim);
   font-size: 11.5px;
+}
+
+.dialog-note[data-tone="warn"] {
+  color: var(--pink);
 }
 
 .field-row {
