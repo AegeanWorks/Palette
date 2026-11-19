@@ -1114,6 +1114,17 @@ export class PaletteEditor {
         context.lineTo(x + w, y + h * ratio);
         context.stroke();
       }
+      // Live dimension badge for the crop region.
+      const label = `${Math.round(crop.w)} × ${Math.round(crop.h)} px`;
+      context.font = '600 12px ui-monospace, "Cascadia Mono", Consolas, monospace';
+      const tw = context.measureText(label).width;
+      const bx = Math.max(0, Math.min(x, this.viewport.width - tw - 14));
+      const by = y > 26 ? y - 24 : y + 4;
+      context.fillStyle = "rgba(2, 6, 14, 0.85)";
+      context.fillRect(bx, by, tw + 12, 18);
+      context.fillStyle = "rgba(103, 232, 249, 0.95)";
+      context.textBaseline = "middle";
+      context.fillText(label, bx + 6, by + 9);
       context.restore();
     }
 

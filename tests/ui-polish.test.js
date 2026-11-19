@@ -126,6 +126,12 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("the crop overlay shows a live dimension badge", () => {
+  assert.match(editor, /const label = `\$\{Math\.round\(crop\.w\)\} × \$\{Math\.round\(crop\.h\)\} px`/);
+  assert.match(editor, /context\.measureText\(label\)\.width/);
+  assert.match(editor, /context\.fillText\(label, bx \+ 6, by \+ 9\)/);
+});
+
 test("the status bar reflects the active Marquee shape", () => {
   assert.match(editor, /this\.tool === "marquee" && this\.options\.marquee\.kind === "ellipse"\) modeNote = " · Ellipse"/);
   assert.match(editor, /marqueeShape\.addEventListener\("change"[\s\S]{0,180}this\.syncToolOptions\(\)/);
