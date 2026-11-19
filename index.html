@@ -204,7 +204,7 @@
           <label class="field" for="bucket-opacity">Opacity <output id="bucket-opacity-value" for="bucket-opacity">100</output>%</label>
           <input id="bucket-opacity" type="range" min="1" max="100" step="1" value="100">
           <label class="check"><input id="bucket-contiguous" type="checkbox" checked> Contiguous</label>
-          <p class="panel-note">Click an area to fill with the active colour.</p>
+          <p class="panel-note">Uncheck Contiguous to fill every matching area in the layer.</p>
         </div>
 
         <div class="options-group" id="options-shape" hidden>
@@ -290,7 +290,7 @@
             <option value="1.7777777778">16:9</option>
             <option value="0.5625">9:16</option>
           </select>
-          <p class="panel-note">Drag a region, then confirm.</p>
+          <p class="panel-note">Press Enter to apply the crop or Escape to cancel it.</p>
           <div class="button-row">
             <button class="btn btn-primary btn-small" id="crop-apply" type="button" data-ui="crop-apply" disabled>Apply crop</button>
             <button class="btn btn-ghost btn-small" id="crop-cancel" type="button" data-ui="crop-cancel" disabled>Cancel</button>

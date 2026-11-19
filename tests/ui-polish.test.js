@@ -121,6 +121,13 @@ test("the Move options note adds detail instead of duplicating the header hint",
   assert.doesNotMatch(html, /id="options-move"[^>]*>[\s\S]{0,120}Drag the active layer\. Arrow keys nudge it\./);
 });
 
+test("the Bucket and Crop option notes add detail instead of duplicating the header", () => {
+  assert.match(html, /Uncheck Contiguous to fill every matching area in the layer\./);
+  assert.match(html, /Press Enter to apply the crop or Escape to cancel it\./);
+  assert.doesNotMatch(html, /<p class="panel-note">Click an area to fill with the active colour\.<\/p>/);
+  assert.doesNotMatch(html, /<p class="panel-note">Drag a region, then confirm\.<\/p>/);
+});
+
 test("the fit-to-view button shows a pressed state when auto-fitted", () => {
   assert.match(editor, /btnFit\.setAttribute\("aria-pressed", this\.autoFit \? "true" : "false"\)/);
 });
