@@ -126,6 +126,11 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("the status bar reflects the active Marquee shape", () => {
+  assert.match(editor, /this\.tool === "marquee" && this\.options\.marquee\.kind === "ellipse"\) modeNote = " · Ellipse"/);
+  assert.match(editor, /marqueeShape\.addEventListener\("change"[\s\S]{0,180}this\.syncToolOptions\(\)/);
+});
+
 test("selection controls explain why they are disabled with no selection", () => {
   assert.match(editor, /btnDeselect\.title = this\.selection[\s\S]{0,60}"Deselect — no active selection"/);
   assert.match(editor, /btnExpandSelection\.title = this\.selection[\s\S]{0,80}"Expand — no active selection"/);
@@ -163,7 +168,7 @@ test("paint cursor and size ring hide when the active layer is not editable", ()
 });
 
 test("the status bar reflects the active Dodge/Burn mode", () => {
-  assert.match(editor, /this\.tool === "dodge" && this\.options\.dodge\.mode === "burn" \? " · Burn" : ""/);
+  assert.match(editor, /this\.tool === "dodge" && this\.options\.dodge\.mode === "burn"\) modeNote = " · Burn"/);
   assert.match(editor, /const statusLabel = `\$\{meta\.label\}\$\{modeNote\}`/);
   assert.match(editor, /dodgeMode\.addEventListener\("change"[\s\S]{0,160}this\.syncToolOptions\(\)/);
 });

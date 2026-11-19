@@ -777,7 +777,9 @@ export class PaletteEditor {
     const meta = TOOL_META[this.tool] ?? TOOL_META.move;
     this.el.toolHint.textContent = meta.hint;
     const toolKey = TOOL_KEYS[this.tool];
-    const modeNote = this.tool === "dodge" && this.options.dodge.mode === "burn" ? " · Burn" : "";
+    let modeNote = "";
+    if (this.tool === "dodge" && this.options.dodge.mode === "burn") modeNote = " · Burn";
+    if (this.tool === "marquee" && this.options.marquee.kind === "ellipse") modeNote = " · Ellipse";
     const statusLabel = `${meta.label}${modeNote}`;
     this.el.statusTool.textContent = toolKey ? `${statusLabel} (${toolKey})` : statusLabel;
     this.el.statusTool.title = toolKey ? `${statusLabel} tool (${toolKey})` : `${statusLabel} tool`;
@@ -3745,6 +3747,7 @@ export class PaletteEditor {
     });
     this.el.marqueeShape.addEventListener("change", () => {
       this.options.marquee.kind = this.el.marqueeShape.value === "ellipse" ? "ellipse" : "rect";
+      this.syncToolOptions();
       this.scheduleOverlay();
     });
     this.el.cropAspect.addEventListener("change", () => {
