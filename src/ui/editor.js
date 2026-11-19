@@ -1259,6 +1259,40 @@ export class PaletteEditor {
         selection: this.selection,
       });
       context.restore();
+      // Live measurement badge in screen space: length/angle for lines,
+      // width × height for rectangles and ellipses.
+      const { start, end } = this.action;
+      const dx = end.x - start.x;
+      const dy = end.y - start.y;
+      let label = "";
+      let ax = 0;
+      let ay = 0;
+      if (this.action.tool === "line") {
+        const length = Math.hypot(dx, dy);
+        if (length >= 1) {
+          const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
+          label = `${Math.round(length)} px · ${Math.round(angle)}°`;
+          ax = end.x;
+          ay = end.y;
+        }
+      } else if (Math.abs(dx) >= 1 && Math.abs(dy) >= 1) {
+        label = `${Math.round(Math.abs(dx))} × ${Math.round(Math.abs(dy))} px`;
+        ax = (start.x + end.x) / 2;
+        ay = Math.min(start.y, end.y);
+      }
+      if (label) {
+        context.save();
+        context.font = '600 12px ui-monospace, "Cascadia Mono", Consolas, monospace';
+        const tw = context.measureText(label).width;
+        const bx = Math.max(0, Math.min(this.view.offsetX + ax * this.view.scale + 8, this.viewport.width - tw - 14));
+        const by = Math.max(14, this.view.offsetY + ay * this.view.scale - 24);
+        context.fillStyle = "rgba(2, 6, 14, 0.85)";
+        context.fillRect(bx, by, tw + 12, 18);
+        context.fillStyle = "rgba(103, 232, 249, 0.95)";
+        context.textBaseline = "middle";
+        context.fillText(label, bx + 6, by + 9);
+        context.restore();
+      }
     }
 
     if (this.textDraft?.value?.trim()) {

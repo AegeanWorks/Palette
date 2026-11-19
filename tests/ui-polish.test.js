@@ -126,6 +126,12 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("the shape drag shows a live length/angle or size badge", () => {
+  assert.match(editor, /if \(this\.action\.tool === "line"\) \{[\s\S]{0,220}const angle = \(Math\.atan2\(dy, dx\) \* 180\) \/ Math\.PI/);
+  assert.match(editor, /label = `\$\{Math\.round\(Math\.abs\(dx\)\)\} × \$\{Math\.round\(Math\.abs\(dy\)\)\} px`/);
+  assert.match(editor, /context\.fillText\(label, bx \+ 6, by \+ 9\)/);
+});
+
 test("the gradient drag shows a live angle and length guide", () => {
   assert.match(editor, /const length = Math\.hypot\(end\.x - start\.x, end\.y - start\.y\)/);
   assert.match(editor, /const angle = \(Math\.atan2\(end\.y - start\.y, end\.x - start\.x\) \* 180\) \/ Math\.PI/);
