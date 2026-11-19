@@ -1892,6 +1892,22 @@ async function main() {
     await connection.evaluate("globalThis.palette.undo()");
     await wait(220);
 
+    // Test rotate active layer 90 deg CCW (direction -1). Both the commit and
+    // its direction-specific label must appear, so a sign/wiring regression in
+    // the CCW branch cannot pass silently.
+    await connection.evaluate("document.getElementById('btn-layer-rotate-ccw').click()");
+    await wait(220);
+    const rotCcw = await connection.evaluate(`(() => ({
+      undo: globalThis.palette.history.canUndo,
+      label: globalThis.palette.history.undoLabel
+    }))()`);
+    if (!rotCcw.undo) throw new Error("Rotate layer 90 CCW did not commit to history");
+    if (rotCcw.label !== "Rotate layer 90° CCW") {
+      throw new Error(`Rotate layer 90 CCW committed the wrong direction: ${JSON.stringify(rotCcw)}`);
+    }
+    await connection.evaluate("globalThis.palette.undo()");
+    await wait(220);
+
     // Test flip active layer horizontal
     await connection.evaluate(`(() => {
       const editor = globalThis.palette;
@@ -1987,8 +2003,11 @@ async function main() {
       editor.onKeyDown(event1);
       const scaleActual = editor.view.scale;
       editor.fitView();
-      return { scaleFit, scaleActual };
+      return { scaleSeed: 0.5, scaleFit, scaleActual };
     })()`);
+    if (zoomKeys.scaleFit === zoomKeys.scaleSeed || zoomKeys.scaleFit <= 0) {
+      throw new Error(`Ctrl+0 shortcut did not change the scale to fit: ${JSON.stringify(zoomKeys)}`);
+    }
     if (zoomKeys.scaleActual !== 1) {
       throw new Error(`Ctrl+1 shortcut did not set 100% zoom: ${JSON.stringify(zoomKeys)}`);
     }

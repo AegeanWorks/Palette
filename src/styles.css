@@ -178,6 +178,13 @@ svg {
   outline: none;
 }
 
+.doc-dirty {
+  color: var(--cyan);
+  font-size: 18px;
+  line-height: 1;
+  pointer-events: none;
+}
+
 .doc-size {
   color: var(--dim);
   font-family: var(--mono);
@@ -223,7 +230,7 @@ svg {
   background: rgba(10, 17, 29, 0.55);
 }
 
-.btn-ghost:hover {
+.btn-ghost:not(:disabled):hover {
   border-color: var(--line-strong);
   color: var(--text);
   background: var(--panel-2);
@@ -236,9 +243,23 @@ svg {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
-.btn-primary:hover {
+.btn-primary:not(:disabled):hover {
   border-color: var(--cyan);
   background: linear-gradient(135deg, rgba(34, 211, 238, 0.36), rgba(167, 139, 250, 0.32));
+}
+
+/* Disabled text buttons (Deselect, Paste, Apply crop, …) must not look clickable. */
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Locking a layer disables its adjustment sliders; they must look inactive too. */
+input[type]:disabled,
+select:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .btn-small {
@@ -405,6 +426,12 @@ svg {
 .stage[data-cursor="zoom"] { cursor: zoom-in; }
 .stage[data-cursor="zoom-out"] { cursor: zoom-out; }
 .stage[data-cursor="eyedropper"] { cursor: copy; }
+
+/* The workspace clips overflow, so draw the keyboard focus ring inside the canvas. */
+.stage:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: -3px;
+}
 
 .stage-note {
   position: absolute;
@@ -581,6 +608,11 @@ svg {
   border-color: var(--cyan);
 }
 
+.btn-swatch[aria-pressed="true"] {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
 
 .options-group {
   display: grid;
@@ -641,6 +673,14 @@ select:focus {
   accent-color: var(--teal);
 }
 
+.layer-count {
+  margin-left: 6px;
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+}
+
 .layer-list {
   display: grid;
   gap: 4px;
@@ -658,6 +698,7 @@ select:focus {
   border: 1px solid transparent;
   border-radius: 9px;
   background: rgba(13, 21, 36, 0.55);
+  transition: background 0.15s var(--ease), border-color 0.15s var(--ease);
 }
 
 .layer-item:hover {
@@ -717,6 +758,10 @@ select:focus {
   text-align: left;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.layer-name[aria-pressed="true"] {
+  font-weight: 700;
 }
 
 .layer-name-input {
@@ -819,6 +864,18 @@ select:focus {
   justify-content: flex-start;
 }
 
+.filter-group {
+  grid-column: 1 / -1;
+  margin: 10px 0 2px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--line);
+  color: var(--dim);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
 /* ---------- status bar ---------- */
 
 .status-bar {
@@ -853,6 +910,16 @@ select:focus {
   width: 1px;
   height: 12px;
   background: var(--line);
+}
+
+.status-layer {
+  color: var(--muted);
+  max-width: 160px;
+}
+
+.status-selection {
+  color: var(--cyan);
+  font-weight: 600;
 }
 
 #status-message[data-tone="error"] {

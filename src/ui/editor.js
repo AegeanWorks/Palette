@@ -51,6 +51,7 @@ import {
   applyThreshold,
   applyVignette,
   buildCssFilter,
+  isNeutralAdjustments,
 } from "../core/filters.js";
 import { floodFillPixels } from "../core/fill.js";
 import {
@@ -128,6 +129,28 @@ import {
   strokeTone,
 } from "./paint.js";
 
+const TOOL_KEYS = Object.freeze({
+  move: "V", brush: "B", eraser: "E", clone: "S", dodge: "D", bucket: "K",
+  crop: "C", marquee: "M", text: "T", rect: "R", ellipse: "O", line: "L",
+  gradient: "G", eyedropper: "I", hand: "H", zoom: "Z",
+});
+
+const BUTTON_SHORTCUTS = Object.freeze({
+  btnOpen: "Control+O Meta+O",
+  btnSave: "Control+S Meta+S",
+  btnExport: "Control+E Meta+E",
+  btnStampVisible: "Control+Alt+Shift+E Meta+Alt+Shift+E",
+  btnSelectAll: "Control+A Meta+A",
+  btnDeselect: "Control+D Meta+D",
+  btnInvertSelection: "Shift+I Control+Shift+I Meta+Shift+I",
+  btnCopy: "Control+C Meta+C",
+  btnCut: "Control+X Meta+X",
+  btnPaste: "Control+V Meta+V",
+  btnLayerViaCopy: "Control+J Meta+J",
+  btnLayerViaCut: "Control+Shift+J Meta+Shift+J",
+  btnActual: "Control+1 Meta+1",
+});
+
 const TOOL_META = Object.freeze({
   move: { label: "Move", cursor: "move", hint: "Drag the active layer. Arrow keys nudge it." },
   brush: { label: "Brush", cursor: "crosshair", hint: "Paint on the active layer." },
@@ -159,7 +182,7 @@ const ADJUSTMENTS = [
 ];
 
 const IDS = [
-  "doc-name", "doc-size", "btn-new", "btn-open", "btn-open-project", "btn-save", "btn-export",
+  "doc-name", "doc-dirty", "doc-size", "btn-new", "btn-open", "btn-open-project", "btn-save", "btn-export",
   "btn-undo", "btn-redo", "btn-help", "file-image", "file-layer", "file-project", "stage-wrap", "doc-frame",
   "stage", "overlay", "text-editor", "text-input", "text-commit", "text-cancel", "drop-hint",
   "stage-note", "btn-zoom-out", "btn-fit", "btn-zoom-in", "color-row", "color-input", "color-hex",
@@ -177,7 +200,7 @@ const IDS = [
   "gradient-end-hex", "gradient-fade", "gradient-opacity", "gradient-opacity-value", "crop-apply",
   "crop-cancel", "btn-layer-add", "btn-layer-image", "btn-layer-duplicate", "btn-layer-merge",
   "btn-layer-lock", "btn-layer-clip", "btn-layer-up", "btn-layer-down", "btn-layer-delete", "layer-opacity",
-  "layer-opacity-value", "layer-blend", "layer-list",
+  "layer-opacity-value", "layer-blend", "layer-count", "layer-list",
   "btn-resize", "btn-canvas-size", "btn-transform", "btn-layer-flip-h", "btn-layer-flip-v", "btn-layer-rotate-cw", "btn-layer-rotate-ccw", "btn-flip-h", "btn-flip-v", "btn-rotate",
   "btn-flatten", "btn-stamp-visible",
   "adjust-reset", "histogram", "histogram-range", "btn-auto-levels", "adj-brightness",
@@ -199,7 +222,7 @@ const IDS = [
   "filter-tint-preserve", "btn-filter-tint",
   "btn-filter-find-edges", "btn-filter-solarize", "filter-duotone-shadow", "filter-duotone-highlight", "btn-filter-duotone", "btn-filter-dither",
   "filter-oil-radius", "filter-oil-value", "btn-filter-oil", "btn-filter-median",
-  "status-tool", "status-message",
+  "status-tool", "status-layer", "status-selection", "status-message",
   "status-cursor", "status-zoom",
   "btn-actual", "new-dialog", "new-form", "new-name", "new-width", "new-height", "new-color",
   "new-cancel", "new-create", "export-dialog", "export-form", "export-name", "export-format",
@@ -350,6 +373,9 @@ export class PaletteEditor {
   constructor(root = document) {
     this.root = root;
     this.el = cacheIds(root, IDS);
+    for (const [name, keys] of Object.entries(BUTTON_SHORTCUTS)) {
+      this.el[name]?.setAttribute("aria-keyshortcuts", keys);
+    }
     this.history = new History({ limit: 24 });
     this.tool = "move";
     this.doc = null;
@@ -414,6 +440,7 @@ export class PaletteEditor {
   setDocument(doc, { reset = false, fit = false, autosave = true, status = "", dirty = false } = {}) {
     this.doc = doc;
     this.documentDirty = dirty;
+    this.syncDocumentState();
     this.history.setLimit(historyLimitFor(doc));
     if (reset) this.history.clear();
     this.action = null;
@@ -442,6 +469,7 @@ export class PaletteEditor {
     const limit = historyLimitFor(doc);
     if (limit !== this.history.limit) this.history.setLimit(limit);
     this.documentDirty = true;
+    this.syncDocumentState();
     this.action = null;
     this.cropRect = null;
     if (dimensionsChanged) this.selection = null;
@@ -466,6 +494,7 @@ export class PaletteEditor {
     const limit = historyLimitFor(afterDoc);
     if (limit !== this.history.limit) this.history.setLimit(limit);
     this.documentDirty = true;
+    this.syncDocumentState();
     this.history.push(
       createCommand(
         label,
@@ -491,6 +520,14 @@ export class PaletteEditor {
     }, error ? 6500 : 4200);
   }
 
+  syncDocumentState() {
+    const dirty = Boolean(this.documentDirty);
+    const name = cleanDocumentName(this.doc?.name, "Untitled");
+    if (this.el.docDirty) this.el.docDirty.hidden = !dirty;
+    const title = `${name}${dirty ? " •" : ""} — Palette`;
+    if (document.title !== title) document.title = title;
+  }
+
   dismissNote() {
     this.el.stageNote?.setAttribute("data-hidden", "true");
   }
@@ -504,6 +541,7 @@ export class PaletteEditor {
 
   refreshUI() {
     if (!this.doc) return;
+    this.syncSwatches();
     if (this.root.activeElement !== this.el.docName) this.el.docName.value = this.doc.name;
     this.el.docSize.textContent = `${this.doc.width} × ${this.doc.height}`;
     this.updateHistoryButtons();
@@ -519,6 +557,15 @@ export class PaletteEditor {
     this.el.btnExpandSelection.disabled = !this.selection;
     this.el.btnContractSelection.disabled = !this.selection;
     this.el.btnInvertSelection.setAttribute("aria-pressed", this.selection?.invert ? "true" : "false");
+    const selectionRect = this.selection?.rect;
+    if (this.el.statusSelection) {
+      this.el.statusSelection.hidden = !selectionRect;
+      if (selectionRect) {
+        const mode = this.selection.invert ? " (inverted)" : "";
+        this.el.statusSelection.textContent =
+          `Selection ${Math.round(selectionRect.w)}×${Math.round(selectionRect.h)}${mode}`;
+      }
+    }
     this.el.btnPaste.disabled = !this.clipboard;
     this.scheduleHistogram();
   }
@@ -569,8 +616,43 @@ export class PaletteEditor {
     this.el.btnLayerLock.setAttribute("aria-pressed", layer.locked ? "true" : "false");
     this.el.btnLayerLock.title = layer.locked ? "Unlock layer" : "Lock layer";
     this.el.btnLayerClip.setAttribute("aria-pressed", layer.clipToBelow ? "true" : "false");
-    this.el.btnLayerClip.title = layer.clipToBelow ? "Release clipping mask" : "Clip to layer below";
-    this.el.btnLayerClip.disabled = indexOfLayer(this.doc, layer.id) <= 0;
+    const canClip = indexOfLayer(this.doc, layer.id) > 0;
+    this.el.btnLayerClip.title = !canClip
+      ? "Clip to layer below — select a layer above the bottom"
+      : layer.clipToBelow
+        ? "Release clipping mask (Ctrl+Alt+G)"
+        : "Clip to layer below (Ctrl+Alt+G)";
+    if (this.el.statusLayer) {
+      const flags = [
+        !layer.visible && "hidden",
+        layer.locked && "locked",
+        layer.clipToBelow && "clipped",
+      ].filter(Boolean);
+      const suffix = flags.length ? ` (${flags.join(", ")})` : "";
+      this.el.statusLayer.textContent = `${layer.name}${suffix}`;
+      this.el.statusLayer.title = `Active layer: ${layer.name}${suffix}`;
+    }
+    const layerIndex = indexOfLayer(this.doc, layer.id);
+    this.el.btnLayerUp.disabled = layerIndex >= this.doc.layers.length - 1;
+    this.el.btnLayerUp.title = this.el.btnLayerUp.disabled
+      ? "Move layer up — already at the top"
+      : "Move layer up";
+    this.el.btnLayerDown.disabled = layerIndex <= 0;
+    this.el.btnLayerDown.title = this.el.btnLayerDown.disabled
+      ? "Move layer down — already at the bottom"
+      : "Move layer down";
+    this.el.btnLayerClip.disabled = !canClip;
+    this.el.btnLayerMerge.disabled = !canClip;
+    this.el.btnLayerMerge.title = !canClip
+      ? "Merge layer down — select a layer above the bottom"
+      : "Merge layer down";
+    const isOnlyLayer = this.doc.layers.length <= 1;
+    this.el.btnLayerDelete.disabled = isOnlyLayer;
+    this.el.btnLayerDelete.title = isOnlyLayer
+      ? "Delete layer — keep at least one layer"
+      : "Delete layer";
+    this.el.layerOpacity.disabled = layer.locked;
+    this.el.layerBlend.disabled = layer.locked;
     for (const key of ADJUSTMENTS) {
       const input = this.el[`adj${key[0].toUpperCase()}${key.slice(1)}`];
       const output = this.el[`adj${key[0].toUpperCase()}${key.slice(1)}Value`];
@@ -580,6 +662,7 @@ export class PaletteEditor {
       if (this.root.activeElement !== input) input.value = String(value);
       output.textContent = formatAdjustment(key, value);
     }
+    this.el.adjustReset.disabled = isNeutralAdjustments(layer.adjustments);
   }
 
   syncToolOptions() {
@@ -601,8 +684,12 @@ export class PaletteEditor {
     this.el.colorRow.hidden = !usesColor;
     const meta = TOOL_META[this.tool] ?? TOOL_META.move;
     this.el.toolHint.textContent = meta.hint;
-    this.el.statusTool.textContent = meta.label;
+    const toolKey = TOOL_KEYS[this.tool];
+    this.el.statusTool.textContent = toolKey ? `${meta.label} (${toolKey})` : meta.label;
+    this.el.statusTool.title = toolKey ? `${meta.label} tool (${toolKey})` : `${meta.label} tool`;
     for (const button of this.root.querySelectorAll("[data-tool]")) {
+      const key = TOOL_KEYS[button.dataset.tool];
+      if (key) button.setAttribute("aria-keyshortcuts", key);
       button.setAttribute("aria-pressed", button.dataset.tool === this.tool ? "true" : "false");
     }
     this.updateCursor();
@@ -666,6 +753,9 @@ export class PaletteEditor {
     const list = this.el.layerList;
     list.replaceChildren();
     const layers = this.doc.layers.slice().reverse();
+    if (this.el.layerCount) {
+      this.el.layerCount.textContent = `${layers.length} layer${layers.length === 1 ? "" : "s"}`;
+    }
     for (const layer of layers) {
       const item = this.root.createElement("li");
       item.className = "layer-item";
@@ -677,6 +767,7 @@ export class PaletteEditor {
       visibility.type = "button";
       visibility.className = "layer-visibility";
       visibility.setAttribute("aria-label", `${layer.visible ? "Hide" : "Show"} ${layer.name}`);
+      visibility.title = `${layer.visible ? "Hide" : "Show"} ${layer.name}`;
       visibility.setAttribute("aria-pressed", layer.visible ? "true" : "false");
       visibility.innerHTML = layer.visible
         ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.6"/></svg>'
@@ -698,6 +789,7 @@ export class PaletteEditor {
       name.className = "layer-name";
       name.textContent = layer.name;
       name.title = layer.name;
+      name.setAttribute("aria-pressed", layer.id === this.doc.activeLayerId ? "true" : "false");
       name.addEventListener("click", () => this.selectLayer(layer.id));
       name.addEventListener("dblclick", (event) => {
         event.preventDefault();
@@ -1876,12 +1968,21 @@ export class PaletteEditor {
     this.announce("Filled area.");
   }
 
+  syncSwatches() {
+    const hex = this.options.color.toLowerCase();
+    for (const swatch of this.root.querySelectorAll("[data-swatch]")) {
+      const active = swatch.dataset.swatch.toLowerCase() === hex;
+      swatch.setAttribute("aria-pressed", active ? "true" : "false");
+    }
+  }
+
   setColor(value) {
     const hex = normalizeHex(value, this.options.color);
     this.options.color = hex;
     this.el.colorInput.value = hex;
     this.el.colorHex.textContent = hex;
     this.el.textInput.style.color = hex;
+    this.syncSwatches();
     this.scheduleRender();
   }
 
@@ -2178,6 +2279,7 @@ export class PaletteEditor {
     }
     const adjustments = { ...layer.adjustments, [key]: value };
     this.doc = updateLayer(this.doc, layer.id, { adjustments });
+    if (this.el.adjustReset) this.el.adjustReset.disabled = isNeutralAdjustments(adjustments);
     const output = this.el[`adj${key[0].toUpperCase()}${key.slice(1)}Value`];
     if (output) output.textContent = formatAdjustment(key, value);
     this.scheduleRender();
@@ -2453,6 +2555,8 @@ export class PaletteEditor {
     this.el.exportScale.value = "1";
     this.syncExportFormat();
     this.el.exportDialog.showModal();
+    this.el.exportName.focus();
+    this.el.exportName.select();
   }
 
   syncExportFormat() {
@@ -2501,6 +2605,7 @@ export class PaletteEditor {
       const name = `${safeFileName(this.doc.name)}.palette`;
       downloadBlob(blob, name);
       this.documentDirty = false;
+      this.syncDocumentState();
       this.announce(`Saved ${name} (${formatBytes(blob.size)}).`);
     } catch (error) {
       this.announce(error.message || "The project could not be saved.", { error: true });
@@ -2619,6 +2724,8 @@ export class PaletteEditor {
     this.el.resizeHeight.value = String(this.doc.height);
     this.el.resizeLock.checked = true;
     this.el.resizeDialog.showModal();
+    this.el.resizeWidth.focus();
+    this.el.resizeWidth.select();
   }
 
   openCanvasDialog() {
@@ -2629,6 +2736,8 @@ export class PaletteEditor {
     const center = this.root.querySelector('input[name="canvas-anchor"][value="center"]');
     if (center) center.checked = true;
     this.el.canvasDialog.showModal();
+    this.el.canvasWidth.focus();
+    this.el.canvasWidth.select();
   }
 
   openTransformDialog() {
@@ -2786,6 +2895,7 @@ export class PaletteEditor {
     if (name === this.doc.name) return;
     this.doc = { ...this.doc, name };
     this.documentDirty = true;
+    this.syncDocumentState();
     this.announce("Document renamed.");
     this.scheduleAutosave();
   }
@@ -2986,6 +3096,12 @@ export class PaletteEditor {
       return;
     }
     if (isTypingTarget(event.target)) return;
+
+    if (event.key === "F1") {
+      event.preventDefault();
+      if (!this.isDialogOpen()) this.el.helpDialog.showModal();
+      return;
+    }
 
     if (event.key === "Escape") {
       if (this.textDraft) {
@@ -3509,6 +3625,7 @@ export class PaletteEditor {
     });
 
     this.el.docName.addEventListener("change", () => this.setDocumentName(this.el.docName.value));
+    this.el.docName.addEventListener("focus", () => this.el.docName.select());
     this.el.docName.addEventListener("keydown", (event) => {
       if (event.key === "Enter") {
         event.preventDefault();
