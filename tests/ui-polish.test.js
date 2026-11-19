@@ -121,6 +121,12 @@ test("the Move options note adds detail instead of duplicating the header hint",
   assert.doesNotMatch(html, /id="options-move"[^>]*>[\s\S]{0,120}Drag the active layer\. Arrow keys nudge it\./);
 });
 
+test("the tool hint sits on its own full-width line in the panel header", () => {
+  assert.match(styles, /\.panel-head:has\(#tool-hint\)\s*\{[^}]*flex-wrap:\s*wrap/);
+  assert.match(styles, /#tool-hint\s*\{[^}]*flex:\s*1 1 100%/);
+  assert.match(styles, /#tool-hint\s*\{[^}]*text-align:\s*left/);
+});
+
 test("the Bucket and Crop option notes add detail instead of duplicating the header", () => {
   assert.match(html, /Uncheck Contiguous to fill every matching area in the layer\./);
   assert.match(html, /Press Enter to apply the crop or Escape to cancel it\./);

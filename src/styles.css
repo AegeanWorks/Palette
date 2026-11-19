@@ -524,6 +524,18 @@ select:disabled {
   margin-bottom: 10px;
 }
 
+/* The tool hint can be long; give it a full-width line instead of cramping it
+   beside the heading, where it wraps into a narrow column. Scope to the options
+   panel so other panel headers keep their single-row layout. */
+.panel-head:has(#tool-hint) {
+  flex-wrap: wrap;
+}
+
+#tool-hint {
+  flex: 1 1 100%;
+  text-align: left;
+}
+
 .panel-head h2 {
   margin: 0;
   font-size: 12px;
