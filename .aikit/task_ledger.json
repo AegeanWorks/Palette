@@ -13,222 +13,6 @@
   },
   "checkpoints": [
     {
-      "task_id": "palette-selection-and-toning",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "Phase 4 passed under PRINCIPLE-018 R1: 107/107 unit tests passed, dogfood browser CDP passed, ADR-005 recorded; checklists: passed",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1794601837.0164366,
-      "timestamp_str": "2026-11-13 23:30:37",
-      "agent": "antigravity:1"
-    },
-    {
-      "task_id": "palette-selection-and-toning",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'palette-selection-and-toning' completed successfully.",
-      "status": "completed",
-      "timestamp": 1794601928.7024,
-      "timestamp_str": "2026-11-13 23:32:08",
-      "agent": "antigravity:1"
-    },
-    {
-      "task_id": "palette-color-balance-and-noise",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/5] Plan: M1 core applyColorBalance and applyNoise pure functions with unit tests; M2 UI controls in index.html; M3 editor integration and UI tests; M4 headless CDP dogfood pass; M5 docs, ADR-006, version bump and strict gate check",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1794602275.8100429,
-      "timestamp_str": "2026-11-13 23:37:55",
-      "agent": "antigravity:1",
-      "impact_assessment": {
-        "why": "Add destructive Color Balance (Cyan/Red, Magenta/Green, Yellow/Blue with luminosity preservation) and Add Noise (monochrome/color with intensity) filters to give users professional color grading and texture/dithering capabilities",
-        "benefits": "Enables photographic color grading, white-balance correction, cross-processing, and film grain / gradient anti-banding directly in browser Canvas 2D with undo/redo and selection clipping",
-        "risks": "contract: none, additive pure functions and UI controls; dependency: none, pure vanilla JS and Canvas 2D; concurrency: none, synchronous pixel buffer processing; state: none, returns fresh pixel buffers without mutating input",
-        "mitigation": "Clamp color and noise ranges, preserve alpha channel, support deterministic PRNG seed for repeatable tests, and verify in unit and CDP test suites"
-      },
-      "plan_digest": "04c933350fdec0c89d3be18cdfe76b604398d0329757761f093522e0a1b44203"
-    },
-    {
-      "task_id": "palette-color-balance-and-noise",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "Phase 4 passed under PRINCIPLE-018 R1: 109/109 unit tests passed, dogfood browser CDP passed, ADR-006 recorded; checklists: passed",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1794602874.7545357,
-      "timestamp_str": "2026-11-13 23:47:54",
-      "agent": "antigravity:1"
-    },
-    {
-      "task_id": "palette-color-balance-and-noise",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'palette-color-balance-and-noise' completed successfully.",
-      "status": "completed",
-      "timestamp": 1794602925.2132332,
-      "timestamp_str": "2026-11-13 23:48:45",
-      "agent": "antigravity:1"
-    },
-    {
-      "task_id": "palette-high-pass-and-tint",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/5] Plan: M1 core applyHighPass and applyTint pure functions with unit tests; M2 UI controls in index.html; M3 editor integration and UI tests; M4 headless CDP dogfood pass; M5 docs, ADR-007, version bump and strict gate check",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1794603077.709472,
-      "timestamp_str": "2026-11-13 23:51:17",
-      "agent": "antigravity:1",
-      "impact_assessment": {
-        "why": "Add High Pass filter (frequency separation and texture sharpening) and Photo Tint filter (lens warming/cooling tint with luminance preservation) to give users professional detail sharpening and optical filter styling",
-        "benefits": "Enables texture sharpening without halo artifacts, film/lens tinting, and warm/cool temperature correction directly in Canvas 2D with undo/redo and selection clipping",
-        "risks": "contract: none, additive pure functions and UI controls; dependency: none, pure vanilla JS and Canvas 2D; concurrency: none, synchronous pixel buffer processing; state: none, returns fresh pixel buffers without mutating input",
-        "mitigation": "Clamp radius and density ranges, preserve alpha channel, ensure separable box blur boundary clamping, and verify in unit and CDP test suites"
-      },
-      "plan_digest": "56079053df8b17856d5d220d60e4fcbf4e1304dbe078584ba932f680c1b88713"
-    },
-    {
-      "task_id": "palette-high-pass-and-tint",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "Phase 4 passed under PRINCIPLE-018 R1: 111/111 unit tests passed, dogfood browser CDP passed, ADR-007 recorded; checklists: passed",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1794603550.1130252,
-      "timestamp_str": "2026-11-13 23:59:10",
-      "agent": "antigravity:1"
-    },
-    {
-      "task_id": "palette-high-pass-and-tint",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'palette-high-pass-and-tint' completed successfully.",
-      "status": "completed",
-      "timestamp": 1794603597.574166,
-      "timestamp_str": "2026-11-13 23:59:57",
-      "agent": "antigravity:1"
-    },
-    {
-      "task_id": "palette-stylize-and-transforms",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/5] Plan: M1 core applyFindEdges and applySolarize pure functions with unit tests; M2 UI controls in index.html; M3 editor flipActiveLayer integration and UI tests; M4 headless CDP dogfood pass; M5 docs, ADR-008, version bump and strict gate check",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1794604282.9543793,
-      "timestamp_str": "2026-11-14 00:11:22",
-      "agent": "antigravity:1",
-      "impact_assessment": {
-        "why": "Add Find Edges and Solarize stylize filters, and single-click Flip Layer Horizontal/Vertical commands to give artists rapid sketch extraction, darkroom Sabattier effects, and instant layer mirror transformations",
-        "benefits": "Artists can extract pencil/ink outlines from photos, apply classic solarized tone curves, and flip individual active layers without traversing the multi-step layer transform dialog",
-        "risks": "contract: none, additive pure functions and UI controls; dependency: none, pure vanilla JS and Canvas 2D; concurrency: none, synchronous pixel buffer and canvas operations; state: none, returns fresh pixel buffers and canvas instances without mutating state",
-        "mitigation": "Edge boundary clamping in Sobel convolution, alpha channel preservation, locked-layer verification in flipActiveLayer, and full verification across unit test suite and headless browser CDP dogfooding"
-      },
-      "plan_digest": "557e38276ca3ec089726ef39d696a6e86da3a49487861c3fa7b497b0dbd90a09"
-    },
-    {
-      "task_id": "palette-stylize-and-transforms",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "Phase 4 passed under PRINCIPLE-018 R1: 113/113 unit tests passed, dogfood browser CDP passed, ADR-008 recorded; checklists: passed",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1794604656.5446541,
-      "timestamp_str": "2026-11-14 00:17:36",
-      "agent": "antigravity:1"
-    },
-    {
-      "task_id": "palette-stylize-and-transforms",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'palette-stylize-and-transforms' completed successfully.",
-      "status": "completed",
-      "timestamp": 1794604691.316683,
-      "timestamp_str": "2026-11-14 00:18:11",
-      "agent": "antigravity:1"
-    },
-    {
-      "task_id": "palette-blur-and-dither",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/5] Plan: M1 core applyBlur and applyDither pure functions with unit tests; M2 UI controls in index.html; M3 editor applyBlurFilter/applyDitherFilter integration and UI tests; M4 headless CDP dogfood pass; M5 docs, ADR-009, version bump and strict gate check",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1794604767.0148683,
-      "timestamp_str": "2026-11-14 00:19:27",
-      "agent": "antigravity:1",
-      "impact_assessment": {
-        "why": "Add destructive box blur and ordered Bayer dithering filters to allow raster smoothing and retro stippled textures",
-        "benefits": "Users can soften backgrounds or selections with adjustable radius, and generate stylized 1-bit or retro dithered illustrations",
-        "risks": "contract: none, additive pure functions and UI controls; dependency: none, pure vanilla JS and Canvas 2D; concurrency: none, synchronous pixel buffer operations; state: none, returns fresh pixel buffers without mutating state",
-        "mitigation": "Boundary clamping in box blur kernel, normalized Bayer matrix thresholds, alpha preservation, and test verification"
-      },
-      "plan_digest": "fdc8e4e115ec31f5b352c6a4a764d316cd2e0c1f8ade8d742c5d7b8223a22b0e"
-    },
-    {
-      "task_id": "palette-blur-and-dither",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "Phase 4 passed under PRINCIPLE-018 R1: 116/116 unit tests passed, dogfood browser CDP passed, ADR-009 recorded; checklists: passed",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1794605290.8121545,
-      "timestamp_str": "2026-11-14 00:28:10",
-      "agent": "antigravity:1"
-    },
-    {
-      "task_id": "palette-blur-and-dither",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'palette-blur-and-dither' completed successfully.",
-      "status": "completed",
-      "timestamp": 1794605332.456654,
-      "timestamp_str": "2026-11-14 00:28:52",
-      "agent": "antigravity:1"
-    },
-    {
-      "task_id": "palette-oil-paint-and-layer-rotation",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/5] Plan: M1 core applyOilPaint and applyMedian pure functions with unit tests; M2 UI controls in index.html; M3 editor rotateActiveLayer/applyOilPaintFilter/applyMedianFilter integration and UI tests; M4 headless CDP dogfood pass; M5 docs, ADR-010, version bump and strict gate check",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1794605563.5691369,
-      "timestamp_str": "2026-11-14 00:32:43",
-      "agent": "antigravity:1",
-      "impact_assessment": {
-        "why": "Add Kuwahara oil paint artistic filter, 3x3 median despeckle filter, and 1-click active layer 90-degree CW/CCW rotation commands",
-        "benefits": "Artists can create painterly oil-canvas stylizations, remove salt-and-pepper noise, and rotate layer artwork in place without opening the transform dialog",
-        "risks": "contract: none, additive pure functions and UI controls; dependency: none, pure vanilla JS and Canvas 2D; concurrency: none, synchronous pixel buffer and canvas operations; state: none, returns fresh pixel buffers and canvas instances without mutating state",
-        "mitigation": "Window boundary clamping in Kuwahara and median algorithms, content-bounds centering in layer rotation, alpha preservation, and full test verification"
-      },
-      "plan_digest": "41f0fb8f4e68596b716b46040bb3d14c88392bdb389b7a5c2c5ffe861329eb2c"
-    },
-    {
-      "task_id": "palette-oil-paint-and-layer-rotation",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "Phase 4 passed under PRINCIPLE-018 R1: 118/118 unit tests passed, dogfood browser CDP passed, ADR-010 recorded; checklists: passed",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1794605887.347306,
-      "timestamp_str": "2026-11-14 00:38:07",
-      "agent": "antigravity:1"
-    },
-    {
-      "task_id": "palette-oil-paint-and-layer-rotation",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'palette-oil-paint-and-layer-rotation' completed successfully.",
-      "status": "completed",
-      "timestamp": 1794605930.5950024,
-      "timestamp_str": "2026-11-14 00:38:50",
-      "agent": "antigravity:1"
-    },
-    {
       "task_id": "palette-hardening-and-shortcuts",
       "phase": "phase 2",
       "phase_num": 2,
@@ -270,6 +54,217 @@
       "timestamp": 1794606827.0950363,
       "timestamp_str": "2026-11-14 00:53:47",
       "agent": "gemini"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 9",
+      "phase_num": 3,
+      "description": "Reforge stage 9: stage 9 host review reviewed; run active; coverage 21/21",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795038172.9038434,
+      "timestamp_str": "2026-11-19 00:42:52",
+      "agent": "opencode",
+      "operator_task": "palette-hardening-and-shortcuts"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 10",
+      "phase_num": 3,
+      "description": "Reforge stage 10: window 30, 3 commit(s), 11 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired, empty \u2014 nothing to commit",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795038183.6244237,
+      "timestamp_str": "2026-11-19 00:43:03",
+      "agent": "opencode",
+      "operator_task": "palette-hardening-and-shortcuts"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 10",
+      "phase_num": 3,
+      "description": "Reforge stage 10: stage 10 host review reviewed; run active; coverage 44/44",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795038215.5292485,
+      "timestamp_str": "2026-11-19 00:43:35",
+      "agent": "opencode",
+      "operator_task": "palette-hardening-and-shortcuts"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 11",
+      "phase_num": 3,
+      "description": "Reforge stage 11: window 33, 3 commit(s), 9 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired, empty \u2014 nothing to commit, 2 binary not analysed",
+      "files_affected": [
+        "assets/screenshots/2026-11-02-export.png",
+        "assets/screenshots/2026-11-02-home.png"
+      ],
+      "status": "in_progress",
+      "timestamp": 1795038226.07859,
+      "timestamp_str": "2026-11-19 00:43:46",
+      "agent": "opencode",
+      "operator_task": "palette-hardening-and-shortcuts"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 11",
+      "phase_num": 3,
+      "description": "Reforge stage 11: stage 11 host review reviewed; run active; coverage 11/11",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795038252.5530677,
+      "timestamp_str": "2026-11-19 00:44:12",
+      "agent": "opencode",
+      "operator_task": "palette-hardening-and-shortcuts"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 12",
+      "phase_num": 3,
+      "description": "Reforge stage 12: window 36, 3 commit(s), 4 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired, empty \u2014 nothing to commit",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795038264.2983823,
+      "timestamp_str": "2026-11-19 00:44:24",
+      "agent": "opencode",
+      "operator_task": "palette-hardening-and-shortcuts"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 12",
+      "phase_num": 3,
+      "description": "Reforge stage 12: stage 12 host review reviewed; run active; coverage 15/15",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795038300.0922563,
+      "timestamp_str": "2026-11-19 00:45:00",
+      "agent": "opencode",
+      "operator_task": "palette-hardening-and-shortcuts"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 13",
+      "phase_num": 3,
+      "description": "Reforge stage 13: window 39, 3 commit(s), 11 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired, empty \u2014 nothing to commit",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795038311.8605702,
+      "timestamp_str": "2026-11-19 00:45:11",
+      "agent": "opencode",
+      "operator_task": "palette-hardening-and-shortcuts"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 13",
+      "phase_num": 3,
+      "description": "Reforge stage 13: stage 13 host review reviewed; run active; coverage 18/18",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795038343.9295192,
+      "timestamp_str": "2026-11-19 00:45:43",
+      "agent": "opencode",
+      "operator_task": "palette-hardening-and-shortcuts"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 14",
+      "phase_num": 3,
+      "description": "Reforge stage 14: window 42, 3 commit(s), 16 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired, empty \u2014 nothing to commit",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795038359.4572227,
+      "timestamp_str": "2026-11-19 00:45:59",
+      "agent": "opencode",
+      "operator_task": "palette-hardening-and-shortcuts"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 14",
+      "phase_num": 3,
+      "description": "Reforge stage 14: stage 14 host review reviewed; run active; coverage 75/75",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795038416.3915002,
+      "timestamp_str": "2026-11-19 00:46:56",
+      "agent": "opencode",
+      "operator_task": "palette-hardening-and-shortcuts"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 15",
+      "phase_num": 3,
+      "description": "Reforge stage 15: window 45, 3 commit(s), 5 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired, empty \u2014 nothing to commit, 3 binary not analysed",
+      "files_affected": [
+        "assets/logo.png",
+        "assets/screenshots/2026-10-31-home.png",
+        "assets/social-preview.png"
+      ],
+      "status": "in_progress",
+      "timestamp": 1795038429.9090457,
+      "timestamp_str": "2026-11-19 00:47:09",
+      "agent": "opencode",
+      "operator_task": "palette-hardening-and-shortcuts"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 15",
+      "phase_num": 3,
+      "description": "Reforge stage 15: stage 15 host review reviewed; run active; coverage 5/5",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795038451.1081195,
+      "timestamp_str": "2026-11-19 00:47:31",
+      "agent": "opencode",
+      "operator_task": "palette-hardening-and-shortcuts"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 16",
+      "phase_num": 3,
+      "description": "Reforge stage 16: window 48, 3 commit(s), 38 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired, empty \u2014 nothing to commit",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795038475.559289,
+      "timestamp_str": "2026-11-19 00:47:55",
+      "agent": "opencode",
+      "operator_task": "palette-hardening-and-shortcuts"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 16",
+      "phase_num": 3,
+      "description": "Reforge stage 16: stage 16 host review reviewed; run active; coverage 61/61",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795038538.365437,
+      "timestamp_str": "2026-11-19 00:48:58",
+      "agent": "opencode",
+      "operator_task": "palette-hardening-and-shortcuts"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 17",
+      "phase_num": 3,
+      "description": "Reforge stage 17: window 49, 1 commit(s), 9 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired, empty \u2014 nothing to commit",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795038552.7207766,
+      "timestamp_str": "2026-11-19 00:49:12",
+      "agent": "opencode",
+      "operator_task": "palette-hardening-and-shortcuts"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 17",
+      "phase_num": 3,
+      "description": "Reforge stage 17: stage 17 host review reviewed; run completed; coverage 9/9",
+      "files_affected": [],
+      "status": "completed",
+      "timestamp": 1795038575.6092982,
+      "timestamp_str": "2026-11-19 00:49:35",
+      "agent": "opencode",
+      "operator_task": "palette-hardening-and-shortcuts"
     }
   ]
 }
