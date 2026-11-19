@@ -126,6 +126,12 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("the status bar reflects the active Dodge/Burn mode", () => {
+  assert.match(editor, /this\.tool === "dodge" && this\.options\.dodge\.mode === "burn" \? " · Burn" : ""/);
+  assert.match(editor, /const statusLabel = `\$\{meta\.label\}\$\{modeNote\}`/);
+  assert.match(editor, /dodgeMode\.addEventListener\("change"[\s\S]{0,160}this\.syncToolOptions\(\)/);
+});
+
 test("Flatten and Stamp Visible disable when there is nothing to merge", () => {
   assert.match(editor, /const canFlatten = hasVisible && this\.doc\.layers\.length > 1/);
   assert.match(editor, /btnFlatten\.disabled = !canFlatten/);
@@ -390,7 +396,7 @@ test("the status bar readouts explain themselves", () => {
 
 test("the status bar names the active tool and its shortcut", () => {
   assert.match(editor, /const TOOL_KEYS = Object\.freeze\(\{[\s\S]*?move: "V"[\s\S]*?zoom: "Z"/);
-  assert.match(editor, /statusTool\.textContent = toolKey \? `\$\{meta\.label\} \(\$\{toolKey\}\)`/);
+  assert.match(editor, /statusTool\.textContent = toolKey \? `\$\{statusLabel\} \(\$\{toolKey\}\)`/);
   assert.match(editor, /statusTool\.title = toolKey/);
 });
 

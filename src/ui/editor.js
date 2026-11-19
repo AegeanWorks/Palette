@@ -765,8 +765,10 @@ export class PaletteEditor {
     const meta = TOOL_META[this.tool] ?? TOOL_META.move;
     this.el.toolHint.textContent = meta.hint;
     const toolKey = TOOL_KEYS[this.tool];
-    this.el.statusTool.textContent = toolKey ? `${meta.label} (${toolKey})` : meta.label;
-    this.el.statusTool.title = toolKey ? `${meta.label} tool (${toolKey})` : `${meta.label} tool`;
+    const modeNote = this.tool === "dodge" && this.options.dodge.mode === "burn" ? " · Burn" : "";
+    const statusLabel = `${meta.label}${modeNote}`;
+    this.el.statusTool.textContent = toolKey ? `${statusLabel} (${toolKey})` : statusLabel;
+    this.el.statusTool.title = toolKey ? `${statusLabel} tool (${toolKey})` : `${statusLabel} tool`;
     for (const button of this.root.querySelectorAll("[data-tool]")) {
       const key = TOOL_KEYS[button.dataset.tool];
       if (key) button.setAttribute("aria-keyshortcuts", key);
@@ -3652,6 +3654,7 @@ export class PaletteEditor {
     });
     this.el.dodgeMode.addEventListener("change", () => {
       this.options.dodge.mode = this.el.dodgeMode.value === "burn" ? "burn" : "dodge";
+      this.syncToolOptions();
     });
     this.el.dodgeSize.addEventListener("input", () => {
       this.options.dodge.size = Number(this.el.dodgeSize.value);
