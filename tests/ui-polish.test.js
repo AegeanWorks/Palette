@@ -121,6 +121,11 @@ test("the Move options note adds detail instead of duplicating the header hint",
   assert.doesNotMatch(html, /id="options-move"[^>]*>[\s\S]{0,120}Drag the active layer\. Arrow keys nudge it\./);
 });
 
+test("the Help button advertises the F1 shortcut", () => {
+  assert.match(html, /id="btn-help"[^>]*title="Keyboard shortcuts \(F1\)"/);
+  assert.match(editor, /btnHelp: "F1"/);
+});
+
 test("the status bar shows the active colour as a swatch", () => {
   assert.match(html, /id="status-color"[^>]*role="img"[^>]*aria-label="Active colour"/);
   assert.match(editor, /"status-color", "status-cursor"/);

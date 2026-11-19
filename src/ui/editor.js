@@ -152,6 +152,7 @@ const BUTTON_SHORTCUTS = Object.freeze({
   btnZoomIn: "= Control+= Meta+=",
   btnZoomOut: "- Control+- Meta+-",
   btnFit: "0 Control+0 Meta+0",
+  btnHelp: "F1",
 });
 
 const TOOL_META = Object.freeze({
