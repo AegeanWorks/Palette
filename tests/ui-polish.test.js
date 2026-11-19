@@ -126,6 +126,11 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("Crop to selection explains why it is disabled for an inverted selection", () => {
+  assert.match(editor, /Crop to selection — deselect inversion first/);
+  assert.match(editor, /Crop to selection — make a selection first/);
+});
+
 test("the Adjustments Reset button disables on locked or hidden layers too", () => {
   assert.match(editor, /adjustReset\.disabled = cannotEditLayer \|\| isNeutralAdjustments\(layer\.adjustments\)/);
 });

@@ -593,6 +593,11 @@ export class PaletteEditor {
       : "Stamp visible — show at least one layer";
     this.el.btnDeselect.disabled = !this.selection;
     this.el.btnCropSelection.disabled = !this.selection || Boolean(this.selection.invert);
+    this.el.btnCropSelection.title = !this.selection
+      ? "Crop to selection — make a selection first"
+      : this.selection.invert
+        ? "Crop to selection — deselect inversion first"
+        : "Crop the document to the active selection";
     this.el.btnExpandSelection.disabled = !this.selection;
     this.el.btnContractSelection.disabled = !this.selection;
     this.el.btnClearSelection.disabled = !this.selection;
