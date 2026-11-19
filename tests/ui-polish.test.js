@@ -121,6 +121,12 @@ test("the Move options note adds detail instead of duplicating the header hint",
   assert.doesNotMatch(html, /id="options-move"[^>]*>[\s\S]{0,120}Drag the active layer\. Arrow keys nudge it\./);
 });
 
+test("the zoom controls expose their shortcuts to assistive tech", () => {
+  assert.match(editor, /btnZoomIn: "= Control\+= Meta\+="/);
+  assert.match(editor, /btnZoomOut: "- Control\+- Meta\+-"/);
+  assert.match(editor, /btnFit: "0 Control\+0 Meta\+0"/);
+});
+
 test("the zoom controls show their keyboard shortcuts on hover", () => {
   assert.match(html, /id="btn-zoom-in"[^>]*title="Zoom in \(\+\)"/);
   assert.match(html, /id="btn-zoom-out"[^>]*title="Zoom out \(-\)"/);

@@ -149,6 +149,9 @@ const BUTTON_SHORTCUTS = Object.freeze({
   btnLayerViaCopy: "Control+J Meta+J",
   btnLayerViaCut: "Control+Shift+J Meta+Shift+J",
   btnActual: "Control+1 Meta+1",
+  btnZoomIn: "= Control+= Meta+=",
+  btnZoomOut: "- Control+- Meta+-",
+  btnFit: "0 Control+0 Meta+0",
 });
 
 const TOOL_META = Object.freeze({
