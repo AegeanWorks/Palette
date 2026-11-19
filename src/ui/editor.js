@@ -1204,6 +1204,42 @@ export class PaletteEditor {
         selection: this.selection,
       });
       context.restore();
+      // Screen-space guide line with handles and a live angle/length readout.
+      const { start, end } = this.action;
+      const length = Math.hypot(end.x - start.x, end.y - start.y);
+      if (length >= 1) {
+        const sx = this.view.offsetX + start.x * this.view.scale;
+        const sy = this.view.offsetY + start.y * this.view.scale;
+        const ex = this.view.offsetX + end.x * this.view.scale;
+        const ey = this.view.offsetY + end.y * this.view.scale;
+        const angle = (Math.atan2(end.y - start.y, end.x - start.x) * 180) / Math.PI;
+        const label = `${Math.round(length)} px · ${Math.round(angle)}°`;
+        context.save();
+        context.strokeStyle = "rgba(255, 255, 255, 0.85)";
+        context.lineWidth = 1;
+        context.beginPath();
+        context.moveTo(sx, sy);
+        context.lineTo(ex, ey);
+        context.stroke();
+        for (const [hx, hy] of [[sx, sy], [ex, ey]]) {
+          context.beginPath();
+          context.arc(hx, hy, 4, 0, Math.PI * 2);
+          context.fillStyle = "rgba(103, 232, 249, 0.95)";
+          context.fill();
+          context.strokeStyle = "rgba(2, 6, 14, 0.9)";
+          context.stroke();
+        }
+        context.font = '600 12px ui-monospace, "Cascadia Mono", Consolas, monospace';
+        const tw = context.measureText(label).width;
+        const lx = Math.max(0, Math.min((sx + ex) / 2 + 8, this.viewport.width - tw - 14));
+        const ly = Math.max(14, (sy + ey) / 2 - 8);
+        context.fillStyle = "rgba(2, 6, 14, 0.85)";
+        context.fillRect(lx, ly, tw + 12, 18);
+        context.fillStyle = "rgba(103, 232, 249, 0.95)";
+        context.textBaseline = "middle";
+        context.fillText(label, lx + 6, ly + 9);
+        context.restore();
+      }
     }
 
     if (this.action?.type === "shape") {

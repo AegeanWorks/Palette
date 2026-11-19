@@ -126,6 +126,13 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("the gradient drag shows a live angle and length guide", () => {
+  assert.match(editor, /const length = Math\.hypot\(end\.x - start\.x, end\.y - start\.y\)/);
+  assert.match(editor, /const angle = \(Math\.atan2\(end\.y - start\.y, end\.x - start\.x\) \* 180\) \/ Math\.PI/);
+  assert.match(editor, /const label = `\$\{Math\.round\(length\)\} px · \$\{Math\.round\(angle\)\}°`/);
+  assert.match(editor, /context\.arc\(hx, hy, 4, 0, Math\.PI \* 2\)/);
+});
+
 test("the selection marquee shows its live size while dragging", () => {
   assert.match(editor, /const label = `\$\{Math\.round\(marquee\.rect\.w\)\} × \$\{Math\.round\(marquee\.rect\.h\)\} px`/);
   assert.match(editor, /const sx = this\.view\.offsetX \+ marquee\.rect\.x \* this\.view\.scale/);
