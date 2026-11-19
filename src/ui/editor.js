@@ -138,6 +138,7 @@ const TOOL_KEYS = Object.freeze({
 const BUTTON_SHORTCUTS = Object.freeze({
   btnNew: "Control+N Meta+N",
   btnOpen: "Control+O Meta+O",
+  btnOpenProject: "Control+Shift+O Meta+Shift+O",
   btnSave: "Control+S Meta+S",
   btnExport: "Control+E Meta+E",
   btnStampVisible: "Control+Alt+Shift+E Meta+Alt+Shift+E",
@@ -3263,7 +3264,8 @@ export class PaletteEditor {
         this.saveProject();
       } else if (key === "o") {
         event.preventDefault();
-        this.el.fileImage.click();
+        if (event.shiftKey) this.el.fileProject.click();
+        else this.el.fileImage.click();
       } else if (key === "n") {
         event.preventDefault();
         this.openNewDialog();

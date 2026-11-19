@@ -35,7 +35,7 @@ test("desktop file actions expose accurate hover tooltips", () => {
   const hints = {
     "btn-new": "New document (Ctrl+N)",
     "btn-open": "Open an image (Ctrl+O)",
-    "btn-open-project": "Open a .palette project",
+    "btn-open-project": "Open a .palette project (Ctrl+Shift+O)",
     "btn-save": "Save project (Ctrl+S)",
     "btn-export": "Export image (Ctrl+E)",
   };
@@ -124,6 +124,12 @@ test("the Move options note adds detail instead of duplicating the header hint",
 test("the Help button advertises the F1 shortcut", () => {
   assert.match(html, /id="btn-help"[^>]*title="Keyboard shortcuts \(F1\)"/);
   assert.match(editor, /btnHelp: "F1"/);
+});
+
+test("Ctrl+Shift+O opens a project and is advertised everywhere", () => {
+  assert.match(editor, /key === "o"[\s\S]{0,160}if \(event\.shiftKey\) this\.el\.fileProject\.click\(\)/);
+  assert.match(editor, /btnOpenProject: "Control\+Shift\+O Meta\+Shift\+O"/);
+  assert.match(html, /<dt>Ctrl \/ Cmd \+ Shift \+ O<\/dt><dd>Open a \.palette project<\/dd>/);
 });
 
 test("Ctrl+N opens a new document and is advertised everywhere", () => {
