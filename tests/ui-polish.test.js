@@ -121,6 +121,11 @@ test("the Move options note adds detail instead of duplicating the header hint",
   assert.doesNotMatch(html, /id="options-move"[^>]*>[\s\S]{0,120}Drag the active layer\. Arrow keys nudge it\./);
 });
 
+test("the Clone option note describes the source marker instead of repeating the header", () => {
+  assert.match(html, /The cyan crosshair marks the source; Alt-click again to move it\./);
+  assert.doesNotMatch(html, /<p class="panel-note">Alt-click a source point, then drag to clone from it\.<\/p>/);
+});
+
 test("the tool hint sits on its own full-width line in the panel header", () => {
   assert.match(styles, /\.panel-head:has\(#tool-hint\)\s*\{[^}]*flex-wrap:\s*wrap/);
   assert.match(styles, /#tool-hint\s*\{[^}]*flex:\s*1 1 100%/);

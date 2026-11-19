@@ -214,7 +214,7 @@ test("the clone panel exposes size, hardness and opacity", () => {
   assert.match(html, /id="clone-size" type="range"/);
   assert.match(html, /id="clone-hardness" type="range"/);
   assert.match(html, /id="clone-opacity" type="range"/);
-  assert.match(html, /Alt-click a source point/);
+  assert.match(html, /The cyan crosshair marks the source/);
 });
 
 test("the bucket panel exposes tolerance, opacity and contiguous", () => {
