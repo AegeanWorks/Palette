@@ -236,6 +236,18 @@ svg {
   background: var(--panel-2);
 }
 
+/* Destructive choices (discarding a recovered session) read as dangerous. */
+.btn-ghost.btn-danger {
+  color: var(--danger);
+  border-color: rgba(251, 113, 133, 0.35);
+}
+
+.btn-ghost.btn-danger:not(:disabled):hover {
+  color: var(--danger);
+  border-color: var(--danger);
+  background: rgba(251, 113, 133, 0.12);
+}
+
 .btn-primary {
   border-color: rgba(103, 232, 249, 0.5);
   background: linear-gradient(135deg, rgba(34, 211, 238, 0.22), rgba(167, 139, 250, 0.22));

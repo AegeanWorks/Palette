@@ -126,6 +126,12 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("discarding a recovered session reads as a destructive choice", () => {
+  assert.match(html, /class="btn btn-ghost btn-danger"[^>]*id="restore-discard"[^>]*title="Discard the local autosave/);
+  assert.match(html, /id="restore-confirm"[^>]*title="Restore the autosaved document"/);
+  assert.match(styles, /\.btn-ghost\.btn-danger\s*\{[^}]*color:\s*var\(--danger\)/);
+});
+
 test("the export size readout warns visually when capped", () => {
   assert.match(editor, /syncExportFormat\(\)\s*\{[\s\S]{0,500}const capped = percent < Math\.round\(scale \* 100\)/);
   assert.match(editor, /exportSize\.dataset\.tone = capped \? "warn" : "muted"/);
