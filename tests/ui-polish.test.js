@@ -367,11 +367,12 @@ test("resize and canvas dialogs select their pre-filled width on open", () => {
   }
 });
 
-test("the Layers panel shows how many layers exist", () => {
+test("the Layers panel shows the count without repeating the word layers", () => {
   assert.match(html, /id="layers-heading"[^>]*>Layers <span id="layer-count"/);
   assert.match(styles, /\.layer-count\s*\{[^}]*font-family:\s*var\(--mono\)/);
   assert.match(editor, /"layer-blend",\s*"layer-count"/);
-  assert.ok(editor.includes("layerCount.textContent ="));
+  assert.match(editor, /layerCount\.textContent = String\(layers\.length\)/);
+  assert.match(editor, /layerCount\.setAttribute\("aria-label", label\)/);
   assert.match(editor, /layers\.length === 1 \? "" : "s"/);
 });
 

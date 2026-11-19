@@ -810,7 +810,10 @@ export class PaletteEditor {
     list.replaceChildren();
     const layers = this.doc.layers.slice().reverse();
     if (this.el.layerCount) {
-      this.el.layerCount.textContent = `${layers.length} layer${layers.length === 1 ? "" : "s"}`;
+      this.el.layerCount.textContent = String(layers.length);
+      const label = `${layers.length} layer${layers.length === 1 ? "" : "s"}`;
+      this.el.layerCount.title = label;
+      this.el.layerCount.setAttribute("aria-label", label);
     }
     for (const layer of layers) {
       const item = this.root.createElement("li");
