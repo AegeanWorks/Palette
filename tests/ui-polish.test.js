@@ -126,6 +126,11 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("the export size readout warns visually when capped", () => {
+  assert.match(editor, /syncExportFormat\(\)\s*\{[\s\S]{0,500}const capped = percent < Math\.round\(scale \* 100\)/);
+  assert.match(editor, /exportSize\.dataset\.tone = capped \? "warn" : "muted"/);
+});
+
 test("the histogram marks the tonal range used by Auto levels", () => {
   assert.match(editor, /drawHistogram\(\)\s*\{[\s\S]{0,2600}for \(const level of \[range\.black, range\.white\]\)/);
   assert.match(editor, /Math\.round\(\(level \/ 255\) \* \(canvas\.width - 1\)\)/);
