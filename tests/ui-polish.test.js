@@ -126,6 +126,12 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("the text draft shows a live bounding box and size", () => {
+  assert.match(editor, /FONT_STACKS\[this\.options\.text\.family\] \?\? FONT_STACKS\.system/);
+  assert.match(editor, /const label = `\$\{Math\.round\(maxWidth\)\} × \$\{Math\.round\(\(lines\.length - 1\) \* lineHeight \+ fontSize\)\} px`/);
+  assert.match(editor, /context\.strokeRect\(tx - 2, ty - 2, boxW \+ 4, boxH \+ 4\)/);
+});
+
 test("the clone source links to the cursor with a dashed guide", () => {
   assert.match(editor, /if \(this\.pointer && this\.pointInsideDoc\(this\.toDoc\(this\.pointer\)\)\) \{[\s\S]{0,240}context\.moveTo\(source\.x, source\.y\);[\s\S]{0,60}context\.lineTo\(this\.pointer\.x, this\.pointer\.y\)/);
   assert.match(editor, /context\.setLineDash\(\[5, 4\]\)/);

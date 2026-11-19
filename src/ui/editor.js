@@ -116,6 +116,7 @@ import {
   drawShape,
   drawText,
   drawTextOn,
+  FONT_STACKS,
   extractSelection,
   flipCanvas,
   placeCanvas,
@@ -1309,6 +1310,37 @@ export class PaletteEditor {
         family: this.options.text.family,
         selection: this.selection,
       });
+      context.restore();
+      // Live bounding box + size for the text draft, measured with the exact
+      // font the draft is drawn with (same stack, weight and line height).
+      const fontSize = Math.max(1, Math.round(this.options.text.size));
+      const lines = String(this.textDraft.value).split(/\r?\n/);
+      const lineHeight = fontSize * 1.22;
+      context.save();
+      context.font = `${this.options.text.weight} ${fontSize}px ${FONT_STACKS[this.options.text.family] ?? FONT_STACKS.system}`;
+      let maxWidth = 0;
+      for (const line of lines) maxWidth = Math.max(maxWidth, context.measureText(line).width);
+      context.restore();
+      const boxW = maxWidth * this.view.scale;
+      const boxH = ((lines.length - 1) * lineHeight + fontSize) * this.view.scale;
+      const tx = this.view.offsetX + this.textDraft.point.x * this.view.scale;
+      const ty = this.view.offsetY + this.textDraft.point.y * this.view.scale;
+      context.save();
+      context.strokeStyle = "rgba(103, 232, 249, 0.7)";
+      context.lineWidth = 1;
+      context.setLineDash([4, 3]);
+      context.strokeRect(tx - 2, ty - 2, boxW + 4, boxH + 4);
+      context.setLineDash([]);
+      const label = `${Math.round(maxWidth)} × ${Math.round((lines.length - 1) * lineHeight + fontSize)} px`;
+      context.font = '600 12px ui-monospace, "Cascadia Mono", Consolas, monospace';
+      const tw = context.measureText(label).width;
+      const lx = Math.max(0, Math.min(tx - 2, this.viewport.width - tw - 14));
+      const ly = Math.max(14, ty - 24);
+      context.fillStyle = "rgba(2, 6, 14, 0.85)";
+      context.fillRect(lx, ly, tw + 12, 18);
+      context.fillStyle = "rgba(103, 232, 249, 0.95)";
+      context.textBaseline = "middle";
+      context.fillText(label, lx + 6, ly + 9);
       context.restore();
     }
 
