@@ -958,12 +958,18 @@ select:focus {
 }
 
 .status-color {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
+  padding: 0;
   flex: none;
   border: 1px solid var(--line-strong);
   border-radius: 4px;
   background: var(--cyan);
+  cursor: pointer;
+}
+
+.status-color:hover {
+  border-color: var(--cyan);
 }
 
 .status-autosave {

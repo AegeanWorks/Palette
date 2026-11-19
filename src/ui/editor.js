@@ -2016,8 +2016,9 @@ export class PaletteEditor {
   syncStatusColor() {
     if (!this.el.statusColor) return;
     this.el.statusColor.style.background = this.options.color;
-    this.el.statusColor.title = `Active colour ${this.options.color}`;
-    this.el.statusColor.setAttribute("aria-label", `Active colour ${this.options.color}`);
+    const label = `Active colour ${this.options.color} — click to change`;
+    this.el.statusColor.title = label;
+    this.el.statusColor.setAttribute("aria-label", label);
   }
 
   setColor(value) {
@@ -3508,6 +3509,7 @@ export class PaletteEditor {
     this.el.btnFilterMedian.addEventListener("click", () => this.applyMedianFilter());
 
     this.el.colorInput.addEventListener("input", () => this.setColor(this.el.colorInput.value));
+    this.el.statusColor.addEventListener("click", () => this.el.colorInput.click());
     this.el.brushSize.addEventListener("input", () => {
       this.options.brush.size = Number(this.el.brushSize.value);
       this.el.brushSizeValue.textContent = this.el.brushSize.value;

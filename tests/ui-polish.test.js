@@ -126,12 +126,13 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
-test("the status bar shows the active colour as a swatch", () => {
-  assert.match(html, /id="status-color"[^>]*role="img"[^>]*aria-label="Active colour"/);
+test("the status bar colour swatch opens the colour picker on click", () => {
+  assert.match(html, /id="status-color"[^>]*type="button"[^>]*aria-label="Active colour — click to change"/);
   assert.match(editor, /"status-color", "status-cursor"/);
   assert.match(editor, /syncStatusColor\(\)\s*\{[\s\S]{0,240}statusColor\.style\.background = this\.options\.color/);
   assert.match(editor, /this\.syncStatusColor\(\);/);
-  assert.match(styles, /\.status-color\s*\{[^}]*border-radius:\s*4px/);
+  assert.match(editor, /statusColor\.addEventListener\("click", \(\) => this\.el\.colorInput\.click\(\)\)/);
+  assert.match(styles, /\.status-color:hover\s*\{[^}]*border-color:\s*var\(--cyan\)/);
 });
 
 test("the zoom controls expose their shortcuts to assistive tech", () => {
