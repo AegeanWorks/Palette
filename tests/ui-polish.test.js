@@ -33,7 +33,7 @@ test("disabled text buttons look disabled and cannot look hovered", () => {
 
 test("desktop file actions expose accurate hover tooltips", () => {
   const hints = {
-    "btn-new": "New document",
+    "btn-new": "New document (Ctrl+N)",
     "btn-open": "Open an image (Ctrl+O)",
     "btn-open-project": "Open a .palette project",
     "btn-save": "Save project (Ctrl+S)",
@@ -124,6 +124,13 @@ test("the Move options note adds detail instead of duplicating the header hint",
 test("the Help button advertises the F1 shortcut", () => {
   assert.match(html, /id="btn-help"[^>]*title="Keyboard shortcuts \(F1\)"/);
   assert.match(editor, /btnHelp: "F1"/);
+});
+
+test("Ctrl+N opens a new document and is advertised everywhere", () => {
+  assert.match(editor, /key === "n"[\s\S]{0,120}this\.openNewDialog\(\)/);
+  assert.match(editor, /btnNew: "Control\+N Meta\+N"/);
+  assert.match(html, /id="btn-new"[^>]*title="New document \(Ctrl\+N\)"/);
+  assert.match(html, /<dt>Ctrl \/ Cmd \+ N<\/dt><dd>New document<\/dd>/);
 });
 
 test("the histogram draws RGB channel overlays behind luminance", () => {

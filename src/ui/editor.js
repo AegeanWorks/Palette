@@ -136,6 +136,7 @@ const TOOL_KEYS = Object.freeze({
 });
 
 const BUTTON_SHORTCUTS = Object.freeze({
+  btnNew: "Control+N Meta+N",
   btnOpen: "Control+O Meta+O",
   btnSave: "Control+S Meta+S",
   btnExport: "Control+E Meta+E",
@@ -3263,6 +3264,9 @@ export class PaletteEditor {
       } else if (key === "o") {
         event.preventDefault();
         this.el.fileImage.click();
+      } else if (key === "n") {
+        event.preventDefault();
+        this.openNewDialog();
       } else if (key === "e") {
         event.preventDefault();
         if (event.altKey && event.shiftKey) this.stampVisible();
