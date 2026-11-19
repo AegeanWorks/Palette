@@ -126,6 +126,17 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("every filter button explains its effect on hover", () => {
+  const filterButtons = [...html.matchAll(/<button[^>]*id="btn-filter-[^"]+"[^>]*>/g)].map((m) => m[0]);
+  assert.equal(filterButtons.length, 22);
+  for (const tag of filterButtons) {
+    assert.match(tag, /title="[^"]+"/);
+  }
+  assert.match(html, /id="btn-filter-high-pass"[^>]*title="Isolate high-frequency detail for sharpening"/);
+  assert.match(html, /id="btn-filter-median"[^>]*title="Remove noise spikes with a 3x3 median filter"/);
+  assert.match(html, /id="btn-filter-bc"[^>]*title="Adjust brightness and contrast together"/);
+});
+
 test("the inline text and crop actions show their Enter/Escape shortcuts", () => {
   assert.match(html, /id="text-commit"[^>]*title="Add text to the layer \(Enter\)"/);
   assert.match(html, /id="text-cancel"[^>]*title="Discard the text \(Escape\)"/);
