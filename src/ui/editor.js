@@ -578,6 +578,18 @@ export class PaletteEditor {
     this.updateZoomLabel();
     this.el.cropApply.disabled = !isUsableRect(this.cropRect);
     this.el.cropCancel.disabled = !this.cropRect;
+    const hasVisible = this.doc.layers.some((layer) => layer.visible);
+    const canFlatten = hasVisible && this.doc.layers.length > 1;
+    this.el.btnFlatten.disabled = !canFlatten;
+    this.el.btnFlatten.title = !hasVisible
+      ? "Flatten — show at least one layer"
+      : !canFlatten
+        ? "Flatten — add another layer first"
+        : "Flatten all visible layers into one";
+    this.el.btnStampVisible.disabled = !hasVisible;
+    this.el.btnStampVisible.title = hasVisible
+      ? "Stamp visible layers into a new layer (Ctrl+Alt+Shift+E)"
+      : "Stamp visible — show at least one layer";
     this.el.btnDeselect.disabled = !this.selection;
     this.el.btnCropSelection.disabled = !this.selection || Boolean(this.selection.invert);
     this.el.btnExpandSelection.disabled = !this.selection;

@@ -126,6 +126,13 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("Flatten and Stamp Visible disable when there is nothing to merge", () => {
+  assert.match(editor, /const canFlatten = hasVisible && this\.doc\.layers\.length > 1/);
+  assert.match(editor, /btnFlatten\.disabled = !canFlatten/);
+  assert.match(editor, /btnStampVisible\.disabled = !hasVisible/);
+  assert.match(editor, /Flatten — show at least one layer/);
+});
+
 test("successful file operations get a positive status tone", () => {
   assert.match(editor, /announce\(message, \{ error = false, ok = false \} = \{\}\)/);
   assert.match(editor, /target\.dataset\.tone = error \? "error" : ok \? "ok" : ""/);
