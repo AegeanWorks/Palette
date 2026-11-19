@@ -126,6 +126,14 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("the transform dialog previews the resulting content size", () => {
+  assert.match(html, /id="transform-size"[^>]*aria-live="polite"/);
+  assert.match(editor, /"transform-rotation-value",\s*"transform-size"/);
+  assert.match(editor, /syncTransformSize\(\)\s*\{[\s\S]{0,900}Content will be \$\{nextW\} × \$\{nextH\} px/);
+  assert.match(editor, /transformScaleX\.addEventListener\("input", \(\) => this\.syncTransformSize\(\)\)/);
+  assert.match(editor, /transformSize\.dataset\.tone = offCanvas \? "warn" : "muted"/);
+});
+
 test("discarding a recovered session reads as a destructive choice", () => {
   assert.match(html, /class="btn btn-ghost btn-danger"[^>]*id="restore-discard"[^>]*title="Discard the local autosave/);
   assert.match(html, /id="restore-confirm"[^>]*title="Restore the autosaved document"/);

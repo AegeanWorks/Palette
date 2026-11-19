@@ -257,7 +257,7 @@ const IDS = [
   "resize-lock", "resize-size", "resize-cancel", "resize-confirm", "canvas-dialog", "canvas-form", "canvas-width",
   "canvas-height", "canvas-size", "canvas-cancel", "canvas-confirm", "transform-dialog", "transform-form",
   "transform-scale-x", "transform-scale-y", "transform-rotation", "transform-rotation-value",
-  "transform-flip-h", "transform-flip-v", "transform-cancel", "transform-confirm",
+  "transform-size", "transform-flip-h", "transform-flip-v", "transform-cancel", "transform-confirm",
   "help-dialog", "help-close",
   "restore-dialog", "restore-summary", "restore-confirm", "restore-discard", "status-autosave",
 ];
@@ -2891,7 +2891,23 @@ export class PaletteEditor {
     this.el.transformRotationValue.textContent = "0";
     this.el.transformFlipH.checked = false;
     this.el.transformFlipV.checked = false;
+    this.syncTransformSize();
     this.el.transformDialog.showModal();
+  }
+
+  syncTransformSize() {
+    if (!this.el.transformSize) return;
+    const layer = activeLayer(this.doc);
+    const scaleX = clamp(Number(this.el.transformScaleX.value) / 100 || 1, 0.01, 10);
+    const scaleY = clamp(Number(this.el.transformScaleY.value) / 100 || 1, 0.01, 10);
+    const bounds = layer?.canvas ? findContentBounds(getPixels(layer.canvas), 8) : null;
+    const w = bounds ? bounds.w : this.doc.width;
+    const h = bounds ? bounds.h : this.doc.height;
+    const nextW = Math.max(1, Math.round(w * scaleX));
+    const nextH = Math.max(1, Math.round(h * scaleY));
+    const offCanvas = nextW > this.doc.width || nextH > this.doc.height;
+    this.el.transformSize.textContent = `Content will be ${nextW} × ${nextH} px${offCanvas ? " — clipped to the canvas" : ""}`;
+    this.el.transformSize.dataset.tone = offCanvas ? "warn" : "muted";
   }
 
   applyLayerTransform() {
@@ -3827,6 +3843,8 @@ export class PaletteEditor {
     this.el.transformRotation.addEventListener("input", () => {
       this.el.transformRotationValue.textContent = this.el.transformRotation.value;
     });
+    this.el.transformScaleX.addEventListener("input", () => this.syncTransformSize());
+    this.el.transformScaleY.addEventListener("input", () => this.syncTransformSize());
     this.el.resizeWidth.addEventListener("input", () => {
       if (this.el.resizeLock.checked && this.resizeAspect) {
         const width = Number(this.el.resizeWidth.value);
