@@ -1168,6 +1168,23 @@ export class PaletteEditor {
         context.stroke();
       }
       context.restore();
+      // Live size badge, in screen space, so the extent is readable while dragging.
+      if (marquee.rect && marquee.rect.w >= 1 && marquee.rect.h >= 1) {
+        const label = `${Math.round(marquee.rect.w)} × ${Math.round(marquee.rect.h)} px`;
+        context.save();
+        context.font = '600 12px ui-monospace, "Cascadia Mono", Consolas, monospace';
+        const tw = context.measureText(label).width;
+        const sx = this.view.offsetX + marquee.rect.x * this.view.scale;
+        const sy = this.view.offsetY + marquee.rect.y * this.view.scale;
+        const bx = Math.max(0, Math.min(sx, this.viewport.width - tw - 14));
+        const by = sy > 26 ? sy - 24 : sy + 4;
+        context.fillStyle = "rgba(2, 6, 14, 0.85)";
+        context.fillRect(bx, by, tw + 12, 18);
+        context.fillStyle = "rgba(103, 232, 249, 0.95)";
+        context.textBaseline = "middle";
+        context.fillText(label, bx + 6, by + 9);
+        context.restore();
+      }
     }
 
     if (this.action?.type === "gradient") {
