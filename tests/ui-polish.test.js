@@ -121,6 +121,14 @@ test("the Move options note adds detail instead of duplicating the header hint",
   assert.doesNotMatch(html, /id="options-move"[^>]*>[\s\S]{0,120}Drag the active layer\. Arrow keys nudge it\./);
 });
 
+test("the zoom controls show their keyboard shortcuts on hover", () => {
+  assert.match(html, /id="btn-zoom-in"[^>]*title="Zoom in \(\+\)"/);
+  assert.match(html, /id="btn-zoom-out"[^>]*title="Zoom out \(-\)"/);
+  assert.match(html, /id="btn-fit"[^>]*title="Fit to view \(0\)"/);
+  assert.match(editor, /event\.key === "\+" \|\| event\.key === "="[\s\S]{0,80}zoomIn\(\)/);
+  assert.match(editor, /event\.key === "-" \|\| event\.key === "_"[\s\S]{0,80}zoomOut\(\)/);
+});
+
 test("layer names advertise the double-click rename affordance", () => {
   assert.match(editor, /name\.title = `\$\{layer\.name\} — double-click to rename`/);
 });
