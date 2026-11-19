@@ -116,6 +116,11 @@ test("layer count changes are announced to assistive tech", () => {
   assert.match(html, /id="layer-count"[^>]*aria-live="polite"/);
 });
 
+test("the Move options note adds detail instead of duplicating the header hint", () => {
+  assert.match(html, /id="options-move"[^>]*>[\s\S]{0,120}Arrow keys nudge the layer 1 px; hold Shift for 10 px\./);
+  assert.doesNotMatch(html, /id="options-move"[^>]*>[\s\S]{0,120}Drag the active layer\. Arrow keys nudge it\./);
+});
+
 test("the fit-to-view button shows a pressed state when auto-fitted", () => {
   assert.match(editor, /btnFit\.setAttribute\("aria-pressed", this\.autoFit \? "true" : "false"\)/);
 });
