@@ -386,10 +386,10 @@
           <button class="btn btn-ghost btn-small" id="adjust-reset" type="button" data-ui="adjust-reset" title="Reset adjustments on the active layer">Reset</button>
         </header>
         <div class="histogram-panel">
-          <canvas id="histogram" width="256" height="64" aria-label="Active layer luminance histogram" title="Active layer luminance — shadows (left) to highlights (right)"></canvas>
+          <canvas id="histogram" width="256" height="64" aria-label="Active layer RGB and luminance histogram" title="Active layer RGB channels (red, green, blue) with luminance — shadows (left) to highlights (right)"></canvas>
           <div class="histogram-meta">
             <span id="histogram-range" class="mono" title="Tonal range (0.5%–99.5% percentiles) used by Auto levels" aria-live="polite">0–255</span>
-            <button class="btn btn-ghost btn-small" id="btn-auto-levels" type="button" data-ui="auto-levels">Auto levels</button>
+            <button class="btn btn-ghost btn-small" id="btn-auto-levels" type="button" data-ui="auto-levels" title="Auto levels — stretch tones to the visible range (samples the selection if active)">Auto levels</button>
           </div>
         </div>
         <div class="adjust-list">

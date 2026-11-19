@@ -408,10 +408,15 @@ test("selection and clipboard controls show their shortcuts on hover", () => {
   assert.match(editor, /key === "j"[\s\S]{0,200}layerViaCopy/);
 });
 
-test("the histogram explains its axes and tonal-range readout", () => {
-  assert.match(html, /id="histogram"[^>]*title="Active layer luminance — shadows \(left\) to highlights \(right\)"/);
+test("the histogram explains its RGB channels and tonal-range readout", () => {
+  assert.match(html, /id="histogram"[^>]*aria-label="Active layer RGB and luminance histogram"/);
+  assert.match(html, /id="histogram"[^>]*title="Active layer RGB channels \(red, green, blue\) with luminance/);
   assert.match(html, /id="histogram-range"[^>]*title="Tonal range \(0\.5%–99\.5% percentiles\) used by Auto levels"/);
   assert.match(editor, /percentileRange\(histogram, 0\.005, 0\.005\)/);
+});
+
+test("the Auto Levels button explains what it does", () => {
+  assert.match(html, /id="btn-auto-levels"[^>]*title="Auto levels — stretch tones to the visible range/);
 });
 
 test("the zoom reset control explains itself on hover", () => {
