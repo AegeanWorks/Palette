@@ -986,6 +986,10 @@ select:focus {
   color: var(--danger);
 }
 
+#status-message[data-tone="ok"] {
+  color: var(--good);
+}
+
 .status-color {
   width: 16px;
   height: 16px;

@@ -534,11 +534,11 @@ export class PaletteEditor {
     this.scheduleAutosave();
   }
 
-  announce(message, { error = false } = {}) {
+  announce(message, { error = false, ok = false } = {}) {
     const target = this.el.statusMessage;
     if (!target) return;
     target.textContent = message;
-    target.dataset.tone = error ? "error" : "";
+    target.dataset.tone = error ? "error" : ok ? "ok" : "";
     clearTimeout(this.messageTimer);
     this.messageTimer = setTimeout(() => {
       target.textContent = "Ready";
@@ -2715,7 +2715,7 @@ export class PaletteEditor {
           : scaleCanvas(base, output.width, output.height);
       const blob = await canvasToBlob(canvas, format.mime, quality);
       downloadBlob(blob, downloadName(name, this.el.exportFormat.value));
-      this.announce(`Exported ${format.label} (${formatBytes(blob.size)}).`);
+      this.announce(`Exported ${format.label} (${formatBytes(blob.size)}).`, { ok: true });
     } catch (error) {
       this.announce(error.message || "The export failed.", { error: true });
     }
@@ -2733,7 +2733,7 @@ export class PaletteEditor {
       downloadBlob(blob, name);
       this.documentDirty = false;
       this.syncDocumentState();
-      this.announce(`Saved ${name} (${formatBytes(blob.size)}).`);
+      this.announce(`Saved ${name} (${formatBytes(blob.size)}).`, { ok: true });
     } catch (error) {
       this.announce(error.message || "The project could not be saved.", { error: true });
     }

@@ -126,6 +126,14 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("successful file operations get a positive status tone", () => {
+  assert.match(editor, /announce\(message, \{ error = false, ok = false \} = \{\}\)/);
+  assert.match(editor, /target\.dataset\.tone = error \? "error" : ok \? "ok" : ""/);
+  assert.match(editor, /Saved \$\{name\}[\s\S]{0,60}\{ ok: true \}/);
+  assert.match(editor, /Exported \$\{format\.label\}[\s\S]{0,60}\{ ok: true \}/);
+  assert.match(styles, /#status-message\[data-tone="ok"\]\s*\{[^}]*color:\s*var\(--good\)/);
+});
+
 test("the transform dialog previews the resulting content size", () => {
   assert.match(html, /id="transform-size"[^>]*aria-live="polite"/);
   assert.match(editor, /"transform-rotation-value",\s*"transform-size"/);
