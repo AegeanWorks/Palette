@@ -409,6 +409,7 @@ export class PaletteEditor {
     this.viewport = { width: 1, height: 1, dpr: 1 };
     this.autoFit = true;
     this.space = false;
+    this.altDown = false;
     this.pointer = null;
     this.action = null;
     this.cropRect = null;
@@ -923,6 +924,7 @@ export class PaletteEditor {
     let cursor = TOOL_META[this.tool]?.cursor ?? "crosshair";
     const paintTool = this.tool === "brush" || this.tool === "eraser" || this.tool === "clone" || this.tool === "dodge";
     if (paintTool && !this.activeLayerEditable()) cursor = "not-allowed";
+    if (this.tool === "zoom" && this.altDown) cursor = "zoom-out";
     if (this.space) cursor = "grab";
     if (this.action?.type === "pan") cursor = "grabbing";
     this.el.stage.dataset.cursor = cursor;
@@ -3263,6 +3265,10 @@ export class PaletteEditor {
   }
 
   onKeyDown(event) {
+    if (event.altKey !== this.altDown) {
+      this.altDown = event.altKey;
+      this.updateCursor();
+    }
     if (this.isDialogOpen()) return;
     if (this.textDraft && event.target === this.el.textInput) {
       if (event.key === "Enter") {
@@ -3444,6 +3450,12 @@ export class PaletteEditor {
   }
 
   onKeyUp(event) {
+    if (event.key === "Alt" || event.altKey === false) {
+      if (this.altDown) {
+        this.altDown = false;
+        this.updateCursor();
+      }
+    }
     if (event.code === "Space") {
       this.space = false;
       this.updateCursor();
@@ -3934,6 +3946,7 @@ export class PaletteEditor {
     window.addEventListener("keyup", (event) => this.onKeyUp(event));
     window.addEventListener("blur", () => {
       this.space = false;
+      this.altDown = false;
       this.updateCursor();
     });
     window.addEventListener("paste", (event) => this.onPaste(event));

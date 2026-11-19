@@ -126,6 +126,14 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("the Zoom tool shows a zoom-out cursor while Alt is held", () => {
+  assert.match(editor, /this\.altDown = false/);
+  assert.match(editor, /this\.tool === "zoom" && this\.altDown\) cursor = "zoom-out"/);
+  assert.match(editor, /event\.altKey !== this\.altDown/);
+  assert.match(editor, /event\.key === "Alt" \|\| event\.altKey === false/);
+  assert.match(styles, /\.stage\[data-cursor="zoom-out"\] \{ cursor: zoom-out; \}/);
+});
+
 test("paint cursor and size ring hide when the active layer is not editable", () => {
   assert.match(editor, /activeLayerEditable\(\)\s*\{[\s\S]{0,160}layer\.visible && !layer\.locked/);
   assert.match(editor, /paintTool && !this\.activeLayerEditable\(\)\) cursor = "not-allowed"/);
@@ -391,7 +399,7 @@ test("the status bar marks an inverted selection", () => {
 });
 
 test("F1 opens the keyboard shortcuts dialog", () => {
-  const body = editor.slice(editor.indexOf("  onKeyDown("), editor.indexOf("  onKeyDown(") + 600);
+  const body = editor.slice(editor.indexOf("  onKeyDown("), editor.indexOf("  onKeyDown(") + 800);
   assert.match(body, /event\.key === "F1"[\s\S]{0,140}helpDialog\.showModal\(\)/);
   assert.match(html, /<dt>F1<\/dt><dd>Open this shortcut list<\/dd>/);
 });
