@@ -2021,6 +2021,30 @@ export class PaletteEditor {
     this.el.statusColor.setAttribute("aria-label", label);
   }
 
+  copyColorHex() {
+    const hex = this.options.color;
+    const flash = (text) => {
+      const btn = this.el.colorHex;
+      if (!btn) return;
+      btn.textContent = text;
+      clearTimeout(this.colorCopyTimer);
+      this.colorCopyTimer = setTimeout(() => {
+        btn.textContent = this.options.color;
+      }, 900);
+    };
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(hex).then(
+        () => {
+          this.announce(`Copied ${hex} to clipboard.`);
+          flash("Copied!");
+        },
+        () => this.announce("Could not copy the hex colour.", { error: true }),
+      );
+    } else {
+      this.announce("Clipboard is unavailable in this context.", { error: true });
+    }
+  }
+
   setColor(value) {
     const hex = normalizeHex(value, this.options.color);
     this.options.color = hex;
@@ -3510,6 +3534,7 @@ export class PaletteEditor {
 
     this.el.colorInput.addEventListener("input", () => this.setColor(this.el.colorInput.value));
     this.el.statusColor.addEventListener("click", () => this.el.colorInput.click());
+    this.el.colorHex.addEventListener("click", () => this.copyColorHex());
     this.el.brushSize.addEventListener("input", () => {
       this.options.brush.size = Number(this.el.brushSize.value);
       this.el.brushSizeValue.textContent = this.el.brushSize.value;

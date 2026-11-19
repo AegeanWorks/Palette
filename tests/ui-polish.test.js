@@ -126,6 +126,14 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("the colour hex readout copies the hex on click with feedback", () => {
+  assert.match(html, /id="color-hex"[^>]*class="mono color-hex-btn"[^>]*title="Copy hex colour"/);
+  assert.match(editor, /copyColorHex\(\)\s*\{[\s\S]{0,600}navigator\.clipboard\.writeText\(hex\)/);
+  assert.match(editor, /Copied \$\{hex\} to clipboard\./);
+  assert.match(editor, /colorHex\.addEventListener\("click", \(\) => this\.copyColorHex\(\)\)/);
+  assert.match(styles, /\.color-hex-btn:hover\s*\{[^}]*color:\s*var\(--cyan\)/);
+});
+
 test("the status bar colour swatch opens the colour picker on click", () => {
   assert.match(html, /id="status-color"[^>]*type="button"[^>]*aria-label="Active colour — click to change"/);
   assert.match(editor, /"status-color", "status-cursor"/);

@@ -604,6 +604,23 @@ select:disabled {
   text-align: right;
 }
 
+.color-hex-btn {
+  min-width: 46px;
+  padding: 2px 4px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--dim);
+  font-size: 11.5px;
+  text-align: right;
+  cursor: pointer;
+}
+
+.color-hex-btn:hover {
+  border-color: var(--line);
+  color: var(--cyan);
+}
+
 .swatches-row {
   display: flex;
   flex-wrap: wrap;
