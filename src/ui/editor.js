@@ -592,6 +592,9 @@ export class PaletteEditor {
       ? "Stamp visible layers into a new layer (Ctrl+Alt+Shift+E)"
       : "Stamp visible — show at least one layer";
     this.el.btnDeselect.disabled = !this.selection;
+    this.el.btnDeselect.title = this.selection
+      ? "Deselect (Ctrl+D)"
+      : "Deselect — no active selection";
     this.el.btnCropSelection.disabled = !this.selection || Boolean(this.selection.invert);
     this.el.btnCropSelection.title = !this.selection
       ? "Crop to selection — make a selection first"
@@ -599,8 +602,11 @@ export class PaletteEditor {
         ? "Crop to selection — deselect inversion first"
         : "Crop the document to the active selection";
     this.el.btnExpandSelection.disabled = !this.selection;
+    this.el.btnExpandSelection.title = this.selection ? "Grow the active selection by 5 px" : "Expand — no active selection";
     this.el.btnContractSelection.disabled = !this.selection;
+    this.el.btnContractSelection.title = this.selection ? "Shrink the active selection by 5 px" : "Contract — no active selection";
     this.el.btnClearSelection.disabled = !this.selection;
+    this.el.btnClearSelection.title = this.selection ? "Clear pixels inside the selection (Delete)" : "Clear — no active selection";
     this.el.btnInvertSelection.setAttribute("aria-pressed", this.selection?.invert ? "true" : "false");
     const selectionRect = this.selection?.rect;
     if (this.el.statusSelection) {

@@ -126,6 +126,13 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("selection controls explain why they are disabled with no selection", () => {
+  assert.match(editor, /btnDeselect\.title = this\.selection[\s\S]{0,60}"Deselect — no active selection"/);
+  assert.match(editor, /btnExpandSelection\.title = this\.selection[\s\S]{0,80}"Expand — no active selection"/);
+  assert.match(editor, /btnContractSelection\.title = this\.selection[\s\S]{0,80}"Contract — no active selection"/);
+  assert.match(editor, /btnClearSelection\.title = this\.selection[\s\S]{0,90}"Clear — no active selection"/);
+});
+
 test("Crop to selection explains why it is disabled for an inverted selection", () => {
   assert.match(editor, /Crop to selection — deselect inversion first/);
   assert.match(editor, /Crop to selection — make a selection first/);
