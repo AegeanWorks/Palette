@@ -126,6 +126,13 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("paint cursor and size ring hide when the active layer is not editable", () => {
+  assert.match(editor, /activeLayerEditable\(\)\s*\{[\s\S]{0,160}layer\.visible && !layer\.locked/);
+  assert.match(editor, /paintTool && !this\.activeLayerEditable\(\)\) cursor = "not-allowed"/);
+  assert.match(editor, /this\.tool === "dodge"\) &&\s*this\.activeLayerEditable\(\)/);
+  assert.match(styles, /\.stage\[data-cursor="not-allowed"\]\s*\{[^}]*cursor:\s*not-allowed/);
+});
+
 test("the status bar reflects the active Dodge/Burn mode", () => {
   assert.match(editor, /this\.tool === "dodge" && this\.options\.dodge\.mode === "burn" \? " · Burn" : ""/);
   assert.match(editor, /const statusLabel = `\$\{meta\.label\}\$\{modeNote\}`/);

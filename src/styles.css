@@ -446,6 +446,7 @@ select:disabled {
 .stage[data-cursor="zoom"] { cursor: zoom-in; }
 .stage[data-cursor="zoom-out"] { cursor: zoom-out; }
 .stage[data-cursor="eyedropper"] { cursor: copy; }
+.stage[data-cursor="not-allowed"] { cursor: not-allowed; }
 
 /* The workspace clips overflow, so draw the keyboard focus ring inside the canvas. */
 .stage:focus-visible {

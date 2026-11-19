@@ -914,8 +914,15 @@ export class PaletteEditor {
     }
   }
 
+  activeLayerEditable() {
+    const layer = activeLayer(this.doc);
+    return Boolean(layer && layer.canvas && layer.visible && !layer.locked);
+  }
+
   updateCursor() {
     let cursor = TOOL_META[this.tool]?.cursor ?? "crosshair";
+    const paintTool = this.tool === "brush" || this.tool === "eraser" || this.tool === "clone" || this.tool === "dodge";
+    if (paintTool && !this.activeLayerEditable()) cursor = "not-allowed";
     if (this.space) cursor = "grab";
     if (this.action?.type === "pan") cursor = "grabbing";
     this.el.stage.dataset.cursor = cursor;
@@ -1194,7 +1201,8 @@ export class PaletteEditor {
 
     if (
       this.pointer &&
-      (this.tool === "brush" || this.tool === "eraser" || this.tool === "clone" || this.tool === "dodge")
+      (this.tool === "brush" || this.tool === "eraser" || this.tool === "clone" || this.tool === "dodge") &&
+      this.activeLayerEditable()
     ) {
       const size =
         this.tool === "brush"
