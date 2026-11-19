@@ -126,6 +126,11 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("the drop hint advertises both supported file types", () => {
+  assert.match(html, /id="drop-hint"[^>]*>Drop an image or a \.palette project to open it<\/div>/);
+  assert.match(editor, /palette\|json.*test\(file\.name\)/);
+});
+
 test("the Zoom tool shows a zoom-out cursor while Alt is held", () => {
   assert.match(editor, /this\.altDown = false/);
   assert.match(editor, /this\.tool === "zoom" && this\.altDown\) cursor = "zoom-out"/);
