@@ -643,6 +643,19 @@ export class PaletteEditor {
       const height = Math.round((histogram.luma[index] / max) * canvas.height);
       if (height > 0) context.fillRect(index, canvas.height - height, 1, height);
     }
+    // Mark the tonal range Auto levels will stretch to, so the numbers have a
+    // visible position on the histogram.
+    context.save();
+    context.strokeStyle = "rgba(233, 238, 251, 0.9)";
+    context.lineWidth = 1;
+    for (const level of [range.black, range.white]) {
+      const x = Math.min(canvas.width - 1, Math.max(0, Math.round((level / 255) * (canvas.width - 1))));
+      context.beginPath();
+      context.moveTo(x + 0.5, 0);
+      context.lineTo(x + 0.5, canvas.height);
+      context.stroke();
+    }
+    context.restore();
     this.el.histogramRange.textContent = `${range.black}–${range.white}`;
   }
 

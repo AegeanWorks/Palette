@@ -126,6 +126,11 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("the histogram marks the tonal range used by Auto levels", () => {
+  assert.match(editor, /drawHistogram\(\)\s*\{[\s\S]{0,2600}for \(const level of \[range\.black, range\.white\]\)/);
+  assert.match(editor, /Math\.round\(\(level \/ 255\) \* \(canvas\.width - 1\)\)/);
+});
+
 test("every filter button explains its effect on hover", () => {
   const filterButtons = [...html.matchAll(/<button[^>]*id="btn-filter-[^"]+"[^>]*>/g)].map((m) => m[0]);
   assert.equal(filterButtons.length, 22);
