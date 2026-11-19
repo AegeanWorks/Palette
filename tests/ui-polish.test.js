@@ -126,6 +126,16 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("preset colour swatches show their name and hex on hover", () => {
+  const swatches = [...html.matchAll(/<button class="btn-swatch"[^>]*>/g)].map((m) => m[0]);
+  assert.equal(swatches.length, 9);
+  for (const tag of swatches) {
+    assert.match(tag, /title="[A-Z][a-z]+ \(#[0-9a-f]{6}\)"/);
+  }
+  assert.match(html, /title="Cyan \(#22d3ee\)"/);
+  assert.match(html, /title="Purple \(#a855f7\)"/);
+});
+
 test("a Clear selection button exposes the Delete action", () => {
   assert.match(html, /id="btn-clear-selection"[^>]*data-ui="clear-selection"[^>]*disabled[^>]*title="Clear pixels inside the selection \(Delete\)"/);
   assert.match(editor, /"btn-contract-selection", "btn-clear-selection"/);
