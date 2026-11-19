@@ -672,17 +672,18 @@ export class PaletteEditor {
     this.el.btnLayerDelete.title = isOnlyLayer
       ? "Delete layer — keep at least one layer"
       : "Delete layer";
-    this.el.layerOpacity.disabled = layer.locked;
-    this.el.layerBlend.disabled = layer.locked;
+    const cannotEditLayer = layer.locked || !layer.visible;
+    this.el.layerOpacity.disabled = cannotEditLayer;
+    this.el.layerBlend.disabled = cannotEditLayer;
     for (const name of DESTRUCTIVE_ACTIONS) {
-      if (this.el[name]) this.el[name].disabled = layer.locked;
+      if (this.el[name]) this.el[name].disabled = cannotEditLayer;
     }
     for (const key of ADJUSTMENTS) {
       const input = this.el[`adj${key[0].toUpperCase()}${key.slice(1)}`];
       const output = this.el[`adj${key[0].toUpperCase()}${key.slice(1)}Value`];
       if (!input || !output) continue;
       const value = layer.adjustments[key];
-      input.disabled = layer.locked;
+      input.disabled = cannotEditLayer;
       if (this.root.activeElement !== input) input.value = String(value);
       output.textContent = formatAdjustment(key, value);
     }
@@ -846,6 +847,9 @@ export class PaletteEditor {
     this.el.statusZoom.textContent = `${percent < 10 ? percent.toFixed(1) : Math.round(percent)}%`;
     if (this.el.btnActual) {
       this.el.btnActual.setAttribute("aria-pressed", Math.abs(this.view.scale - 1) < 0.001 ? "true" : "false");
+    }
+    if (this.el.btnFit) {
+      this.el.btnFit.setAttribute("aria-pressed", this.autoFit ? "true" : "false");
     }
   }
 

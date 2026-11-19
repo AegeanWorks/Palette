@@ -116,6 +116,18 @@ test("layer count changes are announced to assistive tech", () => {
   assert.match(html, /id="layer-count"[^>]*aria-live="polite"/);
 });
 
+test("the fit-to-view button shows a pressed state when auto-fitted", () => {
+  assert.match(editor, /btnFit\.setAttribute\("aria-pressed", this\.autoFit \? "true" : "false"\)/);
+});
+
+test("a hidden layer disables editing controls just like a locked one", () => {
+  assert.match(editor, /const cannotEditLayer = layer\.locked \|\| !layer\.visible/);
+  assert.match(editor, /layerOpacity\.disabled = cannotEditLayer/);
+  assert.match(editor, /layerBlend\.disabled = cannotEditLayer/);
+  assert.match(editor, /input\.disabled = cannotEditLayer/);
+  assert.match(editor, /this\.el\[name\]\.disabled = cannotEditLayer/);
+});
+
 test("the actual-size button shows a pressed state at 100% zoom", () => {
   assert.match(editor, /btnActual\.setAttribute\("aria-pressed", Math\.abs\(this\.view\.scale - 1\) < 0\.001/);
 });
@@ -179,12 +191,12 @@ test("a locked layer disables the destructive filter buttons and their inputs", 
   assert.match(list, /"filterBlurRadius"/);
   assert.match(list, /"filterTintColor"/);
   assert.match(list, /"levelGamma"/);
-  assert.match(editor, /for \(const name of DESTRUCTIVE_ACTIONS\)[\s\S]{0,160}this\.el\[name\]\.disabled = layer\.locked/);
+  assert.match(editor, /for \(const name of DESTRUCTIVE_ACTIONS\)[\s\S]{0,160}this\.el\[name\]\.disabled = cannotEditLayer/);
 });
 
 test("a locked layer disables its opacity and blend controls", () => {
-  assert.match(editor, /layerOpacity\.disabled = layer\.locked/);
-  assert.match(editor, /layerBlend\.disabled = layer\.locked/);
+  assert.match(editor, /layerOpacity\.disabled = cannotEditLayer/);
+  assert.match(editor, /layerBlend\.disabled = cannotEditLayer/);
 });
 
 test("the Adjustments Reset button says what it resets", () => {
@@ -358,7 +370,7 @@ test("the document name selects all on focus for quick renaming", () => {
 test("locked-layer adjustment sliders look disabled", () => {
   assert.match(styles, /input\[type\]:disabled,\s*select:disabled\s*\{[^}]*opacity:\s*0\.45/);
   assert.match(styles, /input\[type\]:disabled,\s*select:disabled\s*\{[^}]*cursor:\s*not-allowed/);
-  assert.match(editor, /input\.disabled\s*=\s*layer\.locked/);
+  assert.match(editor, /input\.disabled\s*=\s*cannotEditLayer/);
 });
 
 test("the desktop status bar names the active layer and hints clipping", () => {
