@@ -246,7 +246,7 @@ const IDS = [
   "btn-filter-find-edges", "btn-filter-solarize", "filter-duotone-shadow", "filter-duotone-highlight", "btn-filter-duotone", "btn-filter-dither",
   "filter-oil-radius", "filter-oil-value", "btn-filter-oil", "btn-filter-median",
   "status-tool", "status-layer", "status-selection", "status-message",
-  "status-cursor", "status-zoom",
+  "status-color", "status-cursor", "status-zoom",
   "btn-actual", "new-dialog", "new-form", "new-name", "new-width", "new-height", "new-color",
   "new-cancel", "new-create", "new-size", "export-dialog", "export-form", "export-name", "export-format",
   "export-quality-row", "export-quality", "export-quality-value", "export-scale", "export-size",
@@ -775,6 +775,7 @@ export class PaletteEditor {
     if (this.root.activeElement !== this.el.colorInput) this.el.colorInput.value = this.options.color;
     this.el.colorHex.textContent = this.options.color;
     this.el.textInput.style.color = this.options.color;
+    this.syncStatusColor();
   }
 
   renderLayerList() {
@@ -2011,6 +2012,13 @@ export class PaletteEditor {
     }
   }
 
+  syncStatusColor() {
+    if (!this.el.statusColor) return;
+    this.el.statusColor.style.background = this.options.color;
+    this.el.statusColor.title = `Active colour ${this.options.color}`;
+    this.el.statusColor.setAttribute("aria-label", `Active colour ${this.options.color}`);
+  }
+
   setColor(value) {
     const hex = normalizeHex(value, this.options.color);
     this.options.color = hex;
@@ -2018,6 +2026,7 @@ export class PaletteEditor {
     this.el.colorHex.textContent = hex;
     this.el.textInput.style.color = hex;
     this.syncSwatches();
+    this.syncStatusColor();
     this.scheduleRender();
   }
 

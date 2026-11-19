@@ -121,6 +121,14 @@ test("the Move options note adds detail instead of duplicating the header hint",
   assert.doesNotMatch(html, /id="options-move"[^>]*>[\s\S]{0,120}Drag the active layer\. Arrow keys nudge it\./);
 });
 
+test("the status bar shows the active colour as a swatch", () => {
+  assert.match(html, /id="status-color"[^>]*role="img"[^>]*aria-label="Active colour"/);
+  assert.match(editor, /"status-color", "status-cursor"/);
+  assert.match(editor, /syncStatusColor\(\)\s*\{[\s\S]{0,240}statusColor\.style\.background = this\.options\.color/);
+  assert.match(editor, /this\.syncStatusColor\(\);/);
+  assert.match(styles, /\.status-color\s*\{[^}]*border-radius:\s*4px/);
+});
+
 test("the zoom controls expose their shortcuts to assistive tech", () => {
   assert.match(editor, /btnZoomIn: "= Control\+= Meta\+="/);
   assert.match(editor, /btnZoomOut: "- Control\+- Meta\+-"/);
