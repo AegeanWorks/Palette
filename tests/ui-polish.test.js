@@ -126,6 +126,13 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("the inline text and crop actions show their Enter/Escape shortcuts", () => {
+  assert.match(html, /id="text-commit"[^>]*title="Add text to the layer \(Enter\)"/);
+  assert.match(html, /id="text-cancel"[^>]*title="Discard the text \(Escape\)"/);
+  assert.match(html, /id="crop-apply"[^>]*title="Apply the crop \(Enter\)"/);
+  assert.match(html, /id="crop-cancel"[^>]*title="Cancel the crop \(Escape\)"/);
+});
+
 test("preset colour swatches show their name and hex on hover", () => {
   const swatches = [...html.matchAll(/<button class="btn-swatch"[^>]*>/g)].map((m) => m[0]);
   assert.equal(swatches.length, 9);

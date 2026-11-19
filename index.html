@@ -125,8 +125,8 @@
       <div class="text-editor" id="text-editor" hidden>
         <label class="sr-only" for="text-input">Text to place</label>
         <input id="text-input" type="text" maxlength="200" autocomplete="off" spellcheck="false" placeholder="Type text">
-        <button class="btn btn-primary btn-small" id="text-commit" type="button" data-ui="text-commit">Add</button>
-        <button class="btn btn-ghost btn-small" id="text-cancel" type="button" data-ui="text-cancel">Cancel</button>
+        <button class="btn btn-primary btn-small" id="text-commit" type="button" data-ui="text-commit" title="Add text to the layer (Enter)">Add</button>
+        <button class="btn btn-ghost btn-small" id="text-cancel" type="button" data-ui="text-cancel" title="Discard the text (Escape)">Cancel</button>
       </div>
       <div class="drop-hint" id="drop-hint" hidden>Drop an image to open it</div>
       <p class="stage-note" id="stage-note">Open an image, drop one here, or start with New.</p>
@@ -293,8 +293,8 @@
           </select>
           <p class="panel-note">Press Enter to apply the crop or Escape to cancel it.</p>
           <div class="button-row">
-            <button class="btn btn-primary btn-small" id="crop-apply" type="button" data-ui="crop-apply" disabled>Apply crop</button>
-            <button class="btn btn-ghost btn-small" id="crop-cancel" type="button" data-ui="crop-cancel" disabled>Cancel</button>
+            <button class="btn btn-primary btn-small" id="crop-apply" type="button" data-ui="crop-apply" disabled title="Apply the crop (Enter)">Apply crop</button>
+            <button class="btn btn-ghost btn-small" id="crop-cancel" type="button" data-ui="crop-cancel" disabled title="Cancel the crop (Escape)">Cancel</button>
           </div>
         </div>
 
