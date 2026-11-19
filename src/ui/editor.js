@@ -814,7 +814,7 @@ export class PaletteEditor {
       name.type = "button";
       name.className = "layer-name";
       name.textContent = layer.name;
-      name.title = layer.name;
+      name.title = `${layer.name} — double-click to rename`;
       name.setAttribute("aria-pressed", layer.id === this.doc.activeLayerId ? "true" : "false");
       name.addEventListener("click", () => this.selectLayer(layer.id));
       name.addEventListener("dblclick", (event) => {
