@@ -126,6 +126,14 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("the histogram draws RGB channel overlays behind luminance", () => {
+  assert.match(editor, /drawHistogram\(\)\s*\{[\s\S]{0,900}globalCompositeOperation = "lighter"/);
+  assert.match(editor, /\[histogram\.red, "rgba\(255, 64, 64, 0\.55\)"\]/);
+  assert.match(editor, /\[histogram\.green, "rgba\(64, 220, 64, 0\.55\)"\]/);
+  assert.match(editor, /\[histogram\.blue, "rgba\(64, 128, 255, 0\.55\)"\]/);
+  assert.match(editor, /channelMax = Math\.max\(\s*1,\s*\.\.\.histogram\.red/);
+});
+
 test("the colour hex readout copies the hex on click with feedback", () => {
   assert.match(html, /id="color-hex"[^>]*class="mono color-hex-btn"[^>]*title="Copy hex colour"/);
   assert.match(editor, /copyColorHex\(\)\s*\{[\s\S]{0,600}navigator\.clipboard\.writeText\(hex\)/);

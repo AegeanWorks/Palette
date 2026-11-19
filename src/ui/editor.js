@@ -611,6 +611,29 @@ export class PaletteEditor {
     const histogram = buildHistogram(getPixels(layer.canvas), 256);
     const range = percentileRange(histogram, 0.005, 0.005);
     this.histogramRange = range;
+    const channelMax = Math.max(
+      1,
+      ...histogram.red,
+      ...histogram.green,
+      ...histogram.blue,
+    );
+    // Draw the RGB channels additively, then luminance on top, so colour
+    // distribution is visible at a glance in the histogram.
+    context.save();
+    context.globalCompositeOperation = "lighter";
+    const channels = [
+      [histogram.red, "rgba(255, 64, 64, 0.55)"],
+      [histogram.green, "rgba(64, 220, 64, 0.55)"],
+      [histogram.blue, "rgba(64, 128, 255, 0.55)"],
+    ];
+    for (const [data, color] of channels) {
+      context.fillStyle = color;
+      for (let index = 0; index < data.length; index += 1) {
+        const height = Math.round((data[index] / channelMax) * canvas.height);
+        if (height > 0) context.fillRect(index, canvas.height - height, 1, height);
+      }
+    }
+    context.restore();
     const max = Math.max(1, ...histogram.luma);
     context.fillStyle = "rgba(103, 232, 249, 0.78)";
     for (let index = 0; index < histogram.luma.length; index += 1) {
