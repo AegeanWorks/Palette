@@ -126,6 +126,10 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("the Adjustments Reset button disables on locked or hidden layers too", () => {
+  assert.match(editor, /adjustReset\.disabled = cannotEditLayer \|\| isNeutralAdjustments\(layer\.adjustments\)/);
+});
+
 test("the drop hint advertises both supported file types", () => {
   assert.match(html, /id="drop-hint"[^>]*>Drop an image or a \.palette project to open it<\/div>/);
   assert.match(editor, /palette\|json.*test\(file\.name\)/);
@@ -389,7 +393,7 @@ test("the Adjustments Reset button says what it resets", () => {
 
 test("the Adjustments Reset button disables when nothing is adjusted", () => {
   assert.match(editor, /isNeutralAdjustments,/);
-  assert.match(editor, /adjustReset\.disabled = isNeutralAdjustments\(layer\.adjustments\)/);
+  assert.match(editor, /adjustReset\.disabled = cannotEditLayer \|\| isNeutralAdjustments\(layer\.adjustments\)/);
   assert.match(editor, /adjustReset\.disabled = isNeutralAdjustments\(adjustments\)/);
 });
 

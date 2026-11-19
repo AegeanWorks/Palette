@@ -743,7 +743,7 @@ export class PaletteEditor {
       if (this.root.activeElement !== input) input.value = String(value);
       output.textContent = formatAdjustment(key, value);
     }
-    this.el.adjustReset.disabled = isNeutralAdjustments(layer.adjustments);
+    this.el.adjustReset.disabled = cannotEditLayer || isNeutralAdjustments(layer.adjustments);
   }
 
   syncToolOptions() {
