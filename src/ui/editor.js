@@ -1346,6 +1346,19 @@ export class PaletteEditor {
           ? { x: this.action.last.x + this.action.offset.x, y: this.action.last.y + this.action.offset.y }
           : this.cloneSource;
       const source = docToScreen(currentSource, this.view);
+      // Dashed link from the source anchor to the cursor makes the clone
+      // offset readable at a glance while painting.
+      if (this.pointer && this.pointInsideDoc(this.toDoc(this.pointer))) {
+        context.save();
+        context.strokeStyle = "rgba(103, 232, 249, 0.55)";
+        context.lineWidth = 1;
+        context.setLineDash([5, 4]);
+        context.beginPath();
+        context.moveTo(source.x, source.y);
+        context.lineTo(this.pointer.x, this.pointer.y);
+        context.stroke();
+        context.restore();
+      }
       context.save();
       context.strokeStyle = "rgba(103, 232, 249, 0.95)";
       context.lineWidth = 1.5;

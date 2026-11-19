@@ -126,6 +126,11 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("the clone source links to the cursor with a dashed guide", () => {
+  assert.match(editor, /if \(this\.pointer && this\.pointInsideDoc\(this\.toDoc\(this\.pointer\)\)\) \{[\s\S]{0,240}context\.moveTo\(source\.x, source\.y\);[\s\S]{0,60}context\.lineTo\(this\.pointer\.x, this\.pointer\.y\)/);
+  assert.match(editor, /context\.setLineDash\(\[5, 4\]\)/);
+});
+
 test("the shape drag shows a live length/angle or size badge", () => {
   assert.match(editor, /if \(this\.action\.tool === "line"\) \{[\s\S]{0,220}const angle = \(Math\.atan2\(dy, dx\) \* 180\) \/ Math\.PI/);
   assert.match(editor, /label = `\$\{Math\.round\(Math\.abs\(dx\)\)\} × \$\{Math\.round\(Math\.abs\(dy\)\)\} px`/);
