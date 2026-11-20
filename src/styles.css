@@ -934,13 +934,20 @@ select:focus {
   color: var(--muted);
 }
 
-.document-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  margin-top: 12px;
-  padding-top: 12px;
+.panel-group {
+  margin-top: 11px;
+  padding-top: 10px;
   border-top: 1px solid var(--line);
+}
+
+.panel-group-label {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--dim);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
 }
 
 .histogram-panel {

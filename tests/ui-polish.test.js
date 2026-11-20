@@ -131,6 +131,14 @@ test("the status bar reflects the active Gradient type", () => {
   assert.match(editor, /gradientType\.addEventListener\("change"[\s\S]{0,160}this\.syncToolOptions\(\)/);
 });
 
+test("layer actions are grouped into labelled categories", () => {
+  for (const label of ["Canvas", "Layer", "Combine"]) {
+    assert.match(html, new RegExp(`panel-group-label">${label}</span>`));
+  }
+  assert.match(html, /id="btn-layer-rotate-cw"[^>]*>Rotate ↻<\/button>/);
+  assert.match(styles, /\.panel-group-label \{[^}]*text-transform: uppercase/);
+});
+
 test("the active tool uses a minimal accent instead of a heavy gradient", () => {
   assert.match(styles, /\.tool-btn\[aria-pressed="true"\] \{[^}]*background: rgba\(34, 211, 238, 0\.08\)/);
   assert.match(styles, /\.tool-btn\[aria-pressed="true"\]::before \{[^}]*width: 2px/);

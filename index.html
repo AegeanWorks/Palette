@@ -368,19 +368,32 @@
         </div>
         <ul class="layer-list" id="layer-list" aria-label="Layer stack"></ul>
 
-        <div class="document-actions">
-          <button class="btn btn-ghost btn-small" id="btn-resize" type="button" data-ui="resize" title="Resize the document">Resize</button>
-          <button class="btn btn-ghost btn-small" id="btn-canvas-size" type="button" data-ui="canvas-size" title="Change the canvas size">Canvas size</button>
-          <button class="btn btn-ghost btn-small" id="btn-transform" type="button" data-ui="transform-layer" title="Transform the active layer">Transform</button>
-          <button class="btn btn-ghost btn-small" id="btn-layer-flip-h" type="button" data-ui="layer-flip-h" title="Flip the active layer horizontally">Flip layer H</button>
-          <button class="btn btn-ghost btn-small" id="btn-layer-flip-v" type="button" data-ui="layer-flip-v" title="Flip the active layer vertically">Flip layer V</button>
-          <button class="btn btn-ghost btn-small" id="btn-layer-rotate-cw" type="button" data-ui="layer-rotate-cw" title="Rotate the active layer 90° clockwise">Rotate layer 90° CW</button>
-          <button class="btn btn-ghost btn-small" id="btn-layer-rotate-ccw" type="button" data-ui="layer-rotate-ccw" title="Rotate the active layer 90° counter-clockwise">Rotate layer 90° CCW</button>
-          <button class="btn btn-ghost btn-small" id="btn-flip-h" type="button" data-ui="flip-horizontal" title="Flip the whole document horizontally">Flip H</button>
-          <button class="btn btn-ghost btn-small" id="btn-flip-v" type="button" data-ui="flip-vertical" title="Flip the whole document vertically">Flip V</button>
-          <button class="btn btn-ghost btn-small" id="btn-rotate" type="button" data-ui="rotate" title="Rotate the whole document 90°">Rotate 90°</button>
-          <button class="btn btn-ghost btn-small" id="btn-flatten" type="button" data-ui="flatten" title="Flatten all visible layers">Flatten</button>
-          <button class="btn btn-ghost btn-small" id="btn-stamp-visible" type="button" data-ui="stamp-visible" title="Stamp visible layers to a new layer (Ctrl+Alt+Shift+E)">Stamp visible</button>
+        <div class="panel-group">
+          <span class="panel-group-label">Canvas</span>
+          <div class="button-row compact">
+            <button class="btn btn-ghost btn-small" id="btn-resize" type="button" data-ui="resize" title="Resize the document">Resize</button>
+            <button class="btn btn-ghost btn-small" id="btn-canvas-size" type="button" data-ui="canvas-size" title="Change the canvas size">Canvas size</button>
+            <button class="btn btn-ghost btn-small" id="btn-flip-h" type="button" data-ui="flip-horizontal" title="Flip the whole document horizontally">Flip H</button>
+            <button class="btn btn-ghost btn-small" id="btn-flip-v" type="button" data-ui="flip-vertical" title="Flip the whole document vertically">Flip V</button>
+            <button class="btn btn-ghost btn-small" id="btn-rotate" type="button" data-ui="rotate" title="Rotate the whole document 90°">Rotate 90°</button>
+          </div>
+        </div>
+        <div class="panel-group">
+          <span class="panel-group-label">Layer</span>
+          <div class="button-row compact">
+            <button class="btn btn-ghost btn-small" id="btn-transform" type="button" data-ui="transform-layer" title="Transform the active layer">Transform</button>
+            <button class="btn btn-ghost btn-small" id="btn-layer-flip-h" type="button" data-ui="layer-flip-h" title="Flip the active layer horizontally">Flip H</button>
+            <button class="btn btn-ghost btn-small" id="btn-layer-flip-v" type="button" data-ui="layer-flip-v" title="Flip the active layer vertically">Flip V</button>
+            <button class="btn btn-ghost btn-small" id="btn-layer-rotate-cw" type="button" data-ui="layer-rotate-cw" title="Rotate the active layer 90° clockwise">Rotate ↻</button>
+            <button class="btn btn-ghost btn-small" id="btn-layer-rotate-ccw" type="button" data-ui="layer-rotate-ccw" title="Rotate the active layer 90° counter-clockwise">Rotate ↺</button>
+          </div>
+        </div>
+        <div class="panel-group">
+          <span class="panel-group-label">Combine</span>
+          <div class="button-row compact">
+            <button class="btn btn-ghost btn-small" id="btn-flatten" type="button" data-ui="flatten" title="Flatten all visible layers">Flatten</button>
+            <button class="btn btn-ghost btn-small" id="btn-stamp-visible" type="button" data-ui="stamp-visible" title="Stamp visible layers to a new layer (Ctrl+Alt+Shift+E)">Stamp</button>
+          </div>
         </div>
       </section>
 
