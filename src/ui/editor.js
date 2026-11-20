@@ -794,7 +794,7 @@ export class PaletteEditor {
       input.disabled = cannotEditLayer;
       input.title = cannotEditLayer
         ? `${key[0].toUpperCase()}${key.slice(1)} — ${editLock}`
-        : `${key[0].toUpperCase()}${key.slice(1)} adjustment`;
+        : `${key[0].toUpperCase()}${key.slice(1)} adjustment — double-click to reset`;
       if (this.root.activeElement !== input) input.value = String(value);
       output.textContent = formatAdjustment(key, value);
       output.dataset.active = value !== 0 ? "true" : "false";
@@ -4340,6 +4340,12 @@ export class PaletteEditor {
         if (!this.adjustStart) this.adjustStart = this.doc;
       });
       input.addEventListener("input", () => this.previewAdjustment(key, Number(input.value)));
+      input.addEventListener("dblclick", () => {
+        input.value = input.defaultValue;
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+        this.announce(`${key} reset.`);
+      });
       input.addEventListener("change", () => {
         if (!this.adjustStart) return;
         const before = this.adjustStart;

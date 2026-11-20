@@ -221,6 +221,12 @@ test("export settings persist across dialog opens", () => {
   assert.match(editor, /saved\.format \|\| "png"/);
 });
 
+test("adjustment sliders reset on double-click", () => {
+  assert.match(editor, /input\.addEventListener\("dblclick"/);
+  assert.match(editor, /input\.value = input\.defaultValue/);
+  assert.match(editor, /adjustment — double-click to reset/);
+});
+
 test("status messages show a success or error icon", () => {
   assert.match(styles, /#status-message\[data-tone="error"\]::before \{[^}]*content: "⚠ "/);
   assert.match(styles, /#status-message\[data-tone="ok"\]::before \{[^}]*content: "✓ "/);
