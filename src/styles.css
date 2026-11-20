@@ -955,6 +955,16 @@ select:focus {
   gap: 5px;
 }
 
+/* Non-neutral adjustments stand out so active tweaks are visible at a glance. */
+.adjust-list .field output {
+  color: var(--dim);
+}
+
+.adjust-list .field output[data-active="true"] {
+  color: var(--cyan);
+  font-weight: 700;
+}
+
 .filter-grid {
   display: grid;
   gap: 6px;

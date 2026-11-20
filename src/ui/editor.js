@@ -778,6 +778,7 @@ export class PaletteEditor {
         : `${key[0].toUpperCase()}${key.slice(1)} adjustment`;
       if (this.root.activeElement !== input) input.value = String(value);
       output.textContent = formatAdjustment(key, value);
+      output.dataset.active = value !== 0 ? "true" : "false";
     }
     this.el.adjustReset.disabled = cannotEditLayer || isNeutralAdjustments(layer.adjustments);
   }

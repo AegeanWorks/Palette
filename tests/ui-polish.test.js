@@ -126,6 +126,11 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("non-neutral adjustment values are highlighted", () => {
+  assert.match(editor, /output\.dataset\.active = value !== 0 \? "true" : "false"/);
+  assert.match(styles, /\.adjust-list \.field output\[data-active="true"\] \{[^}]*font-weight: 700/);
+});
+
 test("the text editor shows a live character counter", () => {
   assert.match(html, /id="text-count"[^>]*>0\/200<\/output>/);
   assert.match(editor, /textCount\.textContent = `\$\{length\}\/200`/);
