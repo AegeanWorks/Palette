@@ -1114,6 +1114,11 @@ test("colour labels use consistent spelling", () => {
   assert.match(html, /data-ui="filter-color-balance">Colour balance<\/button>/);
 });
 
+test("the layer count tooltip names the active layer's position", () => {
+  assert.match(editor, /layers\.findIndex\(\(layer\) => layer\.id === this\.doc\.activeLayerId\)/);
+  assert.match(editor, /active layer \$\{activeIndex \+ 1\} of \$\{layers\.length\}/);
+});
+
 test("the autosave status can save the session on click", () => {
   assert.match(html, /id="status-autosave"[^>]*title="Autosave status — click to save now"/);
   assert.match(editor, /statusAutosave\.addEventListener\("click"/);
