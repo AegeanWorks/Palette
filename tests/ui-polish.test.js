@@ -311,6 +311,11 @@ test("the Canvas dialog can swap width and height and transpose the anchor", () 
   assert.match(editor, /"bottom-left": "bottom-right", bottom: "right", "bottom-right": "bottom-left"/);
 });
 
+test("the Current preset shows when it matches the document size", () => {
+  assert.match(editor, /newCurrent\.setAttribute\("aria-pressed", matches \? "true" : "false"\)/);
+  assert.match(editor, /requestedWidth === this\.doc\.width && requestedHeight === this\.doc\.height/);
+});
+
 test("the Resize dialog can swap width and height", () => {
   assert.match(html, /id="resize-swap"[^>]*title="Swap width and height"/);
   assert.match(editor, /resizeSwap\.addEventListener\("click"/);

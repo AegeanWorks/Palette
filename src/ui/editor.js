@@ -259,7 +259,7 @@ const IDS = [
   "filter-oil-radius", "filter-oil-value", "btn-filter-oil", "btn-filter-median",
   "status-tool", "status-layer", "status-selection", "status-message",
   "status-color", "status-cursor", "status-zoom",
-  "btn-actual", "new-dialog", "new-form", "new-name", "new-width", "new-height", "new-presets", "new-reset", "new-color", "new-color-hex",
+  "btn-actual", "new-dialog", "new-form", "new-name", "new-width", "new-height", "new-presets", "new-current", "new-reset", "new-color", "new-color-hex",
   "new-cancel", "new-create", "new-size", "export-dialog", "export-form", "export-name", "export-filename", "export-format",
   "export-quality-row", "export-quality", "export-quality-value", "export-scale", "export-size", "export-reset",
   "export-cancel", "export-confirm", "resize-dialog", "resize-form", "resize-width", "resize-height",
@@ -3285,6 +3285,10 @@ export class PaletteEditor {
     for (const button of this.el.newPresets.querySelectorAll("button[data-w]")) {
       const matches = Number(button.dataset.w) === requestedWidth && Number(button.dataset.h) === requestedHeight;
       button.setAttribute("aria-pressed", matches ? "true" : "false");
+    }
+    if (this.el.newCurrent) {
+      const matches = requestedWidth === this.doc.width && requestedHeight === this.doc.height;
+      this.el.newCurrent.setAttribute("aria-pressed", matches ? "true" : "false");
     }
   }
 
