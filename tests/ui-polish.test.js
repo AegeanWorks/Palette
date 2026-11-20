@@ -136,6 +136,13 @@ test("Manage icons fit a single compact row", () => {
   assert.match(styles, /\.panel-group \.button-row\.compact \{[^}]*gap: 3px/);
 });
 
+test("collapsed panel states persist across reloads", () => {
+  assert.match(editor, /localStorage\.getItem\("palette\.panels"\)/);
+  assert.match(editor, /localStorage\.setItem\("palette\.panels", JSON\.stringify\(saved\)\)/);
+  assert.match(editor, /this\.restorePanelStates\(\)/);
+  assert.match(editor, /this\.savePanelState\(panel\)/);
+});
+
 test("the Filters panel can reset all settings", () => {
   assert.match(html, /id="filter-reset"[^>]*title="Reset all filter settings to their defaults"/);
   assert.match(editor, /if \(input\.type === "checkbox"\) input\.checked = input\.defaultChecked/);

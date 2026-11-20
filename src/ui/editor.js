@@ -457,6 +457,7 @@ export class PaletteEditor {
     this.history.subscribe(() => this.updateHistoryButtons());
     this.bindEvents();
     this.bindResizeObserver();
+    this.restorePanelStates();
     this.syncFilterOutputs();
     this.setDocument(welcomeDocument(), {
       reset: true,
@@ -2476,6 +2477,30 @@ export class PaletteEditor {
     this.scheduleRender();
   }
 
+  restorePanelStates() {
+    try {
+      const saved = JSON.parse(localStorage.getItem("palette.panels") || "{}");
+      for (const panel of this.root.querySelectorAll(".panel")) {
+        const key = panel.getAttribute("aria-labelledby");
+        if (!key || saved[key] !== true) continue;
+        panel.dataset.collapsed = "true";
+        const head = panel.querySelector(".panel-head");
+        head.setAttribute("aria-expanded", "false");
+        head.title = "Click to expand";
+      }
+    } catch { /* storage unavailable; panels default to expanded */ }
+  }
+
+  savePanelState(panel) {
+    try {
+      const key = panel.getAttribute("aria-labelledby");
+      if (!key) return;
+      const saved = JSON.parse(localStorage.getItem("palette.panels") || "{}");
+      saved[key] = panel.dataset.collapsed === "true";
+      localStorage.setItem("palette.panels", JSON.stringify(saved));
+    } catch { /* storage unavailable; state is session-only */ }
+  }
+
   syncFilterOutputs() {
     for (const input of this.root.querySelectorAll('.filter-grid input[type="range"]')) {
       if (input.dataset.neutral === undefined) input.dataset.neutral = input.getAttribute("value") ?? "0";
@@ -3903,6 +3928,7 @@ export class PaletteEditor {
       panel.dataset.collapsed = collapsed ? "false" : "true";
       head.setAttribute("aria-expanded", collapsed ? "true" : "false");
       head.title = collapsed ? "Click to collapse" : "Click to expand";
+      this.savePanelState(panel);
     });
     this.root.querySelector(".panel-column")?.addEventListener("keydown", (event) => {
       if (event.key !== "Enter" && event.key !== " ") return;
