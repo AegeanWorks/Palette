@@ -508,10 +508,6 @@
           <input id="filter-cb-yb" type="range" min="-100" max="100" step="1" value="0">
           <label class="field" for="filter-cb-preserve"><input id="filter-cb-preserve" type="checkbox" checked> Preserve luminosity</label>
           <button class="btn btn-ghost btn-small" id="btn-filter-color-balance" type="button" title="Shift the cyan-red, magenta-green and yellow-blue balance" data-ui="filter-color-balance">Color balance</button>
-          <label class="field" for="filter-noise-amount">Noise <output id="filter-noise-amount-value" for="filter-noise-amount">15</output>%</label>
-          <input id="filter-noise-amount" type="range" min="1" max="100" step="1" value="15">
-          <label class="field" for="filter-noise-monochrome"><input id="filter-noise-monochrome" type="checkbox" checked> Monochrome</label>
-          <button class="btn btn-ghost btn-small" id="btn-filter-noise" type="button" title="Add monochrome or colour grain" data-ui="filter-noise">Noise</button>
           <h3 class="filter-group" role="button" tabindex="0" aria-expanded="true" title="Click to collapse">Effects</h3>
           <label class="field" for="filter-high-pass-radius">High pass <output id="filter-high-pass-value" for="filter-high-pass-radius">10</output> px</label>
           <input id="filter-high-pass-radius" type="range" min="1" max="50" step="1" value="10">
@@ -539,6 +535,10 @@
           <label class="field" for="filter-oil-radius">Oil paint <output id="filter-oil-value" for="filter-oil-radius">2</output> px</label>
           <input id="filter-oil-radius" type="range" min="1" max="5" step="1" value="2">
           <button class="btn btn-ghost btn-small" id="btn-filter-oil" type="button" title="Smooth into painterly patches with Kuwahara filtering" data-ui="filter-oil">Oil paint</button>
+          <label class="field" for="filter-noise-amount">Noise <output id="filter-noise-amount-value" for="filter-noise-amount">15</output>%</label>
+          <input id="filter-noise-amount" type="range" min="1" max="100" step="1" value="15">
+          <label class="field" for="filter-noise-monochrome"><input id="filter-noise-monochrome" type="checkbox" checked> Monochrome</label>
+          <button class="btn btn-ghost btn-small" id="btn-filter-noise" type="button" title="Add monochrome or colour grain" data-ui="filter-noise">Noise</button>
         </div>
       </section>
     </aside>

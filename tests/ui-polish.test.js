@@ -189,6 +189,14 @@ test("the Filters panel can reset all settings", () => {
   assert.match(editor, /this\.announce\("Filter settings reset\."\)/);
 });
 
+test("Noise lives with the texture filters", () => {
+  const textures = html.search(/filter-group"[^>]*>Textures<\/h3>/);
+  const colorBalance = html.search(/filter-group"[^>]*>Colour balance<\/h3>/);
+  const noise = html.indexOf('id="filter-noise-amount"');
+  assert.ok(textures > 0 && noise > textures, "noise should follow Textures");
+  assert.ok(noise > colorBalance);
+});
+
 test("brightness and contrast have their own Tone category", () => {
   const tone = html.search(/filter-group"[^>]*>Tone<\/h3>/);
   assert.ok(tone > 0 && tone < html.indexOf('id="filter-brightness"'));
