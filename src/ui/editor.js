@@ -2411,10 +2411,18 @@ export class PaletteEditor {
       layerId: layer.id,
     };
     this.el.textInput.value = "";
+    this.syncTextCommit();
     this.el.textEditor.hidden = false;
     this.positionTextEditor();
     this.el.textInput.focus();
     this.scheduleRender();
+  }
+
+  syncTextCommit() {
+    if (!this.el.textCommit) return;
+    const empty = !this.el.textInput.value.trim();
+    this.el.textCommit.disabled = empty;
+    this.el.textCommit.title = empty ? "Add text — type something first" : "Add text to the layer (Enter)";
   }
 
   positionTextEditor() {
@@ -4046,6 +4054,7 @@ export class PaletteEditor {
       this.scheduleRender();
     });
     this.el.textInput.addEventListener("input", () => {
+      this.syncTextCommit();
       if (this.textDraft) {
         this.textDraft.value = this.el.textInput.value;
         this.scheduleRender();

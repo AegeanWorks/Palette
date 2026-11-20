@@ -126,6 +126,12 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("the text Add button disables when the input is empty", () => {
+  assert.match(editor, /syncTextCommit\(\) \{[\s\S]{0,180}textCommit\.disabled = empty/);
+  assert.match(editor, /textCommit\.title = empty \? "Add text — type something first" : "Add text to the layer \(Enter\)"/);
+  assert.match(editor, /textInput\.addEventListener\("input"[\s\S]{0,80}this\.syncTextCommit\(\)/);
+});
+
 test("the shape badge marks when Shift snaps the geometry", () => {
   assert.match(editor, /Math\.round\(angle\)\}°\$\{this\.action\.shift \? " · snapped" : ""\}/);
   assert.match(editor, /this\.action\.shift \? \(this\.action\.tool === "ellipse" \? " · circle" : " · square"\) : ""/);
