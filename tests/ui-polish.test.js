@@ -160,7 +160,7 @@ test("filter category headers respond to Enter and Space", () => {
 });
 
 test("filter categories can be collapsed individually", () => {
-  assert.equal((html.match(/class="filter-group" role="button"/g) || []).length, 6);
+  assert.equal((html.match(/class="filter-group" role="button"/g) || []).length, 7);
   assert.match(editor, /const head = event\.target\.closest\("\.filter-group"\)/);
   assert.match(editor, /while \(node && !node\.classList\.contains\("filter-group"\)\)/);
   assert.match(styles, /\.filter-group\[data-collapsed="true"\]::before/);
@@ -189,13 +189,19 @@ test("the Filters panel can reset all settings", () => {
   assert.match(editor, /this\.announce\("Filter settings reset\."\)/);
 });
 
+test("brightness and contrast have their own Tone category", () => {
+  const tone = html.search(/filter-group"[^>]*>Tone<\/h3>/);
+  assert.ok(tone > 0 && tone < html.indexOf('id="filter-brightness"'));
+  assert.ok(tone > html.indexOf('id="btn-filter-levels"'));
+});
+
 test("texture filters have their own category", () => {
   const textures = html.search(/filter-group"[^>]*>Textures<\/h3>/);
   assert.ok(textures > 0 && textures < html.indexOf('id="btn-filter-dither"'));
   assert.ok(textures < html.indexOf('id="btn-filter-oil"'));
 });
 
-test("filters are split into Essentials, Stylize, Tone, Colour, Effects", () => {
+test("filters are split into named categories", () => {
   const groups = html.match(/<h3 class="filter-group"[^>]*>([^<]+)<\/h3>/g)?.map((g) => g.replace(/<[^>]+>/g, "")) ?? [];
   assert.ok(groups.includes("Stylize"));
   assert.ok(groups.includes("Effects"));
@@ -905,7 +911,7 @@ test("the export dialog starts with its pre-filled name selected", () => {
 });
 
 test("the filters panel is grouped into scannable sections", () => {
-  for (const label of ["Essentials", "Stylize", "Tone &amp; levels", "Colour balance", "Effects", "Textures"]) {
+  for (const label of ["Essentials", "Stylize", "Tone &amp; levels", "Tone", "Colour balance", "Effects", "Textures"]) {
     assert.match(html, new RegExp(`<h3 class="filter-group"[^>]*>${label}</h3>`), `${label} group`);
   }
   assert.match(styles, /\.filter-group\s*\{[^}]*grid-column:\s*1\s*\/\s*-1/);
