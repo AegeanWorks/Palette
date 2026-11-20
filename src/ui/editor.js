@@ -220,7 +220,7 @@ const IDS = [
   "doc-name", "doc-dirty", "doc-size", "btn-new", "btn-open", "btn-open-project", "btn-save", "btn-export",
   "btn-undo", "btn-redo", "btn-help", "file-image", "file-layer", "file-project", "stage-wrap", "doc-frame",
   "stage", "overlay", "text-editor", "text-input", "text-count", "text-commit", "text-cancel", "drop-hint",
-  "stage-note", "btn-zoom-out", "btn-fit", "btn-zoom-in", "color-row", "color-input", "color-hex",
+  "stage-note", "stage-note-close", "btn-zoom-out", "btn-fit", "btn-zoom-in", "color-row", "color-input", "color-hex",
   "tool-hint", "edit-lock-notice", "options-tool-name", "options-tool-key", "options-reset", "options-brush", "options-eraser", "options-clone", "options-dodge", "options-bucket", "options-shape", "options-text", "options-gradient",
   "options-marquee", "options-crop", "options-move", "marquee-shape", "crop-aspect", "btn-select-all", "btn-deselect",
   "btn-crop-selection", "btn-invert-selection", "btn-expand-selection", "btn-contract-selection", "btn-clear-selection", "btn-copy", "btn-cut", "btn-paste",
@@ -4212,6 +4212,7 @@ export class PaletteEditor {
     this.el.btnHelp.addEventListener("click", () => this.el.helpDialog.showModal());
     this.el.btnZoomIn.addEventListener("click", () => this.zoomBy(1.25));
     this.el.btnZoomOut.addEventListener("click", () => this.zoomBy(0.8));
+    this.el.stageNoteClose.addEventListener("click", () => this.dismissNote());
     this.el.btnFit.addEventListener("click", () => this.fitView());
     this.el.btnActual.addEventListener("click", () => this.actualSize());
     this.el.docSize.addEventListener("click", () => this.openResizeDialog());

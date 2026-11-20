@@ -499,6 +499,21 @@ select:disabled {
   opacity: 0;
 }
 
+.stage-note-close {
+  margin-left: 6px;
+  padding: 0 2px;
+  border: 0;
+  background: transparent;
+  color: var(--dim);
+  font-size: 14px;
+  line-height: 1;
+  pointer-events: auto;
+}
+
+.stage-note-close:hover {
+  color: var(--cyan);
+}
+
 .drop-hint {
   position: absolute;
   inset: 14px;

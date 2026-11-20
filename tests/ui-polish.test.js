@@ -143,6 +143,12 @@ test("a pixel grid appears at high zoom", () => {
   assert.match(editor, /for \(let x = firstX; x <= lastX; x \+= 1\)/);
 });
 
+test("the canvas hint can be dismissed", () => {
+  assert.match(html, /id="stage-note-close"[^>]*title="Dismiss this hint"/);
+  assert.match(editor, /stageNoteClose\.addEventListener\("click", \(\) => this\.dismissNote\(\)\)/);
+  assert.match(styles, /\.stage-note-close \{[^}]*pointer-events: auto/);
+});
+
 test("the Tool options header can reset the active tool", () => {
   assert.match(html, /id="options-reset"[^>]*title="Reset this tool's options to defaults"/);
   assert.match(editor, /optionsReset\.addEventListener\("click"/);
