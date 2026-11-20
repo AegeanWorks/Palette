@@ -126,6 +126,11 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("signed adjustment readouts show an explicit plus for positive values", () => {
+  assert.match(editor, /const signed = \["brightness", "contrast", "saturation", "hue"\]\.includes\(key\)/);
+  assert.match(editor, /return signed && rounded > 0 \? `\+\$\{rounded\}` : String\(rounded\)/);
+});
+
 test("the eyedropper shows a live colour loupe at the cursor", () => {
   assert.match(editor, /this\.tool === "eyedropper" && this\.pointer && this\.pointInsideDoc/);
   assert.match(editor, /getImageData\(sx, sy, 1, 1\)\.data/);

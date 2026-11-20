@@ -4194,5 +4194,7 @@ export class PaletteEditor {
 
 function formatAdjustment(key, value) {
   if (key === "blur") return String(Number(value));
-  return String(Math.round(value));
+  const rounded = Math.round(value);
+  const signed = ["brightness", "contrast", "saturation", "hue"].includes(key);
+  return signed && rounded > 0 ? `+${rounded}` : String(rounded);
 }
