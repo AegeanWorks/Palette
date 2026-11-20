@@ -3148,6 +3148,10 @@ export class PaletteEditor {
       ? `${requestedWidth} × ${requestedHeight} will be capped to ${width} × ${height} pixels`
       : `${width} × ${height} pixels`;
     this.el.newSize.dataset.tone = capped ? "warn" : "muted";
+    for (const button of this.el.newPresets.querySelectorAll("button[data-w]")) {
+      const matches = Number(button.dataset.w) === requestedWidth && Number(button.dataset.h) === requestedHeight;
+      button.setAttribute("aria-pressed", matches ? "true" : "false");
+    }
   }
 
   createNewDocument() {

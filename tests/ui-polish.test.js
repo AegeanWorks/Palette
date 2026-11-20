@@ -210,6 +210,11 @@ test("Noise lives with the texture filters", () => {
   assert.ok(noise > colorBalance);
 });
 
+test("the matching new-document size preset is highlighted", () => {
+  assert.match(editor, /newPresets\.querySelectorAll\("button\[data-w\]"\)/);
+  assert.match(editor, /button\.setAttribute\("aria-pressed", matches \? "true" : "false"\)/);
+});
+
 test("new document size presets fill the dimensions", () => {
   assert.match(html, /id="new-presets"[^>]*aria-label="Common document sizes"/);
   assert.match(html, /data-w="1920" data-h="1080"/);
