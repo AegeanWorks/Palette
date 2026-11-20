@@ -253,7 +253,7 @@ const IDS = [
   "filter-oil-radius", "filter-oil-value", "btn-filter-oil", "btn-filter-median",
   "status-tool", "status-layer", "status-selection", "status-message",
   "status-color", "status-cursor", "status-zoom",
-  "btn-actual", "new-dialog", "new-form", "new-name", "new-width", "new-height", "new-presets", "new-color",
+  "btn-actual", "new-dialog", "new-form", "new-name", "new-width", "new-height", "new-presets", "new-color", "new-color-hex",
   "new-cancel", "new-create", "new-size", "export-dialog", "export-form", "export-name", "export-filename", "export-format",
   "export-quality-row", "export-quality", "export-quality-value", "export-scale", "export-size",
   "export-cancel", "export-confirm", "resize-dialog", "resize-form", "resize-width", "resize-height",
@@ -4456,6 +4456,9 @@ export class PaletteEditor {
       this.el.newWidth.value = button.dataset.w;
       this.el.newHeight.value = button.dataset.h;
       this.syncNewSize();
+    });
+    this.el.newColor.addEventListener("input", () => {
+      if (this.el.newColorHex) this.el.newColorHex.textContent = this.el.newColor.value;
     });
     this.el.newWidth.addEventListener("input", () => this.syncNewSize());
     this.el.newHeight.addEventListener("input", () => this.syncNewSize());

@@ -221,6 +221,11 @@ test("export settings persist across dialog opens", () => {
   assert.match(editor, /saved\.format \|\| "png"/);
 });
 
+test("the New dialog shows the custom background hex", () => {
+  assert.match(html, /id="new-color-hex"[^>]*>#0b1220<\/output>/);
+  assert.match(editor, /newColorHex\.textContent = this\.el\.newColor\.value/);
+});
+
 test("filter sliders reset on double-click", () => {
   assert.match(editor, /filter-grid"\)\?\.addEventListener\("dblclick"/);
   assert.match(editor, /event\.target\.closest\('input\[type="range"\]'\)/);
