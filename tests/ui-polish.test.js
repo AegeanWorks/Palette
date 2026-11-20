@@ -267,6 +267,13 @@ test("the Adjustments header counts changed adjustments", () => {
   assert.match(editor, /for \(const key of ADJUSTMENTS\) \{\s*if \(\(adjustments\[key\] \?\? 0\) !== 0\) count \+= 1/);
 });
 
+test("filter categories mark the ones with active settings", () => {
+  assert.match(editor, /group\.dataset\.active = "false"/);
+  assert.match(editor, /while \(group && !group\.classList\.contains\("filter-group"\)\) group = group\.previousElementSibling/);
+  assert.match(editor, /group\.dataset\.active = "true"/);
+  assert.match(styles, /\.filter-group\[data-active="true"\]::after \{[^}]*content: "•"/);
+});
+
 test("the Filters header counts changed filters", () => {
   assert.match(html, /id="filter-count"[^>]*data-active="false">0<\/span>/);
   assert.match(editor, /filterCount\.textContent = String\(changedCount\)/);

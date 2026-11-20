@@ -1090,6 +1090,12 @@ select:focus {
   text-transform: uppercase;
 }
 
+.filter-group[data-active="true"]::after {
+  content: "•";
+  margin-left: 6px;
+  color: var(--accent, #67e8f9);
+}
+
 .filter-group::before {
   content: "";
   display: inline-block;
