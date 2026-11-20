@@ -3750,7 +3750,7 @@ export class PaletteEditor {
     if (!node) return;
     node.textContent = text;
     node.dataset.tone = tone;
-    node.title = text;
+    node.title = `${text} — click to save now`;
   }
 
   async initAutosave() {
@@ -3785,18 +3785,20 @@ export class PaletteEditor {
     this.autosaveTimer = setTimeout(() => this.runAutosave(), Math.max(0, delay));
   }
 
-  async runAutosave() {
-    if (!this.autosaveArmed || !this.autosaveHasContent || !this.doc || this.action) return;
+  async runAutosave(force = false) {
+    if (!this.autosaveArmed || (!this.autosaveHasContent && !force) || !this.doc || this.action) return false;
     if (this.autosaveInFlight) {
       this.autosavePending = true;
-      return;
+      return false;
     }
     this.autosaveInFlight = true;
     const snapshot = this.doc;
+    let saved = false;
     try {
       this.setAutosaveStatus("Saving locally…", "muted");
       const record = await captureSession(snapshot);
       await writeAutosave(record);
+      saved = true;
       if (this.doc === snapshot) {
         this.setAutosaveStatus(`Saved locally ${formatSavedAt(record.savedAt)}`, "ok");
       }
@@ -3810,6 +3812,7 @@ export class PaletteEditor {
         this.scheduleAutosave(0);
       }
     }
+    return saved;
   }
 
   async restoreSession(record) {
@@ -4192,6 +4195,11 @@ export class PaletteEditor {
     this.el.btnOpen.addEventListener("click", () => this.el.fileImage.click());
     this.el.btnOpenProject.addEventListener("click", () => this.el.fileProject.click());
     this.el.btnSave.addEventListener("click", () => this.saveProject());
+    this.el.statusAutosave.addEventListener("click", () => {
+      this.runAutosave(true).then((saved) => {
+        if (saved) this.announce("Session saved locally.", { ok: true });
+      });
+    });
     this.root.querySelector(".panel-column")?.addEventListener("click", (event) => {
       if (event.target.closest("button")) return;
       const head = event.target.closest(".panel-head");

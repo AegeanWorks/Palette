@@ -1108,6 +1108,14 @@ test("hidden layers dim their row in the Layers panel", () => {
   assert.match(styles, /\.layer-item\[data-visible="false"\] \.layer-name\s*\{[^}]*opacity:\s*0\.4/);
 });
 
+test("the autosave status can save the session on click", () => {
+  assert.match(html, /id="status-autosave"[^>]*title="Autosave status — click to save now"/);
+  assert.match(editor, /statusAutosave\.addEventListener\("click"/);
+  assert.match(editor, /runAutosave\(true\)/);
+  assert.match(editor, /async runAutosave\(force = false\)/);
+  assert.match(styles, /\.status-autosave:hover \{\s*color: var\(--cyan\)/);
+});
+
 test("the autosave status has a tone-driven dot and announces changes", () => {
   assert.match(html, /id="status-autosave"[^>]*aria-live="polite"/);
   assert.match(styles, /\.status-autosave\s*\{[^}]*display:\s*inline-flex/);

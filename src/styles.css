@@ -1234,7 +1234,15 @@ select:focus {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: var(--dim);
+  cursor: pointer;
+}
+
+.status-autosave:hover {
+  color: var(--cyan);
 }
 
 .status-autosave::before {
