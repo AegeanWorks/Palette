@@ -210,6 +210,12 @@ test("Noise lives with the texture filters", () => {
   assert.ok(noise > colorBalance);
 });
 
+test("export settings persist across dialog opens", () => {
+  assert.match(editor, /localStorage\.getItem\("palette\.export"\)/);
+  assert.match(editor, /localStorage\.setItem\("palette\.export", JSON\.stringify\(\{/);
+  assert.match(editor, /saved\.format \|\| "png"/);
+});
+
 test("the New dialog offers a 4K size preset", () => {
   assert.match(html, /data-w="3840" data-h="2160">4K<\/button>/);
 });
@@ -693,7 +699,7 @@ test("discarding a recovered session reads as a destructive choice", () => {
 });
 
 test("the export size readout warns visually when capped", () => {
-  assert.match(editor, /syncExportFormat\(\)\s*\{[\s\S]{0,700}const capped = percent < Math\.round\(scale \* 100\)/);
+  assert.match(editor, /syncExportFormat\(\)\s*\{[\s\S]{0,1000}const capped = percent < Math\.round\(scale \* 100\)/);
   assert.match(editor, /exportSize\.dataset\.tone = capped \? "warn" : "muted"/);
 });
 
@@ -992,7 +998,7 @@ test("the remaining selection controls explain what they do", () => {
 });
 
 test("the export dialog starts with its pre-filled name selected", () => {
-  const body = editor.slice(editor.indexOf("  openExportDialog()"), editor.indexOf("  openExportDialog()") + 900);
+  const body = editor.slice(editor.indexOf("  openExportDialog()"), editor.indexOf("  openExportDialog()") + 1200);
   assert.match(body, /exportName\.value\s*=\s*this\.doc\.name/);
   assert.match(body, /exportDialog\.showModal\(\)[\s\S]*?exportName\.focus\(\)/);
   assert.match(body, /exportName\.select\(\)/);

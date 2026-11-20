@@ -3191,9 +3191,16 @@ export class PaletteEditor {
     if (this.isDialogOpen()) return;
     this.finishText();
     this.el.exportName.value = this.doc.name;
-    this.el.exportFormat.value = "png";
-    this.el.exportQuality.value = "92";
-    this.el.exportScale.value = "1";
+    try {
+      const saved = JSON.parse(localStorage.getItem("palette.export") || "{}");
+      this.el.exportFormat.value = saved.format || "png";
+      this.el.exportQuality.value = saved.quality || "92";
+      this.el.exportScale.value = saved.scale || "1";
+    } catch {
+      this.el.exportFormat.value = "png";
+      this.el.exportQuality.value = "92";
+      this.el.exportScale.value = "1";
+    }
     for (const option of this.el.exportScale.options) {
       const scale = Number(option.value);
       const { width, height } = exportDimensions(this.doc.width, this.doc.height, scale);
@@ -3206,6 +3213,13 @@ export class PaletteEditor {
   }
 
   syncExportFormat() {
+    try {
+      localStorage.setItem("palette.export", JSON.stringify({
+        format: this.el.exportFormat.value,
+        scale: this.el.exportScale.value,
+        quality: this.el.exportQuality.value,
+      }));
+    } catch { /* storage unavailable; settings are session-only */ }
     const format = exportFormat(this.el.exportFormat.value);
     const scale = normalizeExportScale(this.el.exportScale.value);
     const output = exportDimensions(this.doc.width, this.doc.height, scale);
