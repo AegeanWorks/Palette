@@ -1000,6 +1000,13 @@ test("the status bar marks an inverted selection", () => {
   assert.match(editor, /this\.selection\.invert \? " \(inverted\)" : ""/);
 });
 
+test("canvas anchor choices explain where artwork lands", () => {
+  const grid = html.match(/<div class="anchor-grid">[\s\S]*?<\/div>/)?.[0] ?? "";
+  assert.equal((grid.match(/<label title="/g) ?? []).length, 9);
+  assert.match(grid, /title="Center — keep artwork centred in the new canvas"/);
+  assert.match(grid, /title="Bottom right — keep artwork at the new canvas's bottom-right corner"/);
+});
+
 test("the Help dialog documents mouse gestures", () => {
   assert.match(html, /<div class="shortcut-heading">Mouse &amp; gestures<\/div>/);
   assert.match(html, /<dt>Double-click a slider<\/dt><dd>Reset that adjustment or filter to its default<\/dd>/);
