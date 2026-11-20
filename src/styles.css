@@ -970,6 +970,15 @@ select:focus {
   gap: 6px;
 }
 
+.filter-grid .field output {
+  color: var(--dim);
+}
+
+.filter-grid .field output[data-active="true"] {
+  color: var(--cyan);
+  font-weight: 700;
+}
+
 .filter-grid .btn {
   justify-content: flex-start;
 }

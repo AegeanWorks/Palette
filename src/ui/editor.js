@@ -455,6 +455,7 @@ export class PaletteEditor {
     this.history.subscribe(() => this.updateHistoryButtons());
     this.bindEvents();
     this.bindResizeObserver();
+    this.syncFilterOutputs();
     this.setDocument(welcomeDocument(), {
       reset: true,
       fit: true,
@@ -2433,6 +2434,14 @@ export class PaletteEditor {
     this.scheduleRender();
   }
 
+  syncFilterOutputs() {
+    for (const input of this.root.querySelectorAll('.filter-grid input[type="range"]')) {
+      if (input.dataset.neutral === undefined) input.dataset.neutral = input.getAttribute("value") ?? "0";
+      const out = this.root.querySelector(`output[for="${input.id}"]`);
+      if (out) out.dataset.active = input.value !== input.dataset.neutral ? "true" : "false";
+    }
+  }
+
   syncTextCommit() {
     if (!this.el.textCommit) return;
     const length = this.el.textInput.value.length;
@@ -4131,6 +4140,7 @@ export class PaletteEditor {
       this.opacityStart = null;
       this.commit(before, "Layer opacity");
     });
+    this.root.querySelector(".filter-grid")?.addEventListener("input", () => this.syncFilterOutputs());
     this.el.filterBlurRadius.addEventListener("input", () => {
       this.el.filterBlurValue.textContent = this.el.filterBlurRadius.value;
     });

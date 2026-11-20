@@ -131,6 +131,12 @@ test("the status bar reflects the active Gradient type", () => {
   assert.match(editor, /gradientType\.addEventListener\("change"[\s\S]{0,160}this\.syncToolOptions\(\)/);
 });
 
+test("non-default filter values are highlighted", () => {
+  assert.match(editor, /syncFilterOutputs\(\) \{[\s\S]{0,360}out\.dataset\.active = input\.value !== input\.dataset\.neutral \? "true" : "false"/);
+  assert.match(editor, /\.filter-grid"\)/);
+  assert.match(styles, /\.filter-grid \.field output\[data-active="true"\] \{[^}]*font-weight: 700/);
+});
+
 test("the zoom readout toggles between fit and actual size", () => {
   assert.match(html, /button id="status-zoom"[^>]*type="button"/);
   assert.match(editor, /statusZoom\.addEventListener\("click"[\s\S]{0,160}this\.fitView\(\)[\s\S]{0,60}this\.actualSize\(\)/);
