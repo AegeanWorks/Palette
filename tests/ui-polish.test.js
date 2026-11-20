@@ -210,6 +210,13 @@ test("Noise lives with the texture filters", () => {
   assert.ok(noise > colorBalance);
 });
 
+test("new document size presets fill the dimensions", () => {
+  assert.match(html, /id="new-presets"[^>]*aria-label="Common document sizes"/);
+  assert.match(html, /data-w="1920" data-h="1080"/);
+  assert.match(editor, /newPresets\.addEventListener\("click"/);
+  assert.match(editor, /this\.el\.newWidth\.value = button\.dataset\.w/);
+});
+
 test("export format options show their file extensions", () => {
   assert.match(html, /value="png">PNG \(\.png\)<\/option>/);
   assert.match(html, /value="jpeg">JPEG \(\.jpg\)<\/option>/);
