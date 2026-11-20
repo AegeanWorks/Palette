@@ -719,10 +719,13 @@ export class PaletteEditor {
         ? "Release clipping mask (Ctrl+Alt+G)"
         : "Clip to layer below (Ctrl+Alt+G)";
     if (this.el.statusLayer) {
+      const opacityPct = Math.round(layer.opacity * 100);
       const flags = [
         !layer.visible && "hidden",
         layer.locked && "locked",
         layer.clipToBelow && "clipped",
+        opacityPct !== 100 && `${opacityPct}%`,
+        layer.blendMode && layer.blendMode !== "normal" && layer.blendMode,
       ].filter(Boolean);
       const suffix = flags.length ? ` (${flags.join(", ")})` : "";
       this.el.statusLayer.textContent = `${layer.name}${suffix}`;

@@ -126,6 +126,11 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("the status bar shows active layer opacity and blend", () => {
+  assert.match(editor, /opacityPct !== 100 && `\$\{opacityPct\}%`/);
+  assert.match(editor, /layer\.blendMode && layer\.blendMode !== "normal" && layer\.blendMode/);
+});
+
 test("Adjustments Reset explains why it is disabled", () => {
   assert.match(editor, /adjustReset\.title = cannotEditLayer[\s\S]{0,160}"Reset — adjustments are already neutral"/);
   assert.match(editor, /adjustReset\.title = isNeutralAdjustments\(adjustments\)[\s\S]{0,120}"Reset adjustments on the active layer"/);
