@@ -659,7 +659,7 @@ export class PaletteEditor {
       : "Paste — copy or cut something first";
     if (this.el.statusSelection) {
       this.el.statusSelection.title = this.selection
-        ? `Selection ${selectionSize} @ ${Math.round(selectionRect?.x ?? 0)},${Math.round(selectionRect?.y ?? 0)} — click to deselect`
+        ? `Selection ${selectionSize} @ ${Math.round(selectionRect?.x ?? 0)},${Math.round(selectionRect?.y ?? 0)} · ${(selectionW * selectionH).toLocaleString()} px — click to deselect`
         : "Active selection";
     }
     this.scheduleHistogram();

@@ -1289,6 +1289,7 @@ test("the selection readout includes the aspect ratio", () => {
   assert.match(editor, /selectionW > 0 && selectionH > 0/);
   assert.match(editor, /aspectRatio\(selectionW, selectionH\)/);
   assert.match(editor, /`Selection \$\{selectionSize\} @ /);
+  assert.match(editor, /\(selectionW \* selectionH\)\.toLocaleString\(\)/);
 });
 
 test("the desktop status bar shows an active selection", () => {
