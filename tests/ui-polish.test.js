@@ -371,7 +371,12 @@ test("adjustment categories mark the groups with active settings", () => {
   assert.match(editor, /panel\?\.querySelectorAll\("\.panel-group-label"\)[\s\S]{0,120}label\.dataset\.active = "false"/);
   assert.match(editor, /input\?\.closest\("\.adjust-list"\)\?\.previousElementSibling/);
   assert.match(editor, /label\.dataset\.active = "true"/);
-  assert.match(styles, /\.panel-group-label\[data-active="true"\]::after \{[^}]*content: "•"/);
+  assert.match(styles, /\.panel-group-label\[data-active="true"\]::after \{[^}]*content: "• " attr\(data-count\)/);
+});
+
+test("active adjustment categories show how many changed", () => {
+  assert.match(editor, /label\.dataset\.count = "0"/);
+  assert.match(editor, /Number\(label\.dataset\.count \?\? 0\) \+ 1/);
 });
 
 test("the Adjustments header counts changed adjustments", () => {

@@ -838,14 +838,20 @@ export class PaletteEditor {
   syncAdjustCount(adjustments) {
     if (!this.el.adjustCount) return;
     const panel = this.el.adjustReset?.closest(".panel");
-    for (const label of panel?.querySelectorAll(".panel-group-label") ?? []) label.dataset.active = "false";
+    for (const label of panel?.querySelectorAll(".panel-group-label") ?? []) {
+      label.dataset.active = "false";
+      label.dataset.count = "0";
+    }
     let count = 0;
     for (const key of ADJUSTMENTS) {
       if ((adjustments[key] ?? 0) === 0) continue;
       count += 1;
       const input = this.el[`adj${key[0].toUpperCase()}${key.slice(1)}`];
       const label = input?.closest(".adjust-list")?.previousElementSibling;
-      if (label?.classList.contains("panel-group-label")) label.dataset.active = "true";
+      if (label?.classList.contains("panel-group-label")) {
+        label.dataset.active = "true";
+        label.dataset.count = String(Number(label.dataset.count ?? 0) + 1);
+      }
     }
     this.el.adjustCount.textContent = String(count);
     this.el.adjustCount.dataset.active = count > 0 ? "true" : "false";

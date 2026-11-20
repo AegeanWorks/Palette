@@ -985,9 +985,10 @@ select:focus {
 }
 
 .panel-group-label[data-active="true"]::after {
-  content: "•";
+  content: "• " attr(data-count);
   margin-left: 5px;
   color: var(--accent, #67e8f9);
+  font-family: var(--mono);
 }
 
 .panel-group-label {
