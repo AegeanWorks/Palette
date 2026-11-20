@@ -354,6 +354,14 @@ test("the Adjustments header counts changed adjustments", () => {
   assert.match(editor, /for \(const key of ADJUSTMENTS\) \{[\s\S]{0,160}adjustments\[key\] \?\? 0\) === 0\) continue;[\s\S]{0,80}count \+= 1/);
 });
 
+test("the layer opacity slider resets on double-click", () => {
+  assert.match(html, /id="layer-opacity"[^>]*title="Layer opacity — double-click to reset to 100%"/);
+  assert.match(editor, /layerOpacity\.addEventListener\("dblclick"/);
+  assert.match(editor, /layerOpacity\.value = this\.el\.layerOpacity\.defaultValue/);
+  assert.match(editor, /announce\("Layer opacity reset to 100%."\)/);
+  assert.match(editor, /"Layer opacity — double-click to reset to 100%"/);
+});
+
 test("layer rows mark layers that carry adjustments", () => {
   assert.match(editor, /if \(!isNeutralAdjustments\(layer\.adjustments\)\) \{[\s\S]{0,200}fxBadge\.textContent = "fx"/);
   assert.match(editor, /fxBadge\.title = "Layer has active adjustments"/);
@@ -751,7 +759,7 @@ test("destructive controls explain why a locked layer disables them", () => {
 
 test("opacity, blend and adjustment sliders explain why a locked layer blocks them", () => {
   assert.match(editor, /const editLock = layer\.locked \? "unlock the layer first" : "show the layer first"/);
-  assert.match(editor, /layerOpacity\.title = cannotEditLayer \? `Layer opacity — \$\{editLock\}` : "Layer opacity"/);
+  assert.match(editor, /layerOpacity\.title = cannotEditLayer[\s\S]{0,120}double-click to reset to 100%/);
   assert.match(editor, /layerBlend\.title = cannotEditLayer \? `Blend mode — \$\{editLock\}` : "Blend mode"/);
   assert.match(editor, /input\.title = cannotEditLayer[\s\S]{0,120}\$\{editLock\}/);
 });

@@ -796,7 +796,9 @@ export class PaletteEditor {
       }
     }
     this.el.layerOpacity.disabled = cannotEditLayer;
-    this.el.layerOpacity.title = cannotEditLayer ? `Layer opacity — ${editLock}` : "Layer opacity";
+    this.el.layerOpacity.title = cannotEditLayer
+      ? `Layer opacity — ${editLock}`
+      : "Layer opacity — double-click to reset to 100%";
     this.el.layerBlend.disabled = cannotEditLayer;
     this.el.layerBlend.title = cannotEditLayer ? `Blend mode — ${editLock}` : "Blend mode";
     for (const name of DESTRUCTIVE_ACTIONS) {
@@ -4499,6 +4501,12 @@ export class PaletteEditor {
       if (!this.opacityStart) this.opacityStart = this.doc;
     });
     this.el.layerOpacity.addEventListener("input", () => this.previewLayerOpacity());
+    this.el.layerOpacity.addEventListener("dblclick", () => {
+      this.el.layerOpacity.value = this.el.layerOpacity.defaultValue;
+      this.el.layerOpacity.dispatchEvent(new Event("input", { bubbles: true }));
+      this.el.layerOpacity.dispatchEvent(new Event("change", { bubbles: true }));
+      this.announce("Layer opacity reset to 100%.");
+    });
     this.el.layerOpacity.addEventListener("change", () => {
       if (!this.opacityStart) return;
       const before = this.opacityStart;
