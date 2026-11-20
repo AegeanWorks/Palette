@@ -213,7 +213,7 @@ const IDS = [
   "btn-undo", "btn-redo", "btn-help", "file-image", "file-layer", "file-project", "stage-wrap", "doc-frame",
   "stage", "overlay", "text-editor", "text-input", "text-commit", "text-cancel", "drop-hint",
   "stage-note", "btn-zoom-out", "btn-fit", "btn-zoom-in", "color-row", "color-input", "color-hex",
-  "tool-hint",   "options-brush", "options-eraser", "options-clone", "options-dodge", "options-bucket", "options-shape", "options-text", "options-gradient",
+  "tool-hint", "edit-lock-notice", "options-brush", "options-eraser", "options-clone", "options-dodge", "options-bucket", "options-shape", "options-text", "options-gradient",
   "options-marquee", "options-crop", "options-move", "marquee-shape", "crop-aspect", "btn-select-all", "btn-deselect",
   "btn-crop-selection", "btn-invert-selection", "btn-expand-selection", "btn-contract-selection", "btn-clear-selection", "btn-copy", "btn-cut", "btn-paste",
   "btn-layer-via-copy", "btn-layer-via-cut", "brush-size", "brush-size-value", "brush-hardness",
@@ -749,6 +749,13 @@ export class PaletteEditor {
       : "Delete layer";
     const cannotEditLayer = layer.locked || !layer.visible;
     const editLock = layer.locked ? "unlock the layer first" : "show the layer first";
+    if (this.el.editLockNotice) {
+      this.el.editLockNotice.hidden = !cannotEditLayer;
+      if (cannotEditLayer) {
+        this.el.editLockNotice.textContent =
+          `${layer.name} is ${layer.locked ? "locked" : "hidden"} — ${editLock} to edit it.`;
+      }
+    }
     this.el.layerOpacity.disabled = cannotEditLayer;
     this.el.layerOpacity.title = cannotEditLayer ? `Layer opacity — ${editLock}` : "Layer opacity";
     this.el.layerBlend.disabled = cannotEditLayer;

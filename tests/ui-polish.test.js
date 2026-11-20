@@ -126,6 +126,13 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("a locked or hidden layer shows a visible notice in Tool options", () => {
+  assert.match(html, /id="edit-lock-notice"[^>]*hidden/);
+  assert.match(editor, /editLockNotice\.hidden = !cannotEditLayer/);
+  assert.match(editor, /\$\{layer\.name\} is \$\{layer\.locked \? "locked" : "hidden"\} — \$\{editLock\} to edit it\./);
+  assert.match(styles, /\.edit-lock-notice \{[\s\S]{0,200}var\(--pink\)/);
+});
+
 test("destructive controls explain why a locked layer disables them", () => {
   assert.match(editor, /if \(control\.dataset\.baseTitle === undefined\) control\.dataset\.baseTitle = control\.title/);
   assert.match(editor, /control\.title = cannotEditLayer \? `Unavailable — \$\{editLock\}` : control\.dataset\.baseTitle/);
