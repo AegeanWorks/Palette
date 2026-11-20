@@ -221,7 +221,7 @@ const IDS = [
   "btn-undo", "btn-redo", "btn-help", "file-image", "file-layer", "file-project", "stage-wrap", "doc-frame",
   "stage", "overlay", "text-editor", "text-input", "text-count", "text-commit", "text-cancel", "drop-hint",
   "stage-note", "btn-zoom-out", "btn-fit", "btn-zoom-in", "color-row", "color-input", "color-hex",
-  "tool-hint", "edit-lock-notice", "options-tool-name", "options-tool-key", "options-brush", "options-eraser", "options-clone", "options-dodge", "options-bucket", "options-shape", "options-text", "options-gradient",
+  "tool-hint", "edit-lock-notice", "options-tool-name", "options-tool-key", "options-reset", "options-brush", "options-eraser", "options-clone", "options-dodge", "options-bucket", "options-shape", "options-text", "options-gradient",
   "options-marquee", "options-crop", "options-move", "marquee-shape", "crop-aspect", "btn-select-all", "btn-deselect",
   "btn-crop-selection", "btn-invert-selection", "btn-expand-selection", "btn-contract-selection", "btn-clear-selection", "btn-copy", "btn-cut", "btn-paste",
   "btn-layer-via-copy", "btn-layer-via-cut", "brush-size", "brush-size-value", "brush-hardness",
@@ -4193,6 +4193,18 @@ export class PaletteEditor {
       if (!head) return;
       event.preventDefault();
       head.click();
+    });
+    this.el.optionsReset.addEventListener("click", () => {
+      const group = this.root.querySelector(".options-group:not([hidden])");
+      if (!group) return;
+      for (const input of group.querySelectorAll("input, select")) {
+        if (input.type === "checkbox" || input.type === "radio") input.checked = input.defaultChecked;
+        else input.value = input.defaultValue;
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+      this.syncToolOptions();
+      this.announce("Tool options reset to defaults.");
     });
     this.el.btnExport.addEventListener("click", () => this.openExportDialog());
     this.el.btnUndo.addEventListener("click", () => this.undo());

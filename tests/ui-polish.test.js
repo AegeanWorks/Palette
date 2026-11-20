@@ -143,6 +143,14 @@ test("a pixel grid appears at high zoom", () => {
   assert.match(editor, /for \(let x = firstX; x <= lastX; x \+= 1\)/);
 });
 
+test("the Tool options header can reset the active tool", () => {
+  assert.match(html, /id="options-reset"[^>]*title="Reset this tool's options to defaults"/);
+  assert.match(editor, /optionsReset\.addEventListener\("click"/);
+  assert.match(editor, /querySelector\("\.options-group:not\(\[hidden\]\)"\)/);
+  assert.match(editor, /input\.checked = input\.defaultChecked/);
+  assert.match(editor, /announce\("Tool options reset to defaults\."\)/);
+});
+
 test("Tool options header names the active tool", () => {
   assert.match(html, /id="options-heading"><span id="options-tool-name">Move<\/span> <kbd id="options-tool-key"/);
   assert.match(editor, /optionsToolName\.textContent = meta\.label/);
