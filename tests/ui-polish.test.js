@@ -210,6 +210,11 @@ test("Noise lives with the texture filters", () => {
   assert.ok(noise > colorBalance);
 });
 
+test("the selection badge tooltip includes its position", () => {
+  assert.match(editor, /click to deselect[\s\S]{0,20}$/m);
+  assert.match(editor, /selectionRect\?\.x \?\? 0/);
+});
+
 test("export settings persist across dialog opens", () => {
   assert.match(editor, /localStorage\.getItem\("palette\.export"\)/);
   assert.match(editor, /localStorage\.setItem\("palette\.export", JSON\.stringify\(\{/);
