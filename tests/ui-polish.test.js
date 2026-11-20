@@ -131,6 +131,13 @@ test("the status bar reflects the active Gradient type", () => {
   assert.match(editor, /gradientType\.addEventListener\("change"[\s\S]{0,160}this\.syncToolOptions\(\)/);
 });
 
+test("paint tool hints advertise the bracket size shortcuts", () => {
+  for (const tool of ["brush", "eraser", "clone", "dodge"]) {
+    const hint = editor.match(new RegExp(`${tool}: \\{[^}]*hint: "([^"]*)"`))?.[1] ?? "";
+    assert.match(hint, /\[ and \] change the size/);
+  }
+});
+
 test("the Gradient hint advertises the Shift-angle snap", () => {
   assert.match(editor, /Shift snaps the angle/);
 });

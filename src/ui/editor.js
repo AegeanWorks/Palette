@@ -162,10 +162,10 @@ const BUTTON_SHORTCUTS = Object.freeze({
 
 const TOOL_META = Object.freeze({
   move: { label: "Move", cursor: "move", hint: "Drag the active layer. Shift constrains to an axis; arrow keys nudge it." },
-  brush: { label: "Brush", cursor: "crosshair", hint: "Paint on the active layer." },
-  eraser: { label: "Eraser", cursor: "crosshair", hint: "Erase pixels from the active layer." },
-  clone: { label: "Clone stamp", cursor: "crosshair", hint: "Alt-click a source, then drag to clone from it." },
-  dodge: { label: "Dodge & burn", cursor: "crosshair", hint: "Drag to lighten or darken existing pixels." },
+  brush: { label: "Brush", cursor: "crosshair", hint: "Paint on the active layer. [ and ] change the size." },
+  eraser: { label: "Eraser", cursor: "crosshair", hint: "Erase pixels from the active layer. [ and ] change the size." },
+  clone: { label: "Clone stamp", cursor: "crosshair", hint: "Alt-click a source, then drag to clone. [ and ] change the size." },
+  dodge: { label: "Dodge & burn", cursor: "crosshair", hint: "Drag to lighten or darken pixels. [ and ] change the size." },
   bucket: { label: "Paint bucket", cursor: "crosshair", hint: "Click an area to fill with the active colour." },
   crop: { label: "Crop", cursor: "crosshair", hint: "Drag a region. Double-click or Enter to apply." },
   marquee: { label: "Marquee", cursor: "crosshair", hint: "Drag to select a region. Double-click or Ctrl+A selects all; Ctrl+D deselects." },
