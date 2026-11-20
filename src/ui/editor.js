@@ -252,7 +252,7 @@ const IDS = [
   "status-tool", "status-layer", "status-selection", "status-message",
   "status-color", "status-cursor", "status-zoom",
   "btn-actual", "new-dialog", "new-form", "new-name", "new-width", "new-height", "new-color",
-  "new-cancel", "new-create", "new-size", "export-dialog", "export-form", "export-name", "export-format",
+  "new-cancel", "new-create", "new-size", "export-dialog", "export-form", "export-name", "export-filename", "export-format",
   "export-quality-row", "export-quality", "export-quality-value", "export-scale", "export-size",
   "export-cancel", "export-confirm", "resize-dialog", "resize-form", "resize-width", "resize-height",
   "resize-lock", "resize-size", "resize-cancel", "resize-confirm", "canvas-dialog", "canvas-form", "canvas-width",
@@ -3004,6 +3004,10 @@ export class PaletteEditor {
     const format = exportFormat(this.el.exportFormat.value);
     const scale = normalizeExportScale(this.el.exportScale.value);
     const output = exportDimensions(this.doc.width, this.doc.height, scale);
+    if (this.el.exportFilename) {
+      const name = this.el.exportName.value.trim() || this.doc.name;
+      this.el.exportFilename.textContent = `Saves as ${downloadName(name, this.el.exportFormat.value)}`;
+    }
     const percent = Math.round((output.width / this.doc.width) * 100);
     this.el.exportQualityRow.hidden = !format.quality;
     this.el.exportQualityValue.textContent = this.el.exportQuality.value;
@@ -4150,6 +4154,7 @@ export class PaletteEditor {
       const radio = this.root.querySelector('input[name="new-background"][value="color"]');
       if (radio) radio.checked = true;
     });
+    this.el.exportName.addEventListener("input", () => this.syncExportFormat());
     this.el.exportFormat.addEventListener("change", () => this.syncExportFormat());
     this.el.exportScale.addEventListener("change", () => this.syncExportFormat());
     this.el.exportQuality.addEventListener("input", () => {

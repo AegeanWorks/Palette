@@ -126,6 +126,12 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("the export dialog previews the final filename", () => {
+  assert.match(html, /id="export-filename"[^>]*aria-live="polite"/);
+  assert.match(editor, /exportFilename\.textContent = `Saves as \$\{downloadName\(name, this\.el\.exportFormat\.value\)\}`/);
+  assert.match(editor, /exportName\.addEventListener\("input", \(\) => this\.syncExportFormat\(\)\)/);
+});
+
 test("the status bar reports the selection position", () => {
   assert.match(editor, /@ \$\{Math\.round\(selectionRect\.x\)\},\$\{Math\.round\(selectionRect\.y\)\}\$\{mode\}`/);
 });
@@ -347,7 +353,7 @@ test("discarding a recovered session reads as a destructive choice", () => {
 });
 
 test("the export size readout warns visually when capped", () => {
-  assert.match(editor, /syncExportFormat\(\)\s*\{[\s\S]{0,500}const capped = percent < Math\.round\(scale \* 100\)/);
+  assert.match(editor, /syncExportFormat\(\)\s*\{[\s\S]{0,700}const capped = percent < Math\.round\(scale \* 100\)/);
   assert.match(editor, /exportSize\.dataset\.tone = capped \? "warn" : "muted"/);
 });
 
