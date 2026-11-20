@@ -914,6 +914,30 @@ select:focus {
   font-size: 11px;
 }
 
+.histogram-legend {
+  display: flex;
+  gap: 10px;
+  color: var(--dim);
+  font-size: 10px;
+}
+
+.histogram-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.histogram-legend i {
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+}
+
+.histogram-legend i[data-ch="r"] { background: rgba(255, 64, 64, 0.9); }
+.histogram-legend i[data-ch="g"] { background: rgba(64, 220, 64, 0.9); }
+.histogram-legend i[data-ch="b"] { background: rgba(64, 128, 255, 0.9); }
+.histogram-legend i[data-ch="l"] { background: rgba(103, 232, 249, 0.9); }
+
 .adjust-list {
   display: grid;
   gap: 5px;

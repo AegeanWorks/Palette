@@ -126,6 +126,13 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("the histogram has a visible RGB and luminance legend", () => {
+  assert.match(html, /class="histogram-legend"[^>]*>[\s\S]{0,300}data-ch="r"[\s\S]{0,240}data-ch="l"/);
+  for (const ch of ["r", "g", "b", "l"]) {
+    assert.ok(styles.includes(`.histogram-legend i[data-ch="${ch}"]`));
+  }
+});
+
 test("moving a layer shows a live offset badge", () => {
   assert.match(editor, /\(this\.action\?\.type === "move" \|\| this\.action\?\.type === "move-selection"\)/);
   assert.match(editor, /const label = `Δ \$\{dx >= 0 \? "\+" : ""\}\$\{dx\}, \$\{dy >= 0 \? "\+" : ""\}\$\{dy\} px`/);
