@@ -131,6 +131,13 @@ test("the status bar reflects the active Gradient type", () => {
   assert.match(editor, /gradientType\.addEventListener\("change"[\s\S]{0,160}this\.syncToolOptions\(\)/);
 });
 
+test("the histogram shows per-channel values on hover", () => {
+  assert.match(html, /id="histogram-hover"[^>]*>Hover to inspect channel levels<\/output>/);
+  assert.match(editor, /histogram\.addEventListener\("mousemove"/);
+  assert.match(editor, /R\$\{data\.red\[level\]\} G\$\{data\.green\[level\]\} B\$\{data\.blue\[level\]\} · Y\$\{data\.luma\[level\]\}/);
+  assert.match(editor, /this\.histogramData = histogram/);
+});
+
 test("the selection badge is clickable to deselect", () => {
   assert.match(html, /button id="status-selection"[^>]*type="button"/);
   assert.match(editor, /statusSelection\.addEventListener\("click", \(\) => this\.deselect\(\)\)/);

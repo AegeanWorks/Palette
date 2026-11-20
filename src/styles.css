@@ -933,6 +933,14 @@ select:focus {
   font-size: 11px;
 }
 
+.histogram-hover {
+  display: block;
+  min-height: 14px;
+  margin-bottom: 3px;
+  color: var(--dim);
+  font-size: 10px;
+}
+
 .histogram-legend {
   display: flex;
   gap: 10px;

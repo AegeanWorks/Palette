@@ -232,7 +232,7 @@ const IDS = [
   "layer-opacity-value", "layer-blend", "layer-count", "layer-list",
   "btn-resize", "btn-canvas-size", "btn-transform", "btn-layer-flip-h", "btn-layer-flip-v", "btn-layer-rotate-cw", "btn-layer-rotate-ccw", "btn-flip-h", "btn-flip-v", "btn-rotate",
   "btn-flatten", "btn-stamp-visible",
-  "adjust-reset", "histogram", "histogram-range", "btn-auto-levels", "adj-brightness",
+  "adjust-reset", "histogram", "histogram-hover", "histogram-range", "btn-auto-levels", "adj-brightness",
   "adj-brightness-value", "adj-contrast", "adj-contrast-value",
   "adj-saturation", "adj-saturation-value", "adj-hue", "adj-hue-value", "adj-grayscale",
   "adj-grayscale-value", "adj-sepia", "adj-sepia-value", "adj-invert", "adj-invert-value",
@@ -653,6 +653,7 @@ export class PaletteEditor {
     context.clearRect(0, 0, canvas.width, canvas.height);
     if (!layer.canvas.width) return;
     const histogram = buildHistogram(getPixels(layer.canvas), 256);
+    this.histogramData = histogram;
     const range = percentileRange(histogram, 0.005, 0.005);
     this.histogramRange = range;
     const channelMax = Math.max(
@@ -3912,6 +3913,17 @@ export class PaletteEditor {
     this.el.btnStampVisible.addEventListener("click", () => this.stampVisible());
     this.el.adjustReset.addEventListener("click", () => this.resetAdjustments());
     this.el.btnAutoLevels.addEventListener("click", () => this.autoLevels());
+    this.el.histogram.addEventListener("mousemove", (event) => {
+      const data = this.histogramData;
+      if (!data || !this.el.histogramHover) return;
+      const rect = this.el.histogram.getBoundingClientRect();
+      const level = Math.max(0, Math.min(255, Math.round(((event.clientX - rect.left) / rect.width) * 255)));
+      this.el.histogramHover.textContent =
+        `L${level} · R${data.red[level]} G${data.green[level]} B${data.blue[level]} · Y${data.luma[level]}`;
+    });
+    this.el.histogram.addEventListener("mouseleave", () => {
+      if (this.el.histogramHover) this.el.histogramHover.textContent = "Hover to inspect channel levels";
+    });
     this.el.cropApply.addEventListener("click", () => this.applyCrop());
     this.el.cropCancel.addEventListener("click", () => this.cancelCrop());
     this.el.btnFilterBlur.addEventListener("click", () => this.applyBlurFilter());
