@@ -596,7 +596,7 @@ export class PaletteEditor {
     if (!this.doc) return;
     this.syncSwatches();
     if (this.root.activeElement !== this.el.docName) this.el.docName.value = this.doc.name;
-    this.el.docSize.textContent = `${this.doc.width} × ${this.doc.height}`;
+    this.el.docSize.textContent = `${this.doc.width} × ${this.doc.height} · ${aspectRatio(this.doc.width, this.doc.height)}`;
     this.updateHistoryButtons();
     this.renderLayerList();
     this.syncActiveLayer();

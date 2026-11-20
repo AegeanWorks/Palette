@@ -1259,6 +1259,10 @@ test("the zoom reset control explains itself on hover", () => {
   assert.match(editor, /btnActual\.addEventListener\("click",\s*\(\)\s*=>\s*this\.actualSize\(\)\)/);
 });
 
+test("the app bar shows the document aspect ratio", () => {
+  assert.match(editor, /docSize\.textContent = `\$\{this\.doc\.width\} × \$\{this\.doc\.height\} · \$\{aspectRatio\(this\.doc\.width, this\.doc\.height\)\}`/);
+});
+
 test("the selection readout includes the aspect ratio", () => {
   assert.match(editor, /selectionW > 0 && selectionH > 0/);
   assert.match(editor, /aspectRatio\(selectionW, selectionH\)/);
