@@ -136,6 +136,13 @@ test("Manage icons fit a single compact row", () => {
   assert.match(styles, /\.panel-group \.button-row\.compact \{[^}]*gap: 3px/);
 });
 
+test("filter buttons use short labels", () => {
+  const filterButtons = html.match(/<button[^>]*data-ui="filter-[^"]*"[^>]*>[^<]*<\/button>/g) || [];
+  assert.ok(filterButtons.every((b) => !/>Apply /.test(b)));
+  assert.match(html, /id="btn-filter-blur"[^>]*>Blur<\/button>/);
+  assert.match(html, /id="btn-filter-oil"[^>]*>Oil paint<\/button>/);
+});
+
 test("sidebar panels use tighter spacing", () => {
   assert.match(styles, /\.panel \{[^}]*padding: 10px 12px 12px/);
   assert.match(styles, /\.panel-head \{[^}]*margin-bottom: 8px/);

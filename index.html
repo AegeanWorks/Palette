@@ -464,10 +464,10 @@
           <h3 class="filter-group">Essentials</h3>
           <label class="field" for="filter-blur-radius">Blur <output id="filter-blur-value" for="filter-blur-radius">3</output> px</label>
           <input id="filter-blur-radius" type="range" min="1" max="30" step="1" value="3">
-          <button class="btn btn-ghost btn-small" id="btn-filter-blur" type="button" title="Soften the layer with a adjustable blur radius" data-ui="filter-blur">Apply blur</button>
+          <button class="btn btn-ghost btn-small" id="btn-filter-blur" type="button" title="Soften the layer with a adjustable blur radius" data-ui="filter-blur">Blur</button>
           <label class="field" for="filter-pixel-size">Pixelate <output id="filter-pixel-value" for="filter-pixel-size">8</output> px</label>
           <input id="filter-pixel-size" type="range" min="2" max="64" step="1" value="8">
-          <button class="btn btn-ghost btn-small" id="btn-filter-pixelate" type="button" title="Average pixels into blocks for a pixelated look" data-ui="filter-pixelate">Apply pixelate</button>
+          <button class="btn btn-ghost btn-small" id="btn-filter-pixelate" type="button" title="Average pixels into blocks for a pixelated look" data-ui="filter-pixelate">Pixelate</button>
           <button class="btn btn-ghost btn-small" id="btn-filter-sharpen" type="button" title="Increase local contrast to sharpen fine detail" data-ui="filter-sharpen">Sharpen</button>
           <button class="btn btn-ghost btn-small" id="btn-filter-vignette" type="button" title="Darken the edges toward a soft centre" data-ui="filter-vignette">Vignette</button>
           <button class="btn btn-ghost btn-small" id="btn-filter-invert" type="button" title="Invert every colour channel" data-ui="filter-invert">Invert</button>
@@ -476,10 +476,10 @@
           <button class="btn btn-ghost btn-small" id="btn-filter-emboss" type="button" title="Emphasise edges for a raised embossed look" data-ui="filter-emboss">Emboss</button>
           <label class="field" for="filter-threshold-cutoff">Threshold <output id="filter-threshold-value" for="filter-threshold-cutoff">128</output></label>
           <input id="filter-threshold-cutoff" type="range" min="1" max="254" step="1" value="128">
-          <button class="btn btn-ghost btn-small" id="btn-filter-threshold" type="button" title="Convert to black and white at the cutoff" data-ui="filter-threshold">Apply threshold</button>
+          <button class="btn btn-ghost btn-small" id="btn-filter-threshold" type="button" title="Convert to black and white at the cutoff" data-ui="filter-threshold">Threshold</button>
           <label class="field" for="filter-posterize-steps">Posterize <output id="filter-posterize-value" for="filter-posterize-steps">4</output> levels</label>
           <input id="filter-posterize-steps" type="range" min="2" max="16" step="1" value="4">
-          <button class="btn btn-ghost btn-small" id="btn-filter-posterize" type="button" title="Reduce the number of levels per channel" data-ui="filter-posterize">Apply posterize</button>
+          <button class="btn btn-ghost btn-small" id="btn-filter-posterize" type="button" title="Reduce the number of levels per channel" data-ui="filter-posterize">Posterize</button>
           <h3 class="filter-group">Tone &amp; levels</h3>
           <label class="field" for="level-black">Levels black <output id="level-black-value" for="level-black">0</output></label>
           <input id="level-black" type="range" min="0" max="254" step="1" value="0">
@@ -487,12 +487,12 @@
           <input id="level-white" type="range" min="1" max="255" step="1" value="255">
           <label class="field" for="level-gamma">Gamma <output id="level-gamma-value" for="level-gamma">1.0</output></label>
           <input id="level-gamma" type="range" min="0.1" max="3" step="0.1" value="1">
-          <button class="btn btn-ghost btn-small" id="btn-filter-levels" type="button" title="Remap black point, white point and gamma" data-ui="filter-levels">Apply levels</button>
+          <button class="btn btn-ghost btn-small" id="btn-filter-levels" type="button" title="Remap black point, white point and gamma" data-ui="filter-levels">Levels</button>
           <label class="field" for="filter-brightness">Brightness <output id="filter-brightness-value" for="filter-brightness">0</output></label>
           <input id="filter-brightness" type="range" min="-100" max="100" step="1" value="0">
           <label class="field" for="filter-contrast">Contrast <output id="filter-contrast-value" for="filter-contrast">0</output></label>
           <input id="filter-contrast" type="range" min="-100" max="100" step="1" value="0">
-          <button class="btn btn-ghost btn-small" id="btn-filter-bc" type="button" title="Adjust brightness and contrast together" data-ui="filter-bc">Apply brightness / contrast</button>
+          <button class="btn btn-ghost btn-small" id="btn-filter-bc" type="button" title="Adjust brightness and contrast together" data-ui="filter-bc">Brightness / contrast</button>
           <h3 class="filter-group">Colour balance</h3>
           <label class="field" for="filter-cb-cr">Cyan / Red <output id="filter-cb-cr-value" for="filter-cb-cr">0</output></label>
           <input id="filter-cb-cr" type="range" min="-100" max="100" step="1" value="0">
@@ -501,32 +501,32 @@
           <label class="field" for="filter-cb-yb">Yellow / Blue <output id="filter-cb-yb-value" for="filter-cb-yb">0</output></label>
           <input id="filter-cb-yb" type="range" min="-100" max="100" step="1" value="0">
           <label class="field" for="filter-cb-preserve"><input id="filter-cb-preserve" type="checkbox" checked> Preserve luminosity</label>
-          <button class="btn btn-ghost btn-small" id="btn-filter-color-balance" type="button" title="Shift the cyan-red, magenta-green and yellow-blue balance" data-ui="filter-color-balance">Apply color balance</button>
+          <button class="btn btn-ghost btn-small" id="btn-filter-color-balance" type="button" title="Shift the cyan-red, magenta-green and yellow-blue balance" data-ui="filter-color-balance">Color balance</button>
           <label class="field" for="filter-noise-amount">Noise <output id="filter-noise-amount-value" for="filter-noise-amount">15</output>%</label>
           <input id="filter-noise-amount" type="range" min="1" max="100" step="1" value="15">
           <label class="field" for="filter-noise-monochrome"><input id="filter-noise-monochrome" type="checkbox" checked> Monochrome</label>
-          <button class="btn btn-ghost btn-small" id="btn-filter-noise" type="button" title="Add monochrome or colour grain" data-ui="filter-noise">Apply noise</button>
+          <button class="btn btn-ghost btn-small" id="btn-filter-noise" type="button" title="Add monochrome or colour grain" data-ui="filter-noise">Noise</button>
           <h3 class="filter-group">Effects</h3>
           <label class="field" for="filter-high-pass-radius">High pass <output id="filter-high-pass-value" for="filter-high-pass-radius">10</output> px</label>
           <input id="filter-high-pass-radius" type="range" min="1" max="50" step="1" value="10">
-          <button class="btn btn-ghost btn-small" id="btn-filter-high-pass" type="button" title="Isolate high-frequency detail for sharpening" data-ui="filter-high-pass">Apply high pass</button>
+          <button class="btn btn-ghost btn-small" id="btn-filter-high-pass" type="button" title="Isolate high-frequency detail for sharpening" data-ui="filter-high-pass">High pass</button>
           <label class="field" for="filter-tint-color">Photo tint</label>
           <input id="filter-tint-color" type="color" value="#ec8a15">
           <label class="field" for="filter-tint-density">Tint density <output id="filter-tint-density-value" for="filter-tint-density">25</output>%</label>
           <input id="filter-tint-density" type="range" min="1" max="100" step="1" value="25">
           <label class="field" for="filter-tint-preserve"><input id="filter-tint-preserve" type="checkbox" checked> Preserve luminosity</label>
-          <button class="btn btn-ghost btn-small" id="btn-filter-tint" type="button" title="Warm or cool the image with a photo tint" data-ui="filter-tint">Apply photo tint</button>
+          <button class="btn btn-ghost btn-small" id="btn-filter-tint" type="button" title="Warm or cool the image with a photo tint" data-ui="filter-tint">Photo tint</button>
           <button class="btn btn-ghost btn-small" id="btn-filter-find-edges" type="button" title="Extract edges into a sketch-like outline" data-ui="filter-find-edges">Find edges</button>
           <button class="btn btn-ghost btn-small" id="btn-filter-solarize" type="button" title="Invert tones above the threshold for a darkroom effect" data-ui="filter-solarize">Solarize</button>
           <label class="field" for="filter-duotone-shadow">Duotone shadow</label>
           <input id="filter-duotone-shadow" type="color" value="#0b1c3d">
           <label class="field" for="filter-duotone-highlight">Duotone highlight</label>
           <input id="filter-duotone-highlight" type="color" value="#ff6b6b">
-          <button class="btn btn-ghost btn-small" id="btn-filter-duotone" type="button" title="Map tones between two chosen colours" data-ui="filter-duotone">Apply duotone</button>
+          <button class="btn btn-ghost btn-small" id="btn-filter-duotone" type="button" title="Map tones between two chosen colours" data-ui="filter-duotone">Duotone</button>
           <button class="btn btn-ghost btn-small" id="btn-filter-dither" type="button" title="Apply ordered dithering for a retro stippled texture" data-ui="filter-dither">Dither</button>
           <label class="field" for="filter-oil-radius">Oil paint <output id="filter-oil-value" for="filter-oil-radius">2</output> px</label>
           <input id="filter-oil-radius" type="range" min="1" max="5" step="1" value="2">
-          <button class="btn btn-ghost btn-small" id="btn-filter-oil" type="button" title="Smooth into painterly patches with Kuwahara filtering" data-ui="filter-oil">Apply oil paint</button>
+          <button class="btn btn-ghost btn-small" id="btn-filter-oil" type="button" title="Smooth into painterly patches with Kuwahara filtering" data-ui="filter-oil">Oil paint</button>
           <button class="btn btn-ghost btn-small" id="btn-filter-median" type="button" title="Remove noise spikes with a 3x3 median filter" data-ui="filter-median">Median despeckle</button>
         </div>
       </section>
