@@ -258,8 +258,8 @@ test("the gradient drag shows a live angle and length guide", () => {
   assert.match(editor, /context\.arc\(hx, hy, 4, 0, Math\.PI \* 2\)/);
 });
 
-test("the selection marquee shows its live size while dragging", () => {
-  assert.match(editor, /const label = `\$\{Math\.round\(marquee\.rect\.w\)\} × \$\{Math\.round\(marquee\.rect\.h\)\} px`/);
+test("the selection marquee shows its live size and position while dragging", () => {
+  assert.match(editor, /const label = `\$\{Math\.round\(marquee\.rect\.w\)\} × \$\{Math\.round\(marquee\.rect\.h\)\} px @ \$\{Math\.round\(marquee\.rect\.x\)\},\$\{Math\.round\(marquee\.rect\.y\)\}`/);
   assert.match(editor, /const sx = this\.view\.offsetX \+ marquee\.rect\.x \* this\.view\.scale/);
   assert.match(editor, /context\.fillText\(label, bx \+ 6, by \+ 9\)/);
 });

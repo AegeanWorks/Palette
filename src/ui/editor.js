@@ -1211,7 +1211,7 @@ export class PaletteEditor {
       context.restore();
       // Live size badge, in screen space, so the extent is readable while dragging.
       if (marquee.rect && marquee.rect.w >= 1 && marquee.rect.h >= 1) {
-        const label = `${Math.round(marquee.rect.w)} × ${Math.round(marquee.rect.h)} px`;
+        const label = `${Math.round(marquee.rect.w)} × ${Math.round(marquee.rect.h)} px @ ${Math.round(marquee.rect.x)},${Math.round(marquee.rect.y)}`;
         context.save();
         context.font = '600 12px ui-monospace, "Cascadia Mono", Consolas, monospace';
         const tw = context.measureText(label).width;
