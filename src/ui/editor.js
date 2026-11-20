@@ -979,7 +979,12 @@ export class PaletteEditor {
 
       const clip = this.root.createElement("span");
       clip.className = "layer-clip";
-      clip.title = layer.clipToBelow ? "Clipped to layer below" : "";
+      clip.title = layer.clipToBelow ? "Clipped — click to release" : "Click to clip to layer below";
+      clip.style.cursor = "pointer";
+      clip.addEventListener("click", (event) => {
+        event.stopPropagation();
+        this.toggleClippingMask(layer.id);
+      });
       if (layer.clipToBelow) {
         clip.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a4 4 0 0 0 5.7 0l2.3-2.3a4 4 0 0 0-5.7-5.7L11 6.3"/><path d="M14 11a4 4 0 0 0-5.7 0L6 13.3a4 4 0 0 0 5.7 5.7l1.3-1.3"/></svg>';
       }
@@ -2858,10 +2863,10 @@ export class PaletteEditor {
     this.commit(before, layer.locked ? "Unlock layer" : "Lock layer");
   }
 
-  toggleClippingMask() {
+  toggleClippingMask(id = this.doc?.activeLayerId) {
     if (!this.doc) return;
     this.finishText();
-    const layer = activeLayer(this.doc);
+    const layer = layerById(this.doc, id);
     if (!layer) return;
     if (indexOfLayer(this.doc, layer.id) <= 0) {
       this.announce("Pick a layer above the base before clipping.", { error: true });

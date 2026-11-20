@@ -210,6 +210,12 @@ test("Noise lives with the texture filters", () => {
   assert.ok(noise > colorBalance);
 });
 
+test("the layer clip icon toggles that layer's clipping mask", () => {
+  assert.match(editor, /toggleClippingMask\(id = this\.doc\?\.activeLayerId\)/);
+  assert.match(editor, /clip\.addEventListener\("click"[\s\S]{0,140}this\.toggleClippingMask\(layer\.id\)/);
+  assert.match(editor, /"Clipped — click to release"/);
+});
+
 test("the layer lock icon toggles that layer's lock", () => {
   assert.match(editor, /toggleLayerLock\(id = this\.doc\?\.activeLayerId\)/);
   assert.match(editor, /lock\.addEventListener\("click"[\s\S]{0,140}this\.toggleLayerLock\(layer\.id\)/);
