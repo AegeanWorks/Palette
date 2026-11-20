@@ -131,6 +131,10 @@ test("the status bar reflects the active Gradient type", () => {
   assert.match(editor, /gradientType\.addEventListener\("change"[\s\S]{0,160}this\.syncToolOptions\(\)/);
 });
 
+test("the text input placeholder shows its Enter/Escape shortcuts", () => {
+  assert.match(html, /id="text-input"[^>]*placeholder="Type text — Enter to add, Esc to cancel"/);
+});
+
 test("the idle status message points to the shortcut help", () => {
   assert.match(html, /id="status-message"[^>]*>Ready · F1 for shortcuts<\/span>/);
   assert.match(editor, /target\.textContent = "Ready · F1 for shortcuts"/);
