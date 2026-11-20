@@ -639,12 +639,17 @@ export class PaletteEditor {
     this.el.btnClearSelection.title = this.selection ? "Clear pixels inside the selection (Delete)" : "Clear — no active selection";
     this.el.btnInvertSelection.setAttribute("aria-pressed", this.selection?.invert ? "true" : "false");
     const selectionRect = this.selection?.rect;
+    const selectionW = Math.round(selectionRect?.w ?? 0);
+    const selectionH = Math.round(selectionRect?.h ?? 0);
+    const selectionSize = selectionW > 0 && selectionH > 0
+      ? `${selectionW}×${selectionH} (${aspectRatio(selectionW, selectionH)})`
+      : `${selectionW}×${selectionH}`;
     if (this.el.statusSelection) {
       this.el.statusSelection.hidden = !selectionRect;
       if (selectionRect) {
         const mode = this.selection.invert ? " (inverted)" : "";
         this.el.statusSelection.textContent =
-          `Selection ${Math.round(selectionRect.w)}×${Math.round(selectionRect.h)} @ ${Math.round(selectionRect.x)},${Math.round(selectionRect.y)}${mode}`;
+          `Selection ${selectionSize} @ ${Math.round(selectionRect.x)},${Math.round(selectionRect.y)}${mode}`;
         this.el.statusSelection.dataset.inverted = this.selection.invert ? "true" : "false";
       }
     }
@@ -654,7 +659,7 @@ export class PaletteEditor {
       : "Paste — copy or cut something first";
     if (this.el.statusSelection) {
       this.el.statusSelection.title = this.selection
-        ? `Selection ${Math.round(selectionRect?.w ?? 0)}×${Math.round(selectionRect?.h ?? 0)} @ ${Math.round(selectionRect?.x ?? 0)},${Math.round(selectionRect?.y ?? 0)} — click to deselect`
+        ? `Selection ${selectionSize} @ ${Math.round(selectionRect?.x ?? 0)},${Math.round(selectionRect?.y ?? 0)} — click to deselect`
         : "Active selection";
     }
     this.scheduleHistogram();

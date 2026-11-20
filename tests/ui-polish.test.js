@@ -1259,12 +1259,18 @@ test("the zoom reset control explains itself on hover", () => {
   assert.match(editor, /btnActual\.addEventListener\("click",\s*\(\)\s*=>\s*this\.actualSize\(\)\)/);
 });
 
+test("the selection readout includes the aspect ratio", () => {
+  assert.match(editor, /selectionW > 0 && selectionH > 0/);
+  assert.match(editor, /aspectRatio\(selectionW, selectionH\)/);
+  assert.match(editor, /`Selection \$\{selectionSize\} @ /);
+});
+
 test("the desktop status bar shows an active selection", () => {
   assert.match(html, /id="status-selection"[^>]*class="status-selection"[^>]*hidden/);
   assert.match(styles, /\.status-selection\s*\{[^}]*color:\s*var\(--cyan\)/);
   assert.match(editor, /"status-layer",\s*"status-selection"/);
   assert.match(editor, /statusSelection\.hidden\s*=\s*!selectionRect/);
-  assert.match(editor, /`Selection \$\{Math\.round\(selectionRect\.w\)\}×\$\{Math\.round\(selectionRect\.h\)\} @ \$\{Math\.round\(selectionRect\.x\)\},\$\{Math\.round\(selectionRect\.y\)\}\$\{mode\}`/);
+  assert.match(editor, /`Selection \$\{selectionSize\} @ \$\{Math\.round\(selectionRect\.x\)\}/);
 });
 
 test("the active layer name is visually and semantically marked", () => {
