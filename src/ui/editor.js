@@ -232,7 +232,7 @@ const IDS = [
   "layer-opacity-value", "layer-blend", "layer-count", "layer-list",
   "btn-resize", "btn-canvas-size", "btn-transform", "btn-layer-flip-h", "btn-layer-flip-v", "btn-layer-rotate-cw", "btn-layer-rotate-ccw", "btn-flip-h", "btn-flip-v", "btn-rotate",
   "btn-flatten", "btn-stamp-visible",
-  "adjust-reset", "histogram", "histogram-hover", "histogram-range", "btn-auto-levels", "adj-brightness",
+  "adjust-reset", "histogram", "histogram-hover", "histogram-range", "btn-auto-levels", "filter-reset", "adj-brightness",
   "adj-brightness-value", "adj-contrast", "adj-contrast-value",
   "adj-saturation", "adj-saturation-value", "adj-hue", "adj-hue-value", "adj-grayscale",
   "adj-grayscale-value", "adj-sepia", "adj-sepia-value", "adj-invert", "adj-invert-value",
@@ -4213,6 +4213,15 @@ export class PaletteEditor {
       this.commit(before, "Layer opacity");
     });
     this.root.querySelector(".filter-grid")?.addEventListener("input", () => this.syncFilterOutputs());
+    this.el.filterReset.addEventListener("click", () => {
+      for (const input of this.root.querySelectorAll(".filter-grid input")) {
+        if (input.type === "checkbox") input.checked = input.defaultChecked;
+        else input.value = input.defaultValue;
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+      this.syncFilterOutputs();
+      this.announce("Filter settings reset.");
+    });
     this.el.filterBlurRadius.addEventListener("input", () => {
       this.el.filterBlurValue.textContent = this.el.filterBlurRadius.value;
     });

@@ -136,6 +136,12 @@ test("Manage icons fit a single compact row", () => {
   assert.match(styles, /\.panel-group \.button-row\.compact \{[^}]*gap: 3px/);
 });
 
+test("the Filters panel can reset all settings", () => {
+  assert.match(html, /id="filter-reset"[^>]*title="Reset all filter settings to their defaults"/);
+  assert.match(editor, /if \(input\.type === "checkbox"\) input\.checked = input\.defaultChecked/);
+  assert.match(editor, /this\.announce\("Filter settings reset\."\)/);
+});
+
 test("texture filters have their own category", () => {
   const textures = html.indexOf('filter-group">Textures</h3>');
   assert.ok(textures > 0 && textures < html.indexOf('id="btn-filter-dither"'));
