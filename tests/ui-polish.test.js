@@ -131,6 +131,12 @@ test("the status bar reflects the active Gradient type", () => {
   assert.match(editor, /gradientType\.addEventListener\("change"[\s\S]{0,160}this\.syncToolOptions\(\)/);
 });
 
+test("the active tool uses a minimal accent instead of a heavy gradient", () => {
+  assert.match(styles, /\.tool-btn\[aria-pressed="true"\] \{[^}]*background: rgba\(34, 211, 238, 0\.08\)/);
+  assert.match(styles, /\.tool-btn\[aria-pressed="true"\]::before \{[^}]*width: 2px/);
+  assert.doesNotMatch(styles, /\.tool-btn\[aria-pressed="true"\] \{[^}]*linear-gradient/);
+});
+
 test("sidebar panels can be collapsed to reduce clutter", () => {
   assert.equal((html.match(/class="panel-head" role="button"/g) || []).length, 4);
   assert.match(styles, /\.panel\[data-collapsed="true"\] \.panel-head h2::before/);
