@@ -915,6 +915,17 @@ export class PaletteEditor {
       name.className = "layer-name";
       name.textContent = layer.name;
       name.title = `${layer.name} — double-click to rename`;
+      const meta = [];
+      const opacityPct = Math.round(layer.opacity * 100);
+      if (opacityPct !== 100) meta.push(`${opacityPct}%`);
+      if (layer.blendMode && layer.blendMode !== "normal") meta.push(layer.blendMode);
+      if (meta.length) {
+        const badge = this.root.createElement("span");
+        badge.className = "layer-meta";
+        badge.textContent = meta.join(" · ");
+        badge.title = meta.join(" · ");
+        name.append(badge);
+      }
       name.setAttribute("aria-pressed", layer.id === this.doc.activeLayerId ? "true" : "false");
       name.addEventListener("click", () => this.selectLayer(layer.id));
       name.addEventListener("dblclick", (event) => {

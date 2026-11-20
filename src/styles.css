@@ -820,6 +820,14 @@ select:focus {
   font-weight: 700;
 }
 
+.layer-name .layer-meta {
+  margin-left: 6px;
+  color: var(--cyan);
+  font-family: var(--mono);
+  font-size: 10px;
+  opacity: 0.85;
+}
+
 .layer-name-input {
   min-height: 26px;
   padding: 2px 5px;

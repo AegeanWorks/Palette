@@ -126,6 +126,13 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("layers with non-default opacity or blend show a compact badge", () => {
+  assert.match(editor, /if \(opacityPct !== 100\) meta\.push\(`\$\{opacityPct\}%`\)/);
+  assert.match(editor, /if \(layer\.blendMode && layer\.blendMode !== "normal"\) meta\.push\(layer\.blendMode\)/);
+  assert.match(editor, /badge\.className = "layer-meta"/);
+  assert.match(styles, /\.layer-name \.layer-meta \{[\s\S]{0,160}var\(--cyan\)/);
+});
+
 test("a locked or hidden layer shows a visible notice in Tool options", () => {
   assert.match(html, /id="edit-lock-notice"[^>]*hidden/);
   assert.match(editor, /editLockNotice\.hidden = !cannotEditLayer/);
