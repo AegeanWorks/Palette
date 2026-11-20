@@ -215,7 +215,7 @@ const IDS = [
   "btn-undo", "btn-redo", "btn-help", "file-image", "file-layer", "file-project", "stage-wrap", "doc-frame",
   "stage", "overlay", "text-editor", "text-input", "text-count", "text-commit", "text-cancel", "drop-hint",
   "stage-note", "btn-zoom-out", "btn-fit", "btn-zoom-in", "color-row", "color-input", "color-hex",
-  "tool-hint", "edit-lock-notice", "options-brush", "options-eraser", "options-clone", "options-dodge", "options-bucket", "options-shape", "options-text", "options-gradient",
+  "tool-hint", "edit-lock-notice", "options-tool-name", "options-brush", "options-eraser", "options-clone", "options-dodge", "options-bucket", "options-shape", "options-text", "options-gradient",
   "options-marquee", "options-crop", "options-move", "marquee-shape", "crop-aspect", "btn-select-all", "btn-deselect",
   "btn-crop-selection", "btn-invert-selection", "btn-expand-selection", "btn-contract-selection", "btn-clear-selection", "btn-copy", "btn-cut", "btn-paste",
   "btn-layer-via-copy", "btn-layer-via-cut", "brush-size", "brush-size-value", "brush-hardness",
@@ -825,6 +825,7 @@ export class PaletteEditor {
     const usesColor = ["brush", "text", "rect", "ellipse", "line", "gradient", "eyedropper", "bucket"].includes(this.tool);
     this.el.colorRow.hidden = !usesColor;
     const meta = TOOL_META[this.tool] ?? TOOL_META.move;
+    if (this.el.optionsToolName) this.el.optionsToolName.textContent = meta.label;
     this.el.toolHint.textContent = meta.hint;
     const toolKey = TOOL_KEYS[this.tool];
     let modeNote = "";

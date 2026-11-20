@@ -136,6 +136,11 @@ test("Manage icons fit a single compact row", () => {
   assert.match(styles, /\.panel-group \.button-row\.compact \{[^}]*gap: 3px/);
 });
 
+test("Tool options header names the active tool", () => {
+  assert.match(html, /id="options-heading"><span id="options-tool-name">Move<\/span> options<\/h2>/);
+  assert.match(editor, /optionsToolName\.textContent = meta\.label/);
+});
+
 test("collapsed filter categories persist across reloads", () => {
   assert.match(editor, /const key = `filter:\$\{head\.textContent\.trim\(\)\}`/);
   assert.match(editor, /this\.saveFilterGroupState\(head\)/);
