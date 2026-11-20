@@ -1044,6 +1044,16 @@ select:focus {
   gap: 6px;
 }
 
+.filter-shortcuts {
+  margin: 1px 0 3px;
+}
+
+.filter-shortcuts .btn {
+  flex: 1 1 auto;
+  padding: 0 6px;
+  font-size: 11px;
+}
+
 .filter-grid .field output {
   color: var(--dim);
 }

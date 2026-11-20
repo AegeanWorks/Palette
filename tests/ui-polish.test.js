@@ -136,6 +136,14 @@ test("Manage icons fit a single compact row", () => {
   assert.match(styles, /\.panel-group \.button-row\.compact \{[^}]*gap: 3px/);
 });
 
+test("parameterless filters are packed into compact rows", () => {
+  const rows = html.match(/class="button-row compact filter-shortcuts"/g) || [];
+  assert.equal(rows.length, 2);
+  assert.match(html, /filter-shortcuts[\s\S]{0,200}id="btn-filter-sharpen"/);
+  assert.match(html, /filter-shortcuts[\s\S]{0,600}id="btn-filter-solarize"/);
+  assert.match(styles, /\.filter-shortcuts \.btn \{[^}]*flex: 1 1 auto/);
+});
+
 test("filter buttons use short labels", () => {
   const filterButtons = html.match(/<button[^>]*data-ui="filter-[^"]*"[^>]*>[^<]*<\/button>/g) || [];
   assert.ok(filterButtons.every((b) => !/>Apply /.test(b)));
