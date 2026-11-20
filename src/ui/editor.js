@@ -1149,6 +1149,33 @@ export class PaletteEditor {
     context.clearRect(0, 0, overlay.width, overlay.height);
     context.setTransform(dpr, 0, 0, dpr, 0, 0);
 
+    // At 800%+ a faint per-pixel grid makes precise editing possible.
+    if (this.view.scale >= 8) {
+      const s = this.view.scale;
+      const ox = this.view.offsetX;
+      const oy = this.view.offsetY;
+      const firstX = Math.max(0, Math.floor(-ox / s));
+      const lastX = Math.min(this.doc.width, Math.ceil((this.viewport.width - ox) / s));
+      const firstY = Math.max(0, Math.floor(-oy / s));
+      const lastY = Math.min(this.doc.height, Math.ceil((this.viewport.height - oy) / s));
+      context.save();
+      context.strokeStyle = "rgba(233, 238, 251, 0.12)";
+      context.lineWidth = 1;
+      context.beginPath();
+      for (let x = firstX; x <= lastX; x += 1) {
+        const px = Math.round(ox + x * s) + 0.5;
+        context.moveTo(px, Math.max(0, oy));
+        context.lineTo(px, Math.min(this.viewport.height, oy + this.doc.height * s));
+      }
+      for (let y = firstY; y <= lastY; y += 1) {
+        const py = Math.round(oy + y * s) + 0.5;
+        context.moveTo(Math.max(0, ox), py);
+        context.lineTo(Math.min(this.viewport.width, ox + this.doc.width * s), py);
+      }
+      context.stroke();
+      context.restore();
+    }
+
     const crop =
       this.cropRect ??
       (this.action?.type === "crop"

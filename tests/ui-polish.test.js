@@ -136,6 +136,12 @@ test("Manage icons fit a single compact row", () => {
   assert.match(styles, /\.panel-group \.button-row\.compact \{[^}]*gap: 3px/);
 });
 
+test("a pixel grid appears at high zoom", () => {
+  assert.match(editor, /if \(this\.view\.scale >= 8\) \{/);
+  assert.match(editor, /rgba\(233, 238, 251, 0\.12\)/);
+  assert.match(editor, /for \(let x = firstX; x <= lastX; x \+= 1\)/);
+});
+
 test("Tool options header names the active tool", () => {
   assert.match(html, /id="options-heading"><span id="options-tool-name">Move<\/span> options<\/h2>/);
   assert.match(editor, /optionsToolName\.textContent = meta\.label/);
