@@ -131,6 +131,11 @@ test("the status bar reflects the active Gradient type", () => {
   assert.match(editor, /gradientType\.addEventListener\("change"[\s\S]{0,160}this\.syncToolOptions\(\)/);
 });
 
+test("double-clicking with the Crop tool applies a ready crop", () => {
+  assert.match(editor, /this\.tool === "crop" && isUsableRect\(this\.cropRect\)\) this\.applyCrop\(\)/);
+  assert.match(editor, /Double-click or Enter to apply/);
+});
+
 test("double-clicking with the Zoom tool resets to 100%", () => {
   assert.match(editor, /this\.tool === "zoom"\) this\.actualSize\(\)/);
   assert.match(editor, /Double-click for 100%/);

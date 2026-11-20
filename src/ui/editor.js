@@ -167,7 +167,7 @@ const TOOL_META = Object.freeze({
   clone: { label: "Clone stamp", cursor: "crosshair", hint: "Alt-click a source, then drag to clone from it." },
   dodge: { label: "Dodge & burn", cursor: "crosshair", hint: "Drag to lighten or darken existing pixels." },
   bucket: { label: "Paint bucket", cursor: "crosshair", hint: "Click an area to fill with the active colour." },
-  crop: { label: "Crop", cursor: "crosshair", hint: "Drag a region, then confirm." },
+  crop: { label: "Crop", cursor: "crosshair", hint: "Drag a region. Double-click or Enter to apply." },
   marquee: { label: "Marquee", cursor: "crosshair", hint: "Drag to select a region. Double-click or Ctrl+A selects all; Ctrl+D deselects." },
   text: { label: "Text", cursor: "text", hint: "Click the canvas, type a line, then press Add." },
   rect: { label: "Rectangle", cursor: "crosshair", hint: "Drag to draw a rectangle. Shift keeps it square." },
@@ -4266,6 +4266,7 @@ export class PaletteEditor {
       if (this.textDraft) return;
       if (this.tool === "marquee") this.selectAll();
       else if (this.tool === "zoom") this.actualSize();
+      else if (this.tool === "crop" && isUsableRect(this.cropRect)) this.applyCrop();
     });
     this.el.stage.addEventListener("pointerup", (event) => this.onPointerUp(event));
     this.el.stage.addEventListener("pointercancel", () => this.onPointerCancel());
