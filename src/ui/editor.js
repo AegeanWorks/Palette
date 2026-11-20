@@ -1515,6 +1515,17 @@ export class PaletteEditor {
         context.strokeStyle = "rgba(2, 6, 14, 0.9)";
         context.lineWidth = 1;
         context.stroke();
+      } else if (this.tool === "dodge") {
+        context.strokeStyle = "rgba(233, 238, 251, 0.95)";
+        context.lineWidth = 1.5;
+        context.beginPath();
+        context.moveTo(this.pointer.x - 4, this.pointer.y);
+        context.lineTo(this.pointer.x + 4, this.pointer.y);
+        if (this.options.dodge.mode !== "burn") {
+          context.moveTo(this.pointer.x, this.pointer.y - 4);
+          context.lineTo(this.pointer.x, this.pointer.y + 4);
+        }
+        context.stroke();
       }
       // Inner ring marks the hard core so hardness is visible at a glance.
       if (hardness < 0.98) {

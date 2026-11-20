@@ -210,6 +210,12 @@ test("Noise lives with the texture filters", () => {
   assert.ok(noise > colorBalance);
 });
 
+test("the dodge cursor marks the active mode with plus or minus", () => {
+  assert.match(editor, /else if \(this\.tool === "dodge"\) \{/);
+  assert.match(editor, /if \(this\.options\.dodge\.mode !== "burn"\) \{/);
+  assert.match(editor, /context\.moveTo\(this\.pointer\.x, this\.pointer\.y - 4\)/);
+});
+
 test("the brush cursor shows the active colour at its centre", () => {
   assert.match(editor, /if \(this\.tool === "brush"\) \{[\s\S]{0,180}context\.arc\(this\.pointer\.x, this\.pointer\.y, 2\.5/);
   assert.match(editor, /context\.fillStyle = this\.options\.color/);
