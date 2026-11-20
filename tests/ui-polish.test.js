@@ -257,6 +257,14 @@ test("collapse chevrons are drawn with CSS borders", () => {
   assert.doesNotMatch(styles, /h2::before \{[^}]*content: "▾"/);
 });
 
+test("the Transform dialog can link Scale X and Scale Y", () => {
+  assert.match(html, /id="transform-lock" type="checkbox" checked> Keep aspect ratio/);
+  assert.match(editor, /transformScale = \{ x: 100, y: 100 \}/);
+  assert.match(editor, /transformLock\.checked && this\.transformScale/);
+  assert.match(editor, /this\.el\.transformLock\.addEventListener\("change"/);
+  assert.match(styles, /#transform-lock \{[\s\S]{0,80}grid-column: 1 \/ -1/);
+});
+
 test("the Canvas dialog can swap width and height and transpose the anchor", () => {
   assert.match(html, /id="canvas-swap"[^>]*title="Swap width and height \(transposes the anchor\)"/);
   assert.match(editor, /canvasSwap\.addEventListener\("click"/);
@@ -268,7 +276,7 @@ test("the Resize dialog can swap width and height", () => {
   assert.match(html, /id="resize-swap"[^>]*title="Swap width and height"/);
   assert.match(editor, /resizeSwap\.addEventListener\("click"/);
   assert.match(editor, /this\.resizeAspect = 1 \/ this\.resizeAspect/);
-  assert.match(styles, /#resize-swap,[\s\S]{0,40}#canvas-swap \{[^}]*grid-column: 1 \/ -1/);
+  assert.match(styles, /#resize-swap,[\s\S]{0,60}#canvas-swap[\s\S]{0,60}grid-column: 1 \/ -1/);
 });
 
 test("the New dialog can reuse the current document size", () => {
@@ -824,7 +832,8 @@ test("the transform dialog previews the resulting content size", () => {
   assert.match(html, /id="transform-size"[^>]*aria-live="polite"/);
   assert.match(editor, /"transform-rotation-value",\s*"transform-size"/);
   assert.match(editor, /syncTransformSize\(\)\s*\{[\s\S]{0,900}Content will be \$\{nextW\} × \$\{nextH\} px/);
-  assert.match(editor, /transformScaleX\.addEventListener\("input", \(\) => this\.syncTransformSize\(\)\)/);
+  assert.match(editor, /transformScaleX\.addEventListener\("input"/);
+  assert.match(editor, /syncTransformScale\("x"\)/);
   assert.match(editor, /transformSize\.dataset\.tone = offCanvas \? "warn" : "muted"/);
 });
 

@@ -265,7 +265,7 @@ const IDS = [
   "export-cancel", "export-confirm", "resize-dialog", "resize-form", "resize-width", "resize-height",
   "resize-lock", "resize-swap", "resize-size", "resize-cancel", "resize-confirm", "canvas-dialog", "canvas-form", "canvas-width",
   "canvas-height", "canvas-swap", "canvas-size", "canvas-cancel", "canvas-confirm", "transform-dialog", "transform-form",
-  "transform-scale-x", "transform-scale-y", "transform-rotation", "transform-rotation-value",
+  "transform-scale-x", "transform-scale-y", "transform-lock", "transform-rotation", "transform-rotation-value",
   "transform-size", "transform-flip-h", "transform-flip-v", "transform-reset", "transform-cancel", "transform-confirm",
   "help-dialog", "help-close",
   "restore-dialog", "restore-summary", "restore-confirm", "restore-discard", "status-autosave",
@@ -3504,6 +3504,8 @@ export class PaletteEditor {
   resetTransformSettings() {
     this.el.transformScaleX.value = "100";
     this.el.transformScaleY.value = "100";
+    this.el.transformLock.checked = true;
+    this.transformScale = { x: 100, y: 100 };
     this.el.transformRotation.value = "0";
     this.el.transformRotationValue.textContent = "0";
     this.el.transformFlipH.checked = false;
@@ -4581,8 +4583,34 @@ export class PaletteEditor {
       this.el.transformRotationValue.textContent = this.el.transformRotation.value;
     });
     this.el.transformReset.addEventListener("click", () => this.resetTransformSettings());
-    this.el.transformScaleX.addEventListener("input", () => this.syncTransformSize());
-    this.el.transformScaleY.addEventListener("input", () => this.syncTransformSize());
+    const syncTransformScale = (source) => {
+      const x = Number(this.el.transformScaleX.value) || 100;
+      const y = Number(this.el.transformScaleY.value) || 100;
+      if (this.el.transformLock.checked && this.transformScale) {
+        if (source === "x" && this.transformScale.x) {
+          const next = Math.max(1, Math.min(1000, Math.round((this.transformScale.y * x) / this.transformScale.x)));
+          this.el.transformScaleY.value = String(next);
+          this.transformScale = { x, y: next };
+        } else if (source === "y" && this.transformScale.y) {
+          const next = Math.max(1, Math.min(1000, Math.round((this.transformScale.x * y) / this.transformScale.y)));
+          this.el.transformScaleX.value = String(next);
+          this.transformScale = { x: next, y };
+        }
+      } else {
+        this.transformScale = { x, y };
+      }
+      this.syncTransformSize();
+    };
+    this.el.transformScaleX.addEventListener("input", () => syncTransformScale("x"));
+    this.el.transformScaleY.addEventListener("input", () => syncTransformScale("y"));
+    this.el.transformLock.addEventListener("change", () => {
+      if (this.el.transformLock.checked) {
+        this.transformScale = {
+          x: Number(this.el.transformScaleX.value) || 100,
+          y: Number(this.el.transformScaleY.value) || 100,
+        };
+      }
+    });
     this.el.resizeSwap.addEventListener("click", () => {
       const { resizeWidth: width, resizeHeight: height } = this.el;
       const previous = width.value;
