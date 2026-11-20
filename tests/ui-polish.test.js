@@ -1084,6 +1084,7 @@ test("the Help dialog documents mouse gestures", () => {
   assert.match(html, /<dt>Double-click a slider<\/dt><dd>Reset that adjustment or filter to its default<\/dd>/);
   assert.match(html, /<dt>Shift \+ drag<\/dt><dd>Constrain a move to one axis/);
   assert.match(html, /<dt>Double-click a layer name<\/dt><dd>Rename the layer<\/dd>/);
+  assert.match(html, /<dt>Click a layer thumbnail<\/dt><dd>Show or hide that layer<\/dd>/);
 });
 
 test("F1 opens the keyboard shortcuts dialog", () => {
