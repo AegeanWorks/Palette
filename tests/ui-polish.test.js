@@ -131,6 +131,12 @@ test("the status bar reflects the active Gradient type", () => {
   assert.match(editor, /gradientType\.addEventListener\("change"[\s\S]{0,160}this\.syncToolOptions\(\)/);
 });
 
+test("the Layers header stays minimal with layer tools in a labelled group", () => {
+  const header = html.match(/<header class="panel-head"[^>]*>\s*<h2 id="layers-heading">[\s\S]*?<\/header>/)?.[0] ?? "";
+  assert.equal((header.match(/<button/g) || []).length, 1);
+  assert.match(html, /panel-group-label">Manage<\/span>[\s\S]{0,500}id="btn-layer-duplicate"/);
+});
+
 test("layer actions are grouped into labelled categories", () => {
   for (const label of ["Canvas", "Layer", "Combine"]) {
     assert.match(html, new RegExp(`panel-group-label">${label}</span>`));
