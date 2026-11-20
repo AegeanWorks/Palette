@@ -1199,7 +1199,8 @@ test("the status bar readouts explain themselves", () => {
 
 test("the status bar names the active tool and its shortcut", () => {
   assert.match(editor, /const TOOL_KEYS = Object\.freeze\(\{[\s\S]*?move: "V"[\s\S]*?zoom: "Z"/);
-  assert.match(editor, /statusTool\.textContent = toolKey \? `\$\{statusLabel\} \(\$\{toolKey\}\)`/);
+  assert.match(editor, /statusTool\.textContent = statusLabel/);
+  assert.match(editor, /statusToolKey\.textContent = toolKey \? `\(\$\{toolKey\}\)` : ""/);
   assert.match(editor, /statusTool\.title = toolKey/);
 });
 
@@ -1360,7 +1361,8 @@ test("locked-layer adjustment sliders look disabled", () => {
 test("the desktop status bar names the active layer and hints clipping", () => {
   assert.match(html, /id="status-layer"[^>]*class="status-layer"/);
   assert.match(styles, /\.status-layer\s*\{[^}]*color:\s*var\(--muted\)/);
-  assert.match(editor, /"status-tool",\s*"status-layer"/);
+  assert.match(editor, /"status-tool"/);
+  assert.match(editor, /"status-tool-key"/);
   assert.match(editor, /syncActiveLayer\(\)\s*\{[\s\S]*?this\.el\.statusLayer\.textContent\s*=\s*`\$\{layer\.name\}\$\{suffix\}`/);
   assert.match(editor, /Ctrl\+Alt\+G/);
 });

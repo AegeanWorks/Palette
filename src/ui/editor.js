@@ -257,7 +257,7 @@ const IDS = [
   "filter-tint-preserve", "btn-filter-tint",
   "btn-filter-find-edges", "btn-filter-solarize", "filter-duotone-shadow", "filter-duotone-highlight", "btn-filter-duotone", "btn-filter-dither",
   "filter-oil-radius", "filter-oil-value", "btn-filter-oil", "btn-filter-median",
-  "status-tool", "status-layer", "status-selection", "status-message",
+  "status-tool", "status-tool-key", "status-layer", "status-selection", "status-message",
   "status-color", "status-cursor", "status-zoom",
   "btn-actual", "new-dialog", "new-form", "new-name", "new-width", "new-height", "new-presets", "new-current", "new-reset", "new-color", "new-color-hex",
   "new-cancel", "new-create", "new-size", "export-dialog", "export-form", "export-name", "export-filename", "export-format",
@@ -887,7 +887,11 @@ export class PaletteEditor {
     if (this.tool === "marquee" && this.options.marquee.kind === "ellipse") modeNote = " · Ellipse";
     if (this.tool === "gradient" && this.options.gradient.type === "radial") modeNote = " · Radial";
     const statusLabel = `${meta.label}${modeNote}`;
-    this.el.statusTool.textContent = toolKey ? `${statusLabel} (${toolKey})` : statusLabel;
+    this.el.statusTool.textContent = statusLabel;
+    if (this.el.statusToolKey) {
+      this.el.statusToolKey.textContent = toolKey ? `(${toolKey})` : "";
+      this.el.statusToolKey.hidden = !toolKey;
+    }
     this.el.statusTool.title = toolKey ? `${statusLabel} tool (${toolKey})` : `${statusLabel} tool`;
     for (const button of this.root.querySelectorAll("[data-tool]")) {
       const key = TOOL_KEYS[button.dataset.tool];
