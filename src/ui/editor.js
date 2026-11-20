@@ -1406,7 +1406,7 @@ export class PaletteEditor {
       context.setLineDash([4, 3]);
       context.strokeRect(tx - 2, ty - 2, boxW + 4, boxH + 4);
       context.setLineDash([]);
-      const label = `${Math.round(maxWidth)} × ${Math.round((lines.length - 1) * lineHeight + fontSize)} px`;
+      const label = `${Math.round(maxWidth)} × ${Math.round((lines.length - 1) * lineHeight + fontSize)} px @ ${Math.round(this.textDraft.point.x)},${Math.round(this.textDraft.point.y)}`;
       context.font = '600 12px ui-monospace, "Cascadia Mono", Consolas, monospace';
       const tw = context.measureText(label).width;
       const lx = Math.max(0, Math.min(tx - 2, this.viewport.width - tw - 14));

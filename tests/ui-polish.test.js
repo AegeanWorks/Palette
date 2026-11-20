@@ -273,7 +273,7 @@ test("Paste explains why it is disabled when the clipboard is empty", () => {
 
 test("the text draft shows a live bounding box and size", () => {
   assert.match(editor, /FONT_STACKS\[this\.options\.text\.family\] \?\? FONT_STACKS\.system/);
-  assert.match(editor, /const label = `\$\{Math\.round\(maxWidth\)\} × \$\{Math\.round\(\(lines\.length - 1\) \* lineHeight \+ fontSize\)\} px`/);
+  assert.match(editor, /const label = `\$\{Math\.round\(maxWidth\)\} × \$\{Math\.round\(\(lines\.length - 1\) \* lineHeight \+ fontSize\)\} px @ \$\{Math\.round\(this\.textDraft\.point\.x\)\},\$\{Math\.round\(this\.textDraft\.point\.y\)\}`/);
   assert.match(editor, /context\.strokeRect\(tx - 2, ty - 2, boxW \+ 4, boxH \+ 4\)/);
 });
 
