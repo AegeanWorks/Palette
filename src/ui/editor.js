@@ -982,6 +982,13 @@ export class PaletteEditor {
         badge.title = meta.join(" · ");
         name.append(badge);
       }
+      if (!isNeutralAdjustments(layer.adjustments)) {
+        const fxBadge = this.root.createElement("span");
+        fxBadge.className = "layer-meta";
+        fxBadge.textContent = "fx";
+        fxBadge.title = "Layer has active adjustments";
+        name.append(fxBadge);
+      }
       name.setAttribute("aria-pressed", layer.id === this.doc.activeLayerId ? "true" : "false");
       name.addEventListener("click", () => this.selectLayer(layer.id));
       name.addEventListener("dblclick", (event) => {

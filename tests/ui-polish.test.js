@@ -273,6 +273,11 @@ test("the Adjustments header counts changed adjustments", () => {
   assert.match(editor, /for \(const key of ADJUSTMENTS\) \{\s*if \(\(adjustments\[key\] \?\? 0\) !== 0\) count \+= 1/);
 });
 
+test("layer rows mark layers that carry adjustments", () => {
+  assert.match(editor, /if \(!isNeutralAdjustments\(layer\.adjustments\)\) \{[\s\S]{0,200}fxBadge\.textContent = "fx"/);
+  assert.match(editor, /fxBadge\.title = "Layer has active adjustments"/);
+});
+
 test("filter categories mark the ones with active settings", () => {
   assert.match(editor, /group\.dataset\.active = "false"/);
   assert.match(editor, /while \(group && !group\.classList\.contains\("filter-group"\)\) group = group\.previousElementSibling/);
