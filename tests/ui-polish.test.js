@@ -131,6 +131,11 @@ test("the status bar reflects the active Gradient type", () => {
   assert.match(editor, /gradientType\.addEventListener\("change"[\s\S]{0,160}this\.syncToolOptions\(\)/);
 });
 
+test("the selection badge is clickable to deselect", () => {
+  assert.match(html, /button id="status-selection"[^>]*type="button"/);
+  assert.match(editor, /statusSelection\.addEventListener\("click", \(\) => this\.deselect\(\)\)/);
+});
+
 test("double-clicking with the Hand tool fits the view", () => {
   assert.match(editor, /this\.tool === "hand"\) this\.fitView\(\)/);
   assert.match(editor, /Double-click to fit/);

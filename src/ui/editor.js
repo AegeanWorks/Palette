@@ -631,6 +631,11 @@ export class PaletteEditor {
     this.el.btnPaste.title = this.clipboard
       ? "Paste clipboard (Ctrl+V)"
       : "Paste — copy or cut something first";
+    if (this.el.statusSelection) {
+      this.el.statusSelection.title = this.selection
+        ? `Selection ${Math.round(selectionRect?.w ?? 0)}×${Math.round(selectionRect?.h ?? 0)} — click to deselect`
+        : "Active selection";
+    }
     this.scheduleHistogram();
   }
 
@@ -4085,6 +4090,7 @@ export class PaletteEditor {
     });
     this.el.btnSelectAll.addEventListener("click", () => this.selectAll());
     this.el.btnDeselect.addEventListener("click", () => this.deselect());
+    this.el.statusSelection.addEventListener("click", () => this.deselect());
     this.el.btnInvertSelection.addEventListener("click", () => this.invertSelection());
     this.el.btnCropSelection.addEventListener("click", () => this.cropToSelection());
     this.el.btnExpandSelection.addEventListener("click", () => this.modifySelection(5));

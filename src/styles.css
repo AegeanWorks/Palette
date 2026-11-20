@@ -1044,8 +1044,16 @@ select:focus {
 }
 
 .status-selection {
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: var(--cyan);
+  font: inherit;
   font-weight: 600;
+}
+
+.status-selection:hover {
+  text-decoration: underline;
 }
 
 /* Inverted selections affect everything outside the region — make that mode obvious. */
