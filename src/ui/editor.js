@@ -967,7 +967,12 @@ export class PaletteEditor {
 
       const lock = this.root.createElement("span");
       lock.className = "layer-lock";
-      lock.title = layer.locked ? "Locked" : "";
+      lock.title = layer.locked ? "Locked — click to unlock" : "Click to lock";
+      lock.style.cursor = "pointer";
+      lock.addEventListener("click", (event) => {
+        event.stopPropagation();
+        this.toggleLayerLock(layer.id);
+      });
       if (layer.locked) {
         lock.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>';
       }
@@ -2844,9 +2849,9 @@ export class PaletteEditor {
     this.commit(before, delta > 0 ? "Move layer up" : "Move layer down");
   }
 
-  toggleLayerLock() {
+  toggleLayerLock(id = this.doc?.activeLayerId) {
     if (!this.doc) return;
-    const layer = activeLayer(this.doc);
+    const layer = layerById(this.doc, id);
     if (!layer) return;
     const before = this.doc;
     this.doc = updateLayer(this.doc, layer.id, { locked: !layer.locked });

@@ -210,6 +210,12 @@ test("Noise lives with the texture filters", () => {
   assert.ok(noise > colorBalance);
 });
 
+test("the layer lock icon toggles that layer's lock", () => {
+  assert.match(editor, /toggleLayerLock\(id = this\.doc\?\.activeLayerId\)/);
+  assert.match(editor, /lock\.addEventListener\("click"[\s\S]{0,140}this\.toggleLayerLock\(layer\.id\)/);
+  assert.match(editor, /"Locked — click to unlock"/);
+});
+
 test("the zoom readout indicates fit-to-view", () => {
   assert.match(editor, /this\.autoFit \? " · Fit" : ""/);
 });
