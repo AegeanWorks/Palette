@@ -2561,6 +2561,31 @@ export class PaletteEditor {
     }
   }
 
+  copyExportFilename() {
+    const label = this.el.exportFilename?.textContent ?? "";
+    const name = label.replace(/^Saves as /, "");
+    if (!name) return;
+    const flash = (text) => {
+      if (!this.el.exportFilename) return;
+      this.el.exportFilename.textContent = text;
+      clearTimeout(this.exportCopyTimer);
+      this.exportCopyTimer = setTimeout(() => {
+        if (this.el.exportFilename) this.el.exportFilename.textContent = label;
+      }, 900);
+    };
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(name).then(
+        () => {
+          this.announce(`Copied ${name} to clipboard.`);
+          flash("Copied!");
+        },
+        () => this.announce("Could not copy the file name.", { error: true }),
+      );
+    } else {
+      this.announce("Clipboard is unavailable in this context.", { error: true });
+    }
+  }
+
   setColor(value) {
     const hex = normalizeHex(value, this.options.color);
     this.options.color = hex;
@@ -4552,6 +4577,7 @@ export class PaletteEditor {
       const radio = this.root.querySelector('input[name="new-background"][value="color"]');
       if (radio) radio.checked = true;
     });
+    this.el.exportFilename.addEventListener("click", () => this.copyExportFilename());
     this.el.exportReset.addEventListener("click", () => {
       this.el.exportFormat.value = "png";
       this.el.exportScale.value = "1";

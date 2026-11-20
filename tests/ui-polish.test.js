@@ -235,6 +235,13 @@ test("Resize and Canvas size readouts include the aspect ratio", () => {
   assert.match(editor, /syncDimensionSize\(this\.el\.canvasSize/);
 });
 
+test("the Export file name is clickable to copy", () => {
+  assert.match(html, /id="export-filename"[^>]*title="Click to copy the output file name"/);
+  assert.match(editor, /exportFilename\.addEventListener\("click", \(\) => this\.copyExportFilename\(\)\)/);
+  assert.match(editor, /label\.replace\(\/\^Saves as \/, ""\)/);
+  assert.match(styles, /#export-filename:hover \{\s*color: var\(--cyan\)/);
+});
+
 test("the Export dialog has a Reset control", () => {
   assert.match(html, /id="export-reset"[^>]*title="Reset export settings to defaults"/);
   assert.match(editor, /exportReset\.addEventListener\("click"/);
