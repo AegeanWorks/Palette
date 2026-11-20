@@ -2507,6 +2507,19 @@ export class PaletteEditor {
       const out = this.root.querySelector(`output[for="${input.id}"]`);
       if (out) out.dataset.active = input.value !== input.dataset.neutral ? "true" : "false";
     }
+    let changed = false;
+    for (const input of this.root.querySelectorAll(".filter-grid input")) {
+      const isDefault = input.type === "checkbox"
+        ? input.checked === input.defaultChecked
+        : input.value === (input.dataset.neutral ?? input.defaultValue);
+      if (!isDefault) changed = true;
+    }
+    if (this.el.filterReset) {
+      this.el.filterReset.disabled = !changed;
+      this.el.filterReset.title = changed
+        ? "Reset all filter settings to their defaults"
+        : "Filters already at defaults";
+    }
   }
 
   syncTextCommit() {

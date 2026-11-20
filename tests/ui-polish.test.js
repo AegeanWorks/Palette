@@ -136,6 +136,11 @@ test("Manage icons fit a single compact row", () => {
   assert.match(styles, /\.panel-group \.button-row\.compact \{[^}]*gap: 3px/);
 });
 
+test("Filters Reset disables when everything is already default", () => {
+  assert.match(editor, /filterReset\.disabled = !changed/);
+  assert.match(editor, /"Filters already at defaults"/);
+});
+
 test("filter category headers and gaps are tighter", () => {
   assert.match(styles, /\.filter-grid \{[^}]*gap: 4px/);
   assert.match(styles, /\.filter-group \{[^}]*margin: 7px 0 1px/);
