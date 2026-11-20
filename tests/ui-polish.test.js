@@ -210,6 +210,12 @@ test("Noise lives with the texture filters", () => {
   assert.ok(noise > colorBalance);
 });
 
+test("export format options show their file extensions", () => {
+  assert.match(html, /value="png">PNG \(\.png\)<\/option>/);
+  assert.match(html, /value="jpeg">JPEG \(\.jpg\)<\/option>/);
+  assert.match(html, /value="webp">WebP \(\.webp\)<\/option>/);
+});
+
 test("help shortcuts are grouped into categories", () => {
   const groups = [...html.matchAll(/class="shortcut-heading">([^<]+)</g)].map((m) => m[1]);
   assert.ok(groups.includes("Tools"));
