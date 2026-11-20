@@ -274,6 +274,11 @@ test("the New dialog shows the custom background hex", () => {
   assert.match(editor, /newColorHex\.textContent = this\.el\.newColor\.value/);
 });
 
+test("the Save button marks an unsaved document", () => {
+  assert.match(editor, /btnSave\.dataset\.dirty = dirty \? "true" : "false"/);
+  assert.match(styles, /#btn-save\[data-dirty="true"\] \{[^}]*color: var\(--accent/);
+});
+
 test("adjustment readouts highlight as soon as the slider moves", () => {
   assert.match(editor, /output\.textContent = formatAdjustment\(key, value\);[\s\S]{0,80}output\.dataset\.active = value !== 0 \? "true" : "false"/);
   assert.match(styles, /\.adjust-list \.field output\[data-active="true"\]/);

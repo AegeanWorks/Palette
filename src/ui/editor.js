@@ -569,7 +569,10 @@ export class PaletteEditor {
     if (this.el.docDirty) this.el.docDirty.hidden = !dirty;
     const title = `${name}${dirty ? " •" : ""} — Palette`;
     if (document.title !== title) document.title = title;
-    if (this.el.btnSave) this.el.btnSave.title = `Save ${safeFileName(name)}.palette (Ctrl+S)`;
+    if (this.el.btnSave) {
+      this.el.btnSave.dataset.dirty = dirty ? "true" : "false";
+      this.el.btnSave.title = `Save ${safeFileName(name)}.palette (Ctrl+S)`;
+    }
   }
 
   dismissNote() {

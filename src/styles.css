@@ -237,6 +237,11 @@ svg {
   background: rgba(10, 17, 29, 0.55);
 }
 
+#btn-save[data-dirty="true"] {
+  color: var(--accent, #67e8f9);
+  border-color: rgba(103, 232, 249, 0.55);
+}
+
 .btn-ghost:not(:disabled):hover {
   border-color: var(--line-strong);
   color: var(--text);
