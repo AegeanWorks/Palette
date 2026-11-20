@@ -991,7 +991,7 @@ export class PaletteEditor {
 
   updateZoomLabel() {
     const percent = this.view.scale * 100;
-    this.el.statusZoom.textContent = `${percent < 10 ? percent.toFixed(1) : Math.round(percent)}%`;
+    this.el.statusZoom.textContent = `${percent < 10 ? percent.toFixed(1) : Math.round(percent)}%${this.autoFit ? " · Fit" : ""}`;
     if (this.el.btnActual) {
       this.el.btnActual.setAttribute("aria-pressed", Math.abs(this.view.scale - 1) < 0.001 ? "true" : "false");
     }

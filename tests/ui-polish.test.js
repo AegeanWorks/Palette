@@ -210,6 +210,10 @@ test("Noise lives with the texture filters", () => {
   assert.ok(noise > colorBalance);
 });
 
+test("the zoom readout indicates fit-to-view", () => {
+  assert.match(editor, /this\.autoFit \? " · Fit" : ""/);
+});
+
 test("the matching new-document size preset is highlighted", () => {
   assert.match(editor, /newPresets\.querySelectorAll\("button\[data-w\]"\)/);
   assert.match(editor, /button\.setAttribute\("aria-pressed", matches \? "true" : "false"\)/);
