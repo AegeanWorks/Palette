@@ -279,10 +279,17 @@ test("adjustment readouts highlight as soon as the slider moves", () => {
   assert.match(styles, /\.adjust-list \.field output\[data-active="true"\]/);
 });
 
+test("adjustment categories mark the groups with active settings", () => {
+  assert.match(editor, /panel\?\.querySelectorAll\("\.panel-group-label"\)[\s\S]{0,120}label\.dataset\.active = "false"/);
+  assert.match(editor, /input\?\.closest\("\.adjust-list"\)\?\.previousElementSibling/);
+  assert.match(editor, /label\.dataset\.active = "true"/);
+  assert.match(styles, /\.panel-group-label\[data-active="true"\]::after \{[^}]*content: "•"/);
+});
+
 test("the Adjustments header counts changed adjustments", () => {
   assert.match(html, /id="adjust-count"[^>]*data-active="false">0<\/span>/);
   assert.match(editor, /syncAdjustCount\(adjustments\)/);
-  assert.match(editor, /for \(const key of ADJUSTMENTS\) \{\s*if \(\(adjustments\[key\] \?\? 0\) !== 0\) count \+= 1/);
+  assert.match(editor, /for \(const key of ADJUSTMENTS\) \{[\s\S]{0,160}adjustments\[key\] \?\? 0\) === 0\) continue;[\s\S]{0,80}count \+= 1/);
 });
 
 test("layer rows mark layers that carry adjustments", () => {

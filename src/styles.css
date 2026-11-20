@@ -964,6 +964,12 @@ select:focus {
   height: 15px;
 }
 
+.panel-group-label[data-active="true"]::after {
+  content: "•";
+  margin-left: 5px;
+  color: var(--accent, #67e8f9);
+}
+
 .panel-group-label {
   display: block;
   margin-bottom: 5px;
