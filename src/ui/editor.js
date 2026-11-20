@@ -2947,7 +2947,10 @@ export class PaletteEditor {
         : "Reset adjustments on the active layer";
     }
     const output = this.el[`adj${key[0].toUpperCase()}${key.slice(1)}Value`];
-    if (output) output.textContent = formatAdjustment(key, value);
+    if (output) {
+      output.textContent = formatAdjustment(key, value);
+      output.dataset.active = value !== 0 ? "true" : "false";
+    }
     this.scheduleRender();
   }
 

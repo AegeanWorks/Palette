@@ -274,6 +274,11 @@ test("the New dialog shows the custom background hex", () => {
   assert.match(editor, /newColorHex\.textContent = this\.el\.newColor\.value/);
 });
 
+test("adjustment readouts highlight as soon as the slider moves", () => {
+  assert.match(editor, /output\.textContent = formatAdjustment\(key, value\);[\s\S]{0,80}output\.dataset\.active = value !== 0 \? "true" : "false"/);
+  assert.match(styles, /\.adjust-list \.field output\[data-active="true"\]/);
+});
+
 test("the Adjustments header counts changed adjustments", () => {
   assert.match(html, /id="adjust-count"[^>]*data-active="false">0<\/span>/);
   assert.match(editor, /syncAdjustCount\(adjustments\)/);
