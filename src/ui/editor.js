@@ -579,7 +579,11 @@ export class PaletteEditor {
     this.syncOptionControls();
     this.updateZoomLabel();
     this.el.cropApply.disabled = !isUsableRect(this.cropRect);
+    this.el.cropApply.title = isUsableRect(this.cropRect)
+      ? "Apply the crop (Enter)"
+      : "Apply crop — draw a crop region first";
     this.el.cropCancel.disabled = !this.cropRect;
+    this.el.cropCancel.title = this.cropRect ? "Cancel the crop (Escape)" : "Cancel — no active crop";
     const hasVisible = this.doc.layers.some((layer) => layer.visible);
     const canFlatten = hasVisible && this.doc.layers.length > 1;
     this.el.btnFlatten.disabled = !canFlatten;

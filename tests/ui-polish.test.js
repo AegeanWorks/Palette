@@ -126,6 +126,11 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("crop Apply and Cancel explain why they are disabled", () => {
+  assert.match(editor, /cropApply\.title = isUsableRect\(this\.cropRect\)[\s\S]{0,100}"Apply crop — draw a crop region first"/);
+  assert.match(editor, /cropCancel\.title = this\.cropRect \? "Cancel the crop \(Escape\)" : "Cancel — no active crop"/);
+});
+
 test("Paste explains why it is disabled when the clipboard is empty", () => {
   assert.match(editor, /btnPaste\.title = this\.clipboard[\s\S]{0,80}"Paste — copy or cut something first"/);
 });
