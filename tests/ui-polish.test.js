@@ -131,6 +131,11 @@ test("the status bar reflects the active Gradient type", () => {
   assert.match(editor, /gradientType\.addEventListener\("change"[\s\S]{0,160}this\.syncToolOptions\(\)/);
 });
 
+test("Auto levels disables when tones already span the full range", () => {
+  assert.match(editor, /range\.black === 0 && range\.white === 255/);
+  assert.match(editor, /"Auto levels — tones already span the full range"/);
+});
+
 test("the status bar shows active layer opacity and blend", () => {
   assert.match(editor, /opacityPct !== 100 && `\$\{opacityPct\}%`/);
   assert.match(editor, /layer\.blendMode && layer\.blendMode !== "normal" && layer\.blendMode/);

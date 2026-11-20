@@ -769,6 +769,11 @@ export class PaletteEditor {
       if (control.dataset.baseTitle === undefined) control.dataset.baseTitle = control.title;
       control.disabled = cannotEditLayer;
       control.title = cannotEditLayer ? `Unavailable — ${editLock}` : control.dataset.baseTitle;
+      const range = this.histogramRange;
+      if (name === "btnAutoLevels" && !cannotEditLayer && range && range.black === 0 && range.white === 255) {
+        control.disabled = true;
+        control.title = "Auto levels — tones already span the full range";
+      }
     }
     for (const key of ADJUSTMENTS) {
       const input = this.el[`adj${key[0].toUpperCase()}${key.slice(1)}`];
