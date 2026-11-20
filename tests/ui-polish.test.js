@@ -221,8 +221,13 @@ test("export settings persist across dialog opens", () => {
   assert.match(editor, /saved\.format \|\| "png"/);
 });
 
+test("size presets have precise dimension tooltips", () => {
+  assert.match(html, /data-w="3840" data-h="2160" title="3840 × 2160 pixels \(4K\)"/);
+  assert.match(html, /data-w="1080" data-h="1080" title="1080 × 1080 pixels \(square\)"/);
+});
+
 test("the New dialog offers a 4K size preset", () => {
-  assert.match(html, /data-w="3840" data-h="2160">4K<\/button>/);
+  assert.match(html, /data-w="3840" data-h="2160"[^>]*>4K<\/button>/);
 });
 
 test("the layer clip icon toggles that layer's clipping mask", () => {
