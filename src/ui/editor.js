@@ -1564,6 +1564,28 @@ export class PaletteEditor {
       context.fillText(hex ?? "transparent", chipX + 22, chipY + 10);
       context.restore();
     }
+
+    if (this.tool === "bucket" && this.pointer && this.pointInsideDoc(this.toDoc(this.pointer))) {
+      // Show the colour that a click will fill with, so the active colour is
+      // visible at the cursor instead of only in the panels.
+      const hex = this.options.color;
+      const chipW = 74;
+      const chipX = Math.max(0, Math.min(this.pointer.x + 14, this.viewport.width - chipW));
+      const chipY = Math.max(0, this.pointer.y - 24);
+      context.save();
+      context.fillStyle = "rgba(2, 6, 14, 0.9)";
+      context.fillRect(chipX, chipY, chipW, 20);
+      context.fillStyle = hex;
+      context.fillRect(chipX + 2, chipY + 2, 16, 16);
+      context.strokeStyle = "rgba(103, 232, 249, 0.6)";
+      context.lineWidth = 1;
+      context.strokeRect(chipX + 2.5, chipY + 2.5, 15, 15);
+      context.fillStyle = "rgba(103, 232, 249, 0.95)";
+      context.font = '600 11px ui-monospace, "Cascadia Mono", Consolas, monospace';
+      context.textBaseline = "middle";
+      context.fillText(hex, chipX + 22, chipY + 10);
+      context.restore();
+    }
   }
 
   eventPoint(event) {

@@ -131,6 +131,12 @@ test("the status bar reflects the active Gradient type", () => {
   assert.match(editor, /gradientType\.addEventListener\("change"[\s\S]{0,160}this\.syncToolOptions\(\)/);
 });
 
+test("the bucket tool shows its fill colour at the cursor", () => {
+  assert.match(editor, /this\.tool === "bucket" && this\.pointer && this\.pointInsideDoc/);
+  assert.match(editor, /const hex = this\.options\.color/);
+  assert.match(editor, /context\.fillText\(hex, chipX \+ 22, chipY \+ 10\)/);
+});
+
 test("paint tool hints advertise the bracket size shortcuts", () => {
   for (const tool of ["brush", "eraser", "clone", "dodge"]) {
     const hint = editor.match(new RegExp(`${tool}: \\{[^}]*hint: "([^"]*)"`))?.[1] ?? "";
