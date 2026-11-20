@@ -1392,6 +1392,14 @@ export class PaletteEditor {
             : this.tool === "clone"
               ? this.options.clone.size
               : this.options.dodge.size;
+      const hardness =
+        this.tool === "brush"
+          ? this.options.brush.hardness
+          : this.tool === "eraser"
+            ? this.options.eraser.hardness
+            : this.tool === "clone"
+              ? this.options.clone.hardness
+              : this.options.dodge.hardness;
       const radius = Math.max(1, (size * this.view.scale) / 2);
       context.save();
       context.beginPath();
@@ -1404,6 +1412,16 @@ export class PaletteEditor {
       context.lineWidth = 1;
       context.strokeStyle = "rgba(233, 238, 251, 0.9)";
       context.stroke();
+      // Inner ring marks the hard core so hardness is visible at a glance.
+      if (hardness < 0.98) {
+        context.beginPath();
+        context.arc(this.pointer.x, this.pointer.y, Math.max(1, radius * hardness), 0, Math.PI * 2);
+        context.lineWidth = 1;
+        context.strokeStyle = "rgba(103, 232, 249, 0.6)";
+        context.setLineDash([3, 3]);
+        context.stroke();
+        context.setLineDash([]);
+      }
       context.restore();
     }
 

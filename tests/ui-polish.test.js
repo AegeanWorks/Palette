@@ -126,6 +126,12 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("the brush cursor shows an inner ring for brush hardness", () => {
+  assert.match(editor, /const hardness =\s*this\.tool === "brush"[\s\S]{0,260}this\.options\.dodge\.hardness/);
+  assert.match(editor, /if \(hardness < 0\.98\) \{[\s\S]{0,200}radius \* hardness/);
+  assert.match(editor, /context\.setLineDash\(\[3, 3\]\)/);
+});
+
 test("layers with non-default opacity or blend show a compact badge", () => {
   assert.match(editor, /if \(opacityPct !== 100\) meta\.push\(`\$\{opacityPct\}%`\)/);
   assert.match(editor, /if \(layer\.blendMode && layer\.blendMode !== "normal"\) meta\.push\(layer\.blendMode\)/);
