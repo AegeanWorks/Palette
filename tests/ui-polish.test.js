@@ -131,6 +131,10 @@ test("the status bar reflects the active Gradient type", () => {
   assert.match(editor, /gradientType\.addEventListener\("change"[\s\S]{0,160}this\.syncToolOptions\(\)/);
 });
 
+test("the Gradient hint advertises the Shift-angle snap", () => {
+  assert.match(editor, /Shift snaps the angle/);
+});
+
 test("the Move hint advertises the Shift-axis constraint", () => {
   assert.match(editor, /Shift constrains to an axis; arrow keys nudge it/);
 });

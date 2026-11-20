@@ -173,7 +173,7 @@ const TOOL_META = Object.freeze({
   rect: { label: "Rectangle", cursor: "crosshair", hint: "Drag to draw a rectangle. Shift keeps it square." },
   ellipse: { label: "Ellipse", cursor: "crosshair", hint: "Drag to draw an ellipse. Shift keeps it circular." },
   line: { label: "Line", cursor: "crosshair", hint: "Drag to draw a line. Shift snaps to 45°." },
-  gradient: { label: "Gradient", cursor: "crosshair", hint: "Drag to fill the active layer with a gradient." },
+  gradient: { label: "Gradient", cursor: "crosshair", hint: "Drag to fill the active layer with a gradient. Shift snaps the angle." },
   eyedropper: { label: "Eyedropper", cursor: "eyedropper", hint: "Click a pixel to make it the active colour." },
   hand: { label: "Hand", cursor: "grab", hint: "Drag to pan. Space also pans. Double-click to fit." },
   zoom: { label: "Zoom", cursor: "zoom-in", hint: "Click to zoom in. Alt-click to zoom out. Double-click for 100%." },
