@@ -126,6 +126,11 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("the shape badge marks when Shift snaps the geometry", () => {
+  assert.match(editor, /Math\.round\(angle\)\}°\$\{this\.action\.shift \? " · snapped" : ""\}/);
+  assert.match(editor, /this\.action\.shift \? \(this\.action\.tool === "ellipse" \? " · circle" : " · square"\) : ""/);
+});
+
 test("the crop badge shows the locked aspect ratio", () => {
   assert.match(html, /<option value="1\.7777777778" data-label="16:9">16:9<\/option>/);
   assert.match(editor, /this\.el\.cropAspect\.selectedOptions\[0\]\?\.dataset\.label \|\| aspect/);
@@ -220,14 +225,14 @@ test("the clone source links to the cursor with a dashed guide", () => {
 
 test("the shape drag shows a live length/angle or size badge", () => {
   assert.match(editor, /if \(this\.action\.tool === "line"\) \{[\s\S]{0,220}const angle = \(Math\.atan2\(dy, dx\) \* 180\) \/ Math\.PI/);
-  assert.match(editor, /label = `\$\{Math\.round\(Math\.abs\(dx\)\)\} × \$\{Math\.round\(Math\.abs\(dy\)\)\} px`/);
+  assert.match(editor, /label = `\$\{Math\.round\(Math\.abs\(dx\)\)\} × \$\{Math\.round\(Math\.abs\(dy\)\)\} px\$\{constrained\}`/);
   assert.match(editor, /context\.fillText\(label, bx \+ 6, by \+ 9\)/);
 });
 
 test("the gradient drag shows a live angle and length guide", () => {
   assert.match(editor, /const length = Math\.hypot\(end\.x - start\.x, end\.y - start\.y\)/);
   assert.match(editor, /const angle = \(Math\.atan2\(end\.y - start\.y, end\.x - start\.x\) \* 180\) \/ Math\.PI/);
-  assert.match(editor, /const label = `\$\{Math\.round\(length\)\} px · \$\{Math\.round\(angle\)\}°`/);
+  assert.match(editor, /const label = `\$\{Math\.round\(length\)\} px · \$\{Math\.round\(angle\)\}°\$\{this\.action\.shift \? " · snapped" : ""\}`/);
   assert.match(editor, /context\.arc\(hx, hy, 4, 0, Math\.PI \* 2\)/);
 });
 

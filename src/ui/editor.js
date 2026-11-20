@@ -1272,7 +1272,7 @@ export class PaletteEditor {
         const ex = this.view.offsetX + end.x * this.view.scale;
         const ey = this.view.offsetY + end.y * this.view.scale;
         const angle = (Math.atan2(end.y - start.y, end.x - start.x) * 180) / Math.PI;
-        const label = `${Math.round(length)} px · ${Math.round(angle)}°`;
+        const label = `${Math.round(length)} px · ${Math.round(angle)}°${this.action.shift ? " · snapped" : ""}`;
         context.save();
         context.strokeStyle = "rgba(255, 255, 255, 0.85)";
         context.lineWidth = 1;
@@ -1330,12 +1330,13 @@ export class PaletteEditor {
         const length = Math.hypot(dx, dy);
         if (length >= 1) {
           const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
-          label = `${Math.round(length)} px · ${Math.round(angle)}°`;
+          label = `${Math.round(length)} px · ${Math.round(angle)}°${this.action.shift ? " · snapped" : ""}`;
           ax = end.x;
           ay = end.y;
         }
       } else if (Math.abs(dx) >= 1 && Math.abs(dy) >= 1) {
-        label = `${Math.round(Math.abs(dx))} × ${Math.round(Math.abs(dy))} px`;
+        const constrained = this.action.shift ? (this.action.tool === "ellipse" ? " · circle" : " · square") : "";
+        label = `${Math.round(Math.abs(dx))} × ${Math.round(Math.abs(dy))} px${constrained}`;
         ax = (start.x + end.x) / 2;
         ay = Math.min(start.y, end.y);
       }
