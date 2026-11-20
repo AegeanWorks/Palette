@@ -122,7 +122,8 @@ test("the Move options note adds detail instead of duplicating the header hint",
 });
 
 test("the Help button advertises the F1 shortcut", () => {
-  assert.match(html, /id="btn-help"[^>]*title="Keyboard shortcuts \(F1\)"/);
+  assert.match(html, /id="btn-help"[^>]*title="Shortcuts and gestures \(F1\)"/);
+  assert.match(html, /id="help-title">Shortcuts &amp; gestures<\/h2>/);
   assert.match(editor, /btnHelp: "F1"/);
 });
 
@@ -537,8 +538,8 @@ test("the text input placeholder shows its Enter/Escape shortcuts", () => {
 });
 
 test("the idle status message points to the shortcut help", () => {
-  assert.match(html, /id="status-message"[^>]*>Ready · F1 for shortcuts<\/span>/);
-  assert.match(editor, /target\.textContent = "Ready · F1 for shortcuts"/);
+  assert.match(html, /id="status-message"[^>]*>Ready · F1 for help<\/span>/);
+  assert.match(editor, /target\.textContent = "Ready · F1 for help"/);
 });
 
 test("the Save tooltip names the project file it will download", () => {

@@ -558,7 +558,7 @@ export class PaletteEditor {
     target.dataset.tone = error ? "error" : ok ? "ok" : "";
     clearTimeout(this.messageTimer);
     this.messageTimer = setTimeout(() => {
-      target.textContent = "Ready · F1 for shortcuts";
+      target.textContent = "Ready · F1 for help";
       target.dataset.tone = "";
     }, error ? 6500 : 4200);
   }

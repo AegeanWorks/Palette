@@ -50,7 +50,7 @@
       <button class="icon-btn" id="btn-redo" type="button" aria-label="Redo" title="Redo (Ctrl+Shift+Z)" data-ui="redo" disabled>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 7 5 5-5 5"/><path d="M20 12h-9a6 6 0 0 0-6 6"/></svg>
       </button>
-      <button class="icon-btn" id="btn-help" type="button" aria-label="Keyboard shortcuts" title="Keyboard shortcuts (F1)" data-ui="help">
+      <button class="icon-btn" id="btn-help" type="button" aria-label="Shortcuts and gestures" title="Shortcuts and gestures (F1)" data-ui="help">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.2 2.4c-.8.3-1.2 1-1.2 1.8v.2"/><path d="M11.6 17.1h.1"/></svg>
       </button>
     </div>
@@ -551,7 +551,7 @@
       <span id="status-layer" class="status-layer" title="Active layer">—</span>
       <button id="status-selection" class="status-selection" type="button" hidden title="Click to deselect">Selection</button>
       <span class="status-divider" aria-hidden="true"></span>
-      <span id="status-message" role="status" aria-live="polite">Ready · F1 for shortcuts</span>
+      <span id="status-message" role="status" aria-live="polite">Ready · F1 for help</span>
     </div>
     <div class="status-right">
       <span id="status-autosave" class="status-autosave" data-tone="muted" title="Autosave status" aria-live="polite">Autosave…</span>
@@ -748,7 +748,7 @@
 </dialog>
 
 <dialog class="dialog" id="help-dialog" aria-labelledby="help-title">
-  <h2 id="help-title">Keyboard shortcuts</h2>
+  <h2 id="help-title">Shortcuts &amp; gestures</h2>
   <dl class="shortcut-list">
     <div class="shortcut-heading">Tools</div>
     <div><dt>V, B, E, S, D, K, C, M, T</dt><dd>Move, brush, eraser, clone, dodge/burn, bucket fill, crop, marquee, text</dd></div>
