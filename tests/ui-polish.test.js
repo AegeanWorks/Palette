@@ -257,6 +257,13 @@ test("collapse chevrons are drawn with CSS borders", () => {
   assert.doesNotMatch(styles, /h2::before \{[^}]*content: "▾"/);
 });
 
+test("the Resize dialog can swap width and height", () => {
+  assert.match(html, /id="resize-swap"[^>]*title="Swap width and height"/);
+  assert.match(editor, /resizeSwap\.addEventListener\("click"/);
+  assert.match(editor, /this\.resizeAspect = 1 \/ this\.resizeAspect/);
+  assert.match(styles, /#resize-swap \{[^}]*grid-column: 1 \/ -1/);
+});
+
 test("the New dialog can reuse the current document size", () => {
   assert.match(html, /id="new-current"[^>]*data-current[^>]*title="Use the current document's size"/);
   assert.match(editor, /closest\("button\[data-w\], button\[data-current\]"\)/);
@@ -971,7 +978,8 @@ test("a locked layer disables the layer-level transform buttons", () => {
 test("Resize and Canvas dialogs preview the effective size and capping warning", () => {
   assert.match(html, /id="resize-size"[^>]*aria-live="polite"/);
   assert.match(html, /id="canvas-size"[^>]*aria-live="polite"/);
-  assert.match(editor, /"resize-lock", "resize-size"/);
+  assert.match(editor, /"resize-lock"/);
+  assert.match(editor, /"resize-size"/);
   assert.match(editor, /"canvas-height", "canvas-size"/);
   assert.match(editor, /syncDimensionSize\(readout, widthInput, heightInput, fallbackWidth, fallbackHeight\)/);
   assert.match(editor, /readout\.textContent = capped/);

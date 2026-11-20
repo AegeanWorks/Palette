@@ -257,7 +257,7 @@ const IDS = [
   "new-cancel", "new-create", "new-size", "export-dialog", "export-form", "export-name", "export-filename", "export-format",
   "export-quality-row", "export-quality", "export-quality-value", "export-scale", "export-size", "export-reset",
   "export-cancel", "export-confirm", "resize-dialog", "resize-form", "resize-width", "resize-height",
-  "resize-lock", "resize-size", "resize-cancel", "resize-confirm", "canvas-dialog", "canvas-form", "canvas-width",
+  "resize-lock", "resize-swap", "resize-size", "resize-cancel", "resize-confirm", "canvas-dialog", "canvas-form", "canvas-width",
   "canvas-height", "canvas-size", "canvas-cancel", "canvas-confirm", "transform-dialog", "transform-form",
   "transform-scale-x", "transform-scale-y", "transform-rotation", "transform-rotation-value",
   "transform-size", "transform-flip-h", "transform-flip-v", "transform-reset", "transform-cancel", "transform-confirm",
@@ -4577,6 +4577,15 @@ export class PaletteEditor {
     this.el.transformReset.addEventListener("click", () => this.resetTransformSettings());
     this.el.transformScaleX.addEventListener("input", () => this.syncTransformSize());
     this.el.transformScaleY.addEventListener("input", () => this.syncTransformSize());
+    this.el.resizeSwap.addEventListener("click", () => {
+      const { resizeWidth: width, resizeHeight: height } = this.el;
+      const previous = width.value;
+      width.value = height.value;
+      height.value = previous;
+      if (this.resizeAspect) this.resizeAspect = 1 / this.resizeAspect;
+      this.syncDimensionSize(this.el.resizeSize, width, height, this.doc.width, this.doc.height);
+      this.announce("Width and height swapped.");
+    });
     this.el.resizeWidth.addEventListener("input", () => {
       if (this.el.resizeLock.checked && this.resizeAspect) {
         const width = Number(this.el.resizeWidth.value);

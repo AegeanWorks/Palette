@@ -1305,6 +1305,11 @@ select:focus {
   gap: 10px;
 }
 
+#resize-swap {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+
 .dialog .field {
   justify-content: flex-start;
   flex-direction: column;
