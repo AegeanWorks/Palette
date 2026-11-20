@@ -2834,6 +2834,14 @@ export class PaletteEditor {
     this.scheduleAutosave();
   }
 
+  selectAdjacentLayer(direction) {
+    if (!this.doc) return;
+    const current = indexOfLayer(this.doc, this.doc.activeLayerId);
+    const next = current + direction;
+    if (current < 0 || next < 0 || next >= this.doc.layers.length) return;
+    this.selectLayer(this.doc.layers[next].id);
+  }
+
   toggleLayerVisibility(id) {
     const layer = layerById(this.doc, id);
     if (!layer) return;
@@ -4067,6 +4075,9 @@ export class PaletteEditor {
       } else if (key === "-" || key === "_") {
         event.preventDefault();
         this.zoomOut();
+      } else if (event.altKey && (key === "arrowup" || key === "arrowdown")) {
+        event.preventDefault();
+        this.selectAdjacentLayer(key === "arrowup" ? 1 : -1);
       }
       return;
     }

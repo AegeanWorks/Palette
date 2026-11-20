@@ -1114,6 +1114,13 @@ test("colour labels use consistent spelling", () => {
   assert.match(html, /data-ui="filter-color-balance">Colour balance<\/button>/);
 });
 
+test("layers can be selected from the keyboard", () => {
+  assert.match(editor, /event\.altKey && \(key === "arrowup" \|\| key === "arrowdown"\)/);
+  assert.match(editor, /this\.selectAdjacentLayer\(key === "arrowup" \? 1 : -1\)/);
+  assert.match(editor, /selectAdjacentLayer\(direction\) \{[\s\S]{0,200}indexOfLayer\(this\.doc, this\.doc\.activeLayerId\)/);
+  assert.match(html, /Ctrl \/ Cmd \+ Alt \+ ↑ \/ ↓<\/dt><dd>Select the layer above or below<\/dd>/);
+});
+
 test("the selection can be fitted to the view", () => {
   assert.match(html, /id="selection-zoom"[^>]*title="Zoom the view to the selection"/);
   assert.match(editor, /selectionZoom\.addEventListener\("click", \(\) => this\.zoomToSelection\(\)\)/);
