@@ -131,6 +131,11 @@ test("the status bar reflects the active Gradient type", () => {
   assert.match(editor, /gradientType\.addEventListener\("change"[\s\S]{0,160}this\.syncToolOptions\(\)/);
 });
 
+test("the zoom readout toggles between fit and actual size", () => {
+  assert.match(html, /button id="status-zoom"[^>]*type="button"/);
+  assert.match(editor, /statusZoom\.addEventListener\("click"[\s\S]{0,160}this\.fitView\(\)[\s\S]{0,60}this\.actualSize\(\)/);
+});
+
 test("Auto levels disables when tones already span the full range", () => {
   assert.match(editor, /range\.black === 0 && range\.white === 255/);
   assert.match(editor, /"Auto levels — tones already span the full range"/);
@@ -602,7 +607,7 @@ test("F1 opens the keyboard shortcuts dialog", () => {
 
 test("the status bar readouts explain themselves", () => {
   assert.match(html, /id="status-cursor"[^>]*title="Pointer position in document pixels"/);
-  assert.match(html, /id="status-zoom"[^>]*title="Current zoom level"/);
+  assert.match(html, /id="status-zoom"[^>]*title="Click to toggle Fit \/ 100%"/);
 });
 
 test("the status bar names the active tool and its shortcut", () => {

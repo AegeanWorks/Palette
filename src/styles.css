@@ -1089,6 +1089,19 @@ select:focus {
   font-family: var(--mono);
 }
 
+.status-zoom {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.status-zoom:hover {
+  color: var(--cyan);
+}
+
 /* ---------- dialogs ---------- */
 
 .dialog {

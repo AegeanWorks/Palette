@@ -3851,6 +3851,10 @@ export class PaletteEditor {
     this.el.btnZoomOut.addEventListener("click", () => this.zoomBy(0.8));
     this.el.btnFit.addEventListener("click", () => this.fitView());
     this.el.btnActual.addEventListener("click", () => this.actualSize());
+    this.el.statusZoom.addEventListener("click", () => {
+      if (Math.abs(this.view.scale - 1) < 0.001) this.fitView();
+      else this.actualSize();
+    });
     this.el.btnLayerAdd.addEventListener("click", () => this.addNewLayer());
     this.el.btnLayerImage.addEventListener("click", () => this.el.fileLayer.click());
     this.el.btnLayerDuplicate.addEventListener("click", () => this.duplicateActiveLayer());
