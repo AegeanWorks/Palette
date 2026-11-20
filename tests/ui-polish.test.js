@@ -221,6 +221,12 @@ test("export settings persist across dialog opens", () => {
   assert.match(editor, /saved\.format \|\| "png"/);
 });
 
+test("the Transform dialog has a Reset control", () => {
+  assert.match(html, /id="transform-reset"[^>]*title="Reset to 100% scale and no rotation"/);
+  assert.match(editor, /transformReset\.addEventListener\("click", \(\) => this\.resetTransformSettings\(\)\)/);
+  assert.match(editor, /resetTransformSettings\(\) \{/);
+});
+
 test("the Tool options header includes the active tool's shortcut", () => {
   assert.match(editor, /optionsToolName\.textContent = toolKey \? `\$\{meta\.label\} \(\$\{toolKey\}\)`/);
 });

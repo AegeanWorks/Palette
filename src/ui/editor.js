@@ -260,7 +260,7 @@ const IDS = [
   "resize-lock", "resize-size", "resize-cancel", "resize-confirm", "canvas-dialog", "canvas-form", "canvas-width",
   "canvas-height", "canvas-size", "canvas-cancel", "canvas-confirm", "transform-dialog", "transform-form",
   "transform-scale-x", "transform-scale-y", "transform-rotation", "transform-rotation-value",
-  "transform-size", "transform-flip-h", "transform-flip-v", "transform-cancel", "transform-confirm",
+  "transform-size", "transform-flip-h", "transform-flip-v", "transform-reset", "transform-cancel", "transform-confirm",
   "help-dialog", "help-close",
   "restore-dialog", "restore-summary", "restore-confirm", "restore-discard", "status-autosave",
 ];
@@ -3426,6 +3426,11 @@ export class PaletteEditor {
     if (this.isDialogOpen()) return;
     this.finishText();
     if (!this.requireActiveLayer()) return;
+    this.resetTransformSettings();
+    this.el.transformDialog.showModal();
+  }
+
+  resetTransformSettings() {
     this.el.transformScaleX.value = "100";
     this.el.transformScaleY.value = "100";
     this.el.transformRotation.value = "0";
@@ -3433,7 +3438,6 @@ export class PaletteEditor {
     this.el.transformFlipH.checked = false;
     this.el.transformFlipV.checked = false;
     this.syncTransformSize();
-    this.el.transformDialog.showModal();
   }
 
   syncTransformSize() {
@@ -4493,6 +4497,7 @@ export class PaletteEditor {
     this.el.transformRotation.addEventListener("input", () => {
       this.el.transformRotationValue.textContent = this.el.transformRotation.value;
     });
+    this.el.transformReset.addEventListener("click", () => this.resetTransformSettings());
     this.el.transformScaleX.addEventListener("input", () => this.syncTransformSize());
     this.el.transformScaleY.addEventListener("input", () => this.syncTransformSize());
     this.el.resizeWidth.addEventListener("input", () => {
