@@ -1041,7 +1041,7 @@ select:focus {
 
 .filter-grid {
   display: grid;
-  gap: 6px;
+  gap: 4px;
 }
 
 .filter-shortcuts {
@@ -1069,8 +1069,8 @@ select:focus {
 
 .filter-group {
   grid-column: 1 / -1;
-  margin: 10px 0 2px;
-  padding-bottom: 4px;
+  margin: 7px 0 1px;
+  padding-bottom: 3px;
   border-bottom: 1px solid var(--line);
   color: var(--dim);
   font-size: 10px;

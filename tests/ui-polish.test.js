@@ -136,6 +136,11 @@ test("Manage icons fit a single compact row", () => {
   assert.match(styles, /\.panel-group \.button-row\.compact \{[^}]*gap: 3px/);
 });
 
+test("filter category headers and gaps are tighter", () => {
+  assert.match(styles, /\.filter-grid \{[^}]*gap: 4px/);
+  assert.match(styles, /\.filter-group \{[^}]*margin: 7px 0 1px/);
+});
+
 test("collapsed panel states persist across reloads", () => {
   assert.match(editor, /localStorage\.getItem\("palette\.panels"\)/);
   assert.match(editor, /localStorage\.setItem\("palette\.panels", JSON\.stringify\(saved\)\)/);
