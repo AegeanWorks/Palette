@@ -619,7 +619,7 @@ export class PaletteEditor {
       if (selectionRect) {
         const mode = this.selection.invert ? " (inverted)" : "";
         this.el.statusSelection.textContent =
-          `Selection ${Math.round(selectionRect.w)}×${Math.round(selectionRect.h)}${mode}`;
+          `Selection ${Math.round(selectionRect.w)}×${Math.round(selectionRect.h)} @ ${Math.round(selectionRect.x)},${Math.round(selectionRect.y)}${mode}`;
         this.el.statusSelection.dataset.inverted = this.selection.invert ? "true" : "false";
       }
     }

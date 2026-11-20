@@ -126,6 +126,10 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("the status bar reports the selection position", () => {
+  assert.match(editor, /@ \$\{Math\.round\(selectionRect\.x\)\},\$\{Math\.round\(selectionRect\.y\)\}\$\{mode\}`/);
+});
+
 test("non-neutral adjustment values are highlighted", () => {
   assert.match(editor, /output\.dataset\.active = value !== 0 \? "true" : "false"/);
   assert.match(styles, /\.adjust-list \.field output\[data-active="true"\] \{[^}]*font-weight: 700/);
@@ -705,7 +709,7 @@ test("the desktop status bar shows an active selection", () => {
   assert.match(styles, /\.status-selection\s*\{[^}]*color:\s*var\(--cyan\)/);
   assert.match(editor, /"status-layer",\s*"status-selection"/);
   assert.match(editor, /statusSelection\.hidden\s*=\s*!selectionRect/);
-  assert.match(editor, /`Selection \$\{Math\.round\(selectionRect\.w\)\}×\$\{Math\.round\(selectionRect\.h\)\}\$\{mode\}`/);
+  assert.match(editor, /`Selection \$\{Math\.round\(selectionRect\.w\)\}×\$\{Math\.round\(selectionRect\.h\)\} @ \$\{Math\.round\(selectionRect\.x\)\},\$\{Math\.round\(selectionRect\.y\)\}\$\{mode\}`/);
 });
 
 test("the active layer name is visually and semantically marked", () => {
