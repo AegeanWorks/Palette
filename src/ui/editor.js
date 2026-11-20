@@ -1287,7 +1287,7 @@ export class PaletteEditor {
         const ex = this.view.offsetX + end.x * this.view.scale;
         const ey = this.view.offsetY + end.y * this.view.scale;
         const angle = (Math.atan2(end.y - start.y, end.x - start.x) * 180) / Math.PI;
-        const label = `${Math.round(length)} px · ${Math.round(angle)}°${this.action.shift ? " · snapped" : ""}`;
+        const label = `${Math.round(length)} px · ${Math.round(angle)}° @ ${Math.round(start.x)},${Math.round(start.y)}${this.action.shift ? " · snapped" : ""}`;
         context.save();
         context.strokeStyle = "rgba(255, 255, 255, 0.85)";
         context.lineWidth = 1;

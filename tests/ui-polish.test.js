@@ -285,7 +285,7 @@ test("the shape drag shows a live length/angle or size badge", () => {
 test("the gradient drag shows a live angle and length guide", () => {
   assert.match(editor, /const length = Math\.hypot\(end\.x - start\.x, end\.y - start\.y\)/);
   assert.match(editor, /const angle = \(Math\.atan2\(end\.y - start\.y, end\.x - start\.x\) \* 180\) \/ Math\.PI/);
-  assert.match(editor, /const label = `\$\{Math\.round\(length\)\} px · \$\{Math\.round\(angle\)\}°\$\{this\.action\.shift \? " · snapped" : ""\}`/);
+  assert.match(editor, /const label = `\$\{Math\.round\(length\)\} px · \$\{Math\.round\(angle\)\}° @ \$\{Math\.round\(start\.x\)\},\$\{Math\.round\(start\.y\)\}\$\{this\.action\.shift \? " · snapped" : ""\}`/);
   assert.match(editor, /context\.arc\(hx, hy, 4, 0, Math\.PI \* 2\)/);
 });
 
