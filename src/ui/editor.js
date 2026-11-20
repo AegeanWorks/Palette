@@ -4265,6 +4265,13 @@ export class PaletteEditor {
         node = node.nextElementSibling;
       }
     });
+    this.root.querySelector(".filter-grid")?.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      const head = event.target.closest(".filter-group");
+      if (!head) return;
+      event.preventDefault();
+      head.click();
+    });
     this.el.filterReset.addEventListener("click", () => {
       for (const input of this.root.querySelectorAll(".filter-grid input")) {
         if (input.type === "checkbox") input.checked = input.defaultChecked;

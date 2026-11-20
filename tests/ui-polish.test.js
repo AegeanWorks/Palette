@@ -136,6 +136,12 @@ test("Manage icons fit a single compact row", () => {
   assert.match(styles, /\.panel-group \.button-row\.compact \{[^}]*gap: 3px/);
 });
 
+test("filter category headers respond to Enter and Space", () => {
+  assert.match(editor, /filter-grid"\)\?\.addEventListener\("keydown"/);
+  assert.match(editor, /event\.key !== "Enter" && event\.key !== " "/);
+  assert.match(editor, /event\.target\.closest\("\.filter-group"\)[\s\S]{0,120}head\.click\(\)/);
+});
+
 test("filter categories can be collapsed individually", () => {
   assert.equal((html.match(/class="filter-group" role="button"/g) || []).length, 6);
   assert.match(editor, /const head = event\.target\.closest\("\.filter-group"\)/);
