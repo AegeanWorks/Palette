@@ -131,6 +131,11 @@ test("the status bar reflects the active Gradient type", () => {
   assert.match(editor, /gradientType\.addEventListener\("change"[\s\S]{0,160}this\.syncToolOptions\(\)/);
 });
 
+test("the document size readout opens the Resize dialog", () => {
+  assert.match(html, /button id="doc-size"[^>]*title="Click to resize the document"/);
+  assert.match(editor, /docSize\.addEventListener\("click", \(\) => this\.openResizeDialog\(\)\)/);
+});
+
 test("non-default filter values are highlighted", () => {
   assert.match(editor, /syncFilterOutputs\(\) \{[\s\S]{0,360}out\.dataset\.active = input\.value !== input\.dataset\.neutral \? "true" : "false"/);
   assert.match(editor, /\.filter-grid"\)/);
