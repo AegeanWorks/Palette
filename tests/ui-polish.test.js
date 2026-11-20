@@ -126,6 +126,11 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("destructive controls explain why a locked layer disables them", () => {
+  assert.match(editor, /if \(control\.dataset\.baseTitle === undefined\) control\.dataset\.baseTitle = control\.title/);
+  assert.match(editor, /control\.title = cannotEditLayer \? `Unavailable — \$\{editLock\}` : control\.dataset\.baseTitle/);
+});
+
 test("opacity, blend and adjustment sliders explain why a locked layer blocks them", () => {
   assert.match(editor, /const editLock = layer\.locked \? "unlock the layer first" : "show the layer first"/);
   assert.match(editor, /layerOpacity\.title = cannotEditLayer \? `Layer opacity — \$\{editLock\}` : "Layer opacity"/);
@@ -382,7 +387,7 @@ test("a hidden layer disables editing controls just like a locked one", () => {
   assert.match(editor, /layerOpacity\.disabled = cannotEditLayer/);
   assert.match(editor, /layerBlend\.disabled = cannotEditLayer/);
   assert.match(editor, /input\.disabled = cannotEditLayer/);
-  assert.match(editor, /this\.el\[name\]\.disabled = cannotEditLayer/);
+  assert.match(editor, /control\.disabled = cannotEditLayer/);
 });
 
 test("the actual-size button shows a pressed state at 100% zoom", () => {
@@ -448,7 +453,7 @@ test("a locked layer disables the destructive filter buttons and their inputs", 
   assert.match(list, /"filterBlurRadius"/);
   assert.match(list, /"filterTintColor"/);
   assert.match(list, /"levelGamma"/);
-  assert.match(editor, /for \(const name of DESTRUCTIVE_ACTIONS\)[\s\S]{0,160}this\.el\[name\]\.disabled = cannotEditLayer/);
+  assert.match(editor, /for \(const name of DESTRUCTIVE_ACTIONS\)[\s\S]{0,220}control\.disabled = cannotEditLayer/);
 });
 
 test("a locked layer disables its opacity and blend controls", () => {

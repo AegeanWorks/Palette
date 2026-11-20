@@ -754,7 +754,11 @@ export class PaletteEditor {
     this.el.layerBlend.disabled = cannotEditLayer;
     this.el.layerBlend.title = cannotEditLayer ? `Blend mode — ${editLock}` : "Blend mode";
     for (const name of DESTRUCTIVE_ACTIONS) {
-      if (this.el[name]) this.el[name].disabled = cannotEditLayer;
+      const control = this.el[name];
+      if (!control) continue;
+      if (control.dataset.baseTitle === undefined) control.dataset.baseTitle = control.title;
+      control.disabled = cannotEditLayer;
+      control.title = cannotEditLayer ? `Unavailable — ${editLock}` : control.dataset.baseTitle;
     }
     for (const key of ADJUSTMENTS) {
       const input = this.el[`adj${key[0].toUpperCase()}${key.slice(1)}`];
