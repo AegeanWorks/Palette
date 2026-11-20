@@ -2693,7 +2693,10 @@ export class PaletteEditor {
       const out = this.root.querySelector(`output[for="${input.id}"]`);
       if (out) out.dataset.active = input.value !== input.dataset.neutral ? "true" : "false";
     }
-    for (const group of this.root.querySelectorAll(".filter-group")) group.dataset.active = "false";
+    for (const group of this.root.querySelectorAll(".filter-group")) {
+      group.dataset.active = "false";
+      group.dataset.count = "0";
+    }
     let changedCount = 0;
     for (const input of this.root.querySelectorAll(".filter-grid input")) {
       const isDefault = input.type === "checkbox"
@@ -2703,7 +2706,10 @@ export class PaletteEditor {
       changedCount += 1;
       let group = input.previousElementSibling;
       while (group && !group.classList.contains("filter-group")) group = group.previousElementSibling;
-      if (group) group.dataset.active = "true";
+      if (group) {
+        group.dataset.active = "true";
+        group.dataset.count = String(Number(group.dataset.count ?? 0) + 1);
+      }
     }
     const changed = changedCount > 0;
     if (this.el.filterCount) {

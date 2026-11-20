@@ -1117,9 +1117,10 @@ select:focus {
 }
 
 .filter-group[data-active="true"]::after {
-  content: "•";
+  content: "• " attr(data-count);
   margin-left: 6px;
   color: var(--accent, #67e8f9);
+  font-family: var(--mono);
 }
 
 .filter-group::before {

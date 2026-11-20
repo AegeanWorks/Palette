@@ -397,7 +397,12 @@ test("filter categories mark the ones with active settings", () => {
   assert.match(editor, /group\.dataset\.active = "false"/);
   assert.match(editor, /while \(group && !group\.classList\.contains\("filter-group"\)\) group = group\.previousElementSibling/);
   assert.match(editor, /group\.dataset\.active = "true"/);
-  assert.match(styles, /\.filter-group\[data-active="true"\]::after \{[^}]*content: "•"/);
+  assert.match(styles, /\.filter-group\[data-active="true"\]::after \{[^}]*content: "• " attr\(data-count\)/);
+});
+
+test("active filter categories show how many filters changed", () => {
+  assert.match(editor, /group\.dataset\.count = "0"/);
+  assert.match(editor, /Number\(group\.dataset\.count \?\? 0\) \+ 1/);
 });
 
 test("the Filters header counts changed filters", () => {
