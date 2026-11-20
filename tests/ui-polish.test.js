@@ -210,6 +210,14 @@ test("Noise lives with the texture filters", () => {
   assert.ok(noise > colorBalance);
 });
 
+test("help shortcuts are grouped into categories", () => {
+  const groups = [...html.matchAll(/class="shortcut-heading">([^<]+)</g)].map((m) => m[1]);
+  assert.ok(groups.includes("Tools"));
+  assert.ok(groups.includes("Selection &amp; edit"));
+  assert.ok(groups.includes("Brush &amp; view"));
+  assert.match(styles, /div\.shortcut-heading \{[^}]*text-transform: uppercase/);
+});
+
 test("the dodge cursor marks the active mode with plus or minus", () => {
   assert.match(editor, /else if \(this\.tool === "dodge"\) \{/);
   assert.match(editor, /if \(this\.options\.dodge\.mode !== "burn"\) \{/);

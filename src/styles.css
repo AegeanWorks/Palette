@@ -1367,6 +1367,18 @@ select:focus {
   text-align: right;
 }
 
+.shortcut-list div.shortcut-heading {
+  display: block;
+  margin-top: 4px;
+  padding-bottom: 2px;
+  border-bottom: 0;
+  color: var(--dim);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
 .edit-lock-notice {
   margin: 0 0 10px;
   padding: 7px 9px;
