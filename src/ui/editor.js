@@ -3517,6 +3517,8 @@ export class PaletteEditor {
     const before = this.doc;
     this.doc = updateLayer(this.doc, layer.id, { canvas: shiftedCanvas(layer.canvas, dx, dy) });
     this.commit(before, "Nudge layer");
+    const direction = dx < 0 ? "left" : dx > 0 ? "right" : dy < 0 ? "up" : "down";
+    this.announce(`Nudged ${layer.name} ${direction} ${Math.abs(dx || dy)} px.`);
   }
 
   undo() {

@@ -126,6 +126,11 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("keyboard nudges announce the direction and distance", () => {
+  assert.match(editor, /const direction = dx < 0 \? "left" : dx > 0 \? "right" : dy < 0 \? "up" : "down"/);
+  assert.match(editor, /this\.announce\(`Nudged \$\{layer\.name\} \$\{direction\} \$\{Math\.abs\(dx \|\| dy\)\} px\.`\)/);
+});
+
 test("the clone guide shows the exact source offset", () => {
   assert.match(editor, /const offX = Math\.round\(pointerDoc\.x - currentSource\.x\)/);
   assert.match(editor, /const label = `Clone Δ \$\{offX >= 0 \? "\+" : ""\}\$\{offX\}, \$\{offY >= 0 \? "\+" : ""\}\$\{offY\} px`/);
