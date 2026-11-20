@@ -471,10 +471,6 @@
           <div class="button-row compact filter-shortcuts">
             <button class="btn btn-ghost btn-small" id="btn-filter-sharpen" type="button" title="Increase local contrast to sharpen fine detail" data-ui="filter-sharpen">Sharpen</button>
             <button class="btn btn-ghost btn-small" id="btn-filter-vignette" type="button" title="Darken the edges toward a soft centre" data-ui="filter-vignette">Vignette</button>
-            <button class="btn btn-ghost btn-small" id="btn-filter-invert" type="button" title="Invert every colour channel" data-ui="filter-invert">Invert</button>
-            <button class="btn btn-ghost btn-small" id="btn-filter-desaturate" type="button" title="Reduce saturation toward greyscale" data-ui="filter-desaturate">Desaturate</button>
-            <button class="btn btn-ghost btn-small" id="btn-filter-sepia" type="button" title="Apply a warm brown vintage tone" data-ui="filter-sepia">Sepia</button>
-            <button class="btn btn-ghost btn-small" id="btn-filter-emboss" type="button" title="Emphasise edges for a raised embossed look" data-ui="filter-emboss">Emboss</button>
           </div>
           <label class="field" for="filter-threshold-cutoff">Threshold <output id="filter-threshold-value" for="filter-threshold-cutoff">128</output></label>
           <input id="filter-threshold-cutoff" type="range" min="1" max="254" step="1" value="128">
@@ -482,6 +478,13 @@
           <label class="field" for="filter-posterize-steps">Posterize <output id="filter-posterize-value" for="filter-posterize-steps">4</output> levels</label>
           <input id="filter-posterize-steps" type="range" min="2" max="16" step="1" value="4">
           <button class="btn btn-ghost btn-small" id="btn-filter-posterize" type="button" title="Reduce the number of levels per channel" data-ui="filter-posterize">Posterize</button>
+          <h3 class="filter-group">Stylize</h3>
+          <div class="button-row compact filter-shortcuts">
+            <button class="btn btn-ghost btn-small" id="btn-filter-invert" type="button" title="Invert every colour channel" data-ui="filter-invert">Invert</button>
+            <button class="btn btn-ghost btn-small" id="btn-filter-desaturate" type="button" title="Reduce saturation toward greyscale" data-ui="filter-desaturate">Desaturate</button>
+            <button class="btn btn-ghost btn-small" id="btn-filter-sepia" type="button" title="Apply a warm brown vintage tone" data-ui="filter-sepia">Sepia</button>
+            <button class="btn btn-ghost btn-small" id="btn-filter-emboss" type="button" title="Emphasise edges for a raised embossed look" data-ui="filter-emboss">Emboss</button>
+          </div>
           <h3 class="filter-group">Tone &amp; levels</h3>
           <label class="field" for="level-black">Levels black <output id="level-black-value" for="level-black">0</output></label>
           <input id="level-black" type="range" min="0" max="254" step="1" value="0">

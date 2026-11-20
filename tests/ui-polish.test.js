@@ -136,9 +136,16 @@ test("Manage icons fit a single compact row", () => {
   assert.match(styles, /\.panel-group \.button-row\.compact \{[^}]*gap: 3px/);
 });
 
+test("filters are split into Essentials, Stylize, Tone, Colour, Effects", () => {
+  const groups = html.match(/<h3 class="filter-group">([^<]+)<\/h3>/g)?.map((g) => g.replace(/<[^>]+>/g, "")) ?? [];
+  assert.ok(groups.includes("Stylize"));
+  assert.ok(groups.includes("Effects"));
+  assert.match(html, /filter-group">Stylize<\/h3>[\s\S]{0,200}id="btn-filter-invert"/);
+});
+
 test("parameterless filters are packed into compact rows", () => {
   const rows = html.match(/class="button-row compact filter-shortcuts"/g) || [];
-  assert.equal(rows.length, 2);
+  assert.equal(rows.length, 3);
   assert.match(html, /filter-shortcuts[\s\S]{0,200}id="btn-filter-sharpen"/);
   assert.match(html, /filter-shortcuts[\s\S]{0,600}id="btn-filter-solarize"/);
   assert.match(styles, /\.filter-shortcuts \.btn \{[^}]*flex: 1 1 auto/);
