@@ -748,8 +748,11 @@ export class PaletteEditor {
       ? "Delete layer — keep at least one layer"
       : "Delete layer";
     const cannotEditLayer = layer.locked || !layer.visible;
+    const editLock = layer.locked ? "unlock the layer first" : "show the layer first";
     this.el.layerOpacity.disabled = cannotEditLayer;
+    this.el.layerOpacity.title = cannotEditLayer ? `Layer opacity — ${editLock}` : "Layer opacity";
     this.el.layerBlend.disabled = cannotEditLayer;
+    this.el.layerBlend.title = cannotEditLayer ? `Blend mode — ${editLock}` : "Blend mode";
     for (const name of DESTRUCTIVE_ACTIONS) {
       if (this.el[name]) this.el[name].disabled = cannotEditLayer;
     }
@@ -759,6 +762,9 @@ export class PaletteEditor {
       if (!input || !output) continue;
       const value = layer.adjustments[key];
       input.disabled = cannotEditLayer;
+      input.title = cannotEditLayer
+        ? `${key[0].toUpperCase()}${key.slice(1)} — ${editLock}`
+        : `${key[0].toUpperCase()}${key.slice(1)} adjustment`;
       if (this.root.activeElement !== input) input.value = String(value);
       output.textContent = formatAdjustment(key, value);
     }

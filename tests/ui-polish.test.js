@@ -126,6 +126,13 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("opacity, blend and adjustment sliders explain why a locked layer blocks them", () => {
+  assert.match(editor, /const editLock = layer\.locked \? "unlock the layer first" : "show the layer first"/);
+  assert.match(editor, /layerOpacity\.title = cannotEditLayer \? `Layer opacity — \$\{editLock\}` : "Layer opacity"/);
+  assert.match(editor, /layerBlend\.title = cannotEditLayer \? `Blend mode — \$\{editLock\}` : "Blend mode"/);
+  assert.match(editor, /input\.title = cannotEditLayer[\s\S]{0,120}\$\{editLock\}/);
+});
+
 test("crop Apply and Cancel explain why they are disabled", () => {
   assert.match(editor, /cropApply\.title = isUsableRect\(this\.cropRect\)[\s\S]{0,100}"Apply crop — draw a crop region first"/);
   assert.match(editor, /cropCancel\.title = this\.cropRect \? "Cancel the crop \(Escape\)" : "Cancel — no active crop"/);
