@@ -264,6 +264,14 @@ test("collapse chevrons are drawn with CSS borders", () => {
   assert.doesNotMatch(styles, /h2::before \{[^}]*content: "▾"/);
 });
 
+test("the Transform dialog offers an exact rotation field", () => {
+  assert.match(html, /id="transform-rotation-input"[^>]*title="Exact rotation in degrees"/);
+  assert.match(editor, /transformRotationInput\.value = value/);
+  assert.match(editor, /transformRotationInput\.addEventListener\("input"/);
+  assert.match(editor, /Math\.max\(-180, Math\.min\(180, Math\.round\(raw\)\)\)/);
+  assert.match(styles, /\.rotation-row \{[^}]*grid-template-columns: 1fr 76px/);
+});
+
 test("the Transform dialog can link Scale X and Scale Y", () => {
   assert.match(html, /id="transform-lock" type="checkbox" checked> Keep aspect ratio/);
   assert.match(editor, /transformScale = \{ x: 100, y: 100 \}/);
@@ -847,7 +855,8 @@ test("successful file operations get a positive status tone", () => {
 
 test("the transform dialog previews the resulting content size", () => {
   assert.match(html, /id="transform-size"[^>]*aria-live="polite"/);
-  assert.match(editor, /"transform-rotation-value",\s*"transform-size"/);
+  assert.match(editor, /"transform-rotation-value"/);
+  assert.match(editor, /"transform-size"/);
   assert.match(editor, /syncTransformSize\(\)\s*\{[\s\S]{0,900}Content will be \$\{nextW\} × \$\{nextH\} px/);
   assert.match(editor, /transformScaleX\.addEventListener\("input"/);
   assert.match(editor, /syncTransformScale\("x"\)/);

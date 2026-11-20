@@ -1326,6 +1326,13 @@ select:focus {
   justify-self: start;
 }
 
+.rotation-row {
+  display: grid;
+  grid-template-columns: 1fr 76px;
+  align-items: center;
+  gap: 10px;
+}
+
 .dialog .field {
   justify-content: flex-start;
   flex-direction: column;

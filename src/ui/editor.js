@@ -265,7 +265,7 @@ const IDS = [
   "export-cancel", "export-confirm", "resize-dialog", "resize-form", "resize-width", "resize-height",
   "resize-lock", "resize-swap", "resize-size", "resize-cancel", "resize-confirm", "canvas-dialog", "canvas-form", "canvas-width",
   "canvas-height", "canvas-swap", "canvas-size", "canvas-cancel", "canvas-confirm", "transform-dialog", "transform-form",
-  "transform-scale-x", "transform-scale-y", "transform-lock", "transform-rotation", "transform-rotation-value",
+  "transform-scale-x", "transform-scale-y", "transform-lock", "transform-rotation", "transform-rotation-input", "transform-rotation-value",
   "transform-size", "transform-flip-h", "transform-flip-v", "transform-reset", "transform-cancel", "transform-confirm",
   "help-dialog", "help-close",
   "restore-dialog", "restore-summary", "restore-confirm", "restore-discard", "status-autosave",
@@ -3533,6 +3533,7 @@ export class PaletteEditor {
     this.el.transformLock.checked = true;
     this.transformScale = { x: 100, y: 100 };
     this.el.transformRotation.value = "0";
+    this.el.transformRotationInput.value = "0";
     this.el.transformRotationValue.textContent = "0";
     this.el.transformFlipH.checked = false;
     this.el.transformFlipV.checked = false;
@@ -4625,7 +4626,23 @@ export class PaletteEditor {
       this.applyLayerTransform();
     });
     this.el.transformRotation.addEventListener("input", () => {
-      this.el.transformRotationValue.textContent = this.el.transformRotation.value;
+      const value = this.el.transformRotation.value;
+      this.el.transformRotationValue.textContent = value;
+      this.el.transformRotationInput.value = value;
+    });
+    const clampRotationInput = () => {
+      const raw = Number(this.el.transformRotationInput.value);
+      if (!Number.isFinite(raw)) return String(0);
+      return String(Math.max(-180, Math.min(180, Math.round(raw))));
+    };
+    this.el.transformRotationInput.addEventListener("input", () => {
+      const value = clampRotationInput();
+      this.el.transformRotation.value = value;
+      this.el.transformRotationValue.textContent = value;
+      this.syncTransformSize();
+    });
+    this.el.transformRotationInput.addEventListener("change", () => {
+      this.el.transformRotationInput.value = clampRotationInput();
     });
     this.el.transformReset.addEventListener("click", () => this.resetTransformSettings());
     const syncTransformScale = (source) => {
