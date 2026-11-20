@@ -1068,6 +1068,7 @@ select:focus {
 }
 
 .filter-group {
+  cursor: pointer;
   grid-column: 1 / -1;
   margin: 7px 0 1px;
   padding-bottom: 3px;
@@ -1077,6 +1078,18 @@ select:focus {
   font-weight: 700;
   letter-spacing: 0.09em;
   text-transform: uppercase;
+}
+
+.filter-group::before {
+  content: "▾";
+  display: inline-block;
+  margin-right: 6px;
+  font-size: 9px;
+  transition: transform 0.18s var(--ease);
+}
+
+.filter-group[data-collapsed="true"]::before {
+  transform: rotate(-90deg);
 }
 
 /* ---------- status bar ---------- */

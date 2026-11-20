@@ -136,6 +136,13 @@ test("Manage icons fit a single compact row", () => {
   assert.match(styles, /\.panel-group \.button-row\.compact \{[^}]*gap: 3px/);
 });
 
+test("filter categories can be collapsed individually", () => {
+  assert.equal((html.match(/class="filter-group" role="button"/g) || []).length, 6);
+  assert.match(editor, /const head = event\.target\.closest\("\.filter-group"\)/);
+  assert.match(editor, /while \(node && !node\.classList\.contains\("filter-group"\)\)/);
+  assert.match(styles, /\.filter-group\[data-collapsed="true"\]::before/);
+});
+
 test("Filters Reset disables when everything is already default", () => {
   assert.match(editor, /filterReset\.disabled = !changed/);
   assert.match(editor, /"Filters already at defaults"/);
@@ -160,16 +167,16 @@ test("the Filters panel can reset all settings", () => {
 });
 
 test("texture filters have their own category", () => {
-  const textures = html.indexOf('filter-group">Textures</h3>');
+  const textures = html.search(/filter-group"[^>]*>Textures<\/h3>/);
   assert.ok(textures > 0 && textures < html.indexOf('id="btn-filter-dither"'));
   assert.ok(textures < html.indexOf('id="btn-filter-oil"'));
 });
 
 test("filters are split into Essentials, Stylize, Tone, Colour, Effects", () => {
-  const groups = html.match(/<h3 class="filter-group">([^<]+)<\/h3>/g)?.map((g) => g.replace(/<[^>]+>/g, "")) ?? [];
+  const groups = html.match(/<h3 class="filter-group"[^>]*>([^<]+)<\/h3>/g)?.map((g) => g.replace(/<[^>]+>/g, "")) ?? [];
   assert.ok(groups.includes("Stylize"));
   assert.ok(groups.includes("Effects"));
-  assert.match(html, /filter-group">Stylize<\/h3>[\s\S]{0,200}id="btn-filter-invert"/);
+  assert.match(html, /filter-group"[^>]*>Stylize<\/h3>[\s\S]{0,300}id="btn-filter-invert"/);
 });
 
 test("parameterless filters are packed into compact rows", () => {
@@ -875,8 +882,8 @@ test("the export dialog starts with its pre-filled name selected", () => {
 });
 
 test("the filters panel is grouped into scannable sections", () => {
-  for (const label of ["Essentials", "Tone &amp; levels", "Colour balance", "Effects"]) {
-    assert.match(html, new RegExp(`<h3 class="filter-group">${label}</h3>`), `${label} group`);
+  for (const label of ["Essentials", "Stylize", "Tone &amp; levels", "Colour balance", "Effects", "Textures"]) {
+    assert.match(html, new RegExp(`<h3 class="filter-group"[^>]*>${label}</h3>`), `${label} group`);
   }
   assert.match(styles, /\.filter-group\s*\{[^}]*grid-column:\s*1\s*\/\s*-1/);
   assert.match(styles, /\.filter-group\s*\{[^}]*text-transform:\s*uppercase/);

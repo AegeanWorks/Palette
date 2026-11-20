@@ -4252,6 +4252,19 @@ export class PaletteEditor {
       this.commit(before, "Layer opacity");
     });
     this.root.querySelector(".filter-grid")?.addEventListener("input", () => this.syncFilterOutputs());
+    this.root.querySelector(".filter-grid")?.addEventListener("click", (event) => {
+      const head = event.target.closest(".filter-group");
+      if (!head) return;
+      const collapsed = head.dataset.collapsed === "true";
+      head.dataset.collapsed = collapsed ? "false" : "true";
+      head.setAttribute("aria-expanded", collapsed ? "true" : "false");
+      head.title = collapsed ? "Click to collapse" : "Click to expand";
+      let node = head.nextElementSibling;
+      while (node && !node.classList.contains("filter-group")) {
+        node.hidden = !collapsed;
+        node = node.nextElementSibling;
+      }
+    });
     this.el.filterReset.addEventListener("click", () => {
       for (const input of this.root.querySelectorAll(".filter-grid input")) {
         if (input.type === "checkbox") input.checked = input.defaultChecked;
