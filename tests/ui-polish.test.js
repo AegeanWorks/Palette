@@ -131,8 +131,14 @@ test("the status bar reflects the active Gradient type", () => {
   assert.match(editor, /gradientType\.addEventListener\("change"[\s\S]{0,160}this\.syncToolOptions\(\)/);
 });
 
+test("double-clicking with the Zoom tool resets to 100%", () => {
+  assert.match(editor, /this\.tool === "zoom"\) this\.actualSize\(\)/);
+  assert.match(editor, /Double-click for 100%/);
+});
+
 test("double-clicking with the Marquee tool selects all", () => {
-  assert.match(editor, /stage\.addEventListener\("dblclick"[\s\S]{0,120}this\.tool === "marquee" && !this\.textDraft\) this\.selectAll\(\)/);
+  assert.match(editor, /stage\.addEventListener\("dblclick"[\s\S]{0,120}if \(this\.textDraft\) return;/);
+  assert.match(editor, /this\.tool === "marquee"\) this\.selectAll\(\)/);
   assert.match(editor, /Double-click or Ctrl\+A selects all/);
 });
 

@@ -176,7 +176,7 @@ const TOOL_META = Object.freeze({
   gradient: { label: "Gradient", cursor: "crosshair", hint: "Drag to fill the active layer with a gradient." },
   eyedropper: { label: "Eyedropper", cursor: "eyedropper", hint: "Click a pixel to make it the active colour." },
   hand: { label: "Hand", cursor: "grab", hint: "Drag to pan. Space also pans from any tool." },
-  zoom: { label: "Zoom", cursor: "zoom-in", hint: "Click to zoom in. Alt-click to zoom out." },
+  zoom: { label: "Zoom", cursor: "zoom-in", hint: "Click to zoom in. Alt-click to zoom out. Double-click for 100%." },
 });
 
 const ADJUSTMENTS = [
@@ -4263,7 +4263,9 @@ export class PaletteEditor {
     this.el.stage.addEventListener("pointerdown", (event) => this.onPointerDown(event));
     this.el.stage.addEventListener("pointermove", (event) => this.onPointerMove(event));
     this.el.stage.addEventListener("dblclick", () => {
-      if (this.tool === "marquee" && !this.textDraft) this.selectAll();
+      if (this.textDraft) return;
+      if (this.tool === "marquee") this.selectAll();
+      else if (this.tool === "zoom") this.actualSize();
     });
     this.el.stage.addEventListener("pointerup", (event) => this.onPointerUp(event));
     this.el.stage.addEventListener("pointercancel", () => this.onPointerCancel());
