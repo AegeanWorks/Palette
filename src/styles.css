@@ -1305,7 +1305,8 @@ select:focus {
   gap: 10px;
 }
 
-#resize-swap {
+#resize-swap,
+#canvas-swap {
   grid-column: 1 / -1;
   justify-self: start;
 }

@@ -190,6 +190,12 @@ const ADJUSTMENTS = [
   "blur",
 ];
 
+const CANVAS_ANCHOR_SWAP = Object.freeze({
+  "top-left": "top-left", top: "left", "top-right": "top-right",
+  left: "top", center: "center", right: "bottom",
+  "bottom-left": "bottom-right", bottom: "right", "bottom-right": "bottom-left",
+});
+
 // Actions that bake pixels into the active layer. They cannot run while the
 // layer is locked, so they are disabled alongside opacity/blend/adjustments.
 const DESTRUCTIVE_ACTIONS = [
@@ -258,7 +264,7 @@ const IDS = [
   "export-quality-row", "export-quality", "export-quality-value", "export-scale", "export-size", "export-reset",
   "export-cancel", "export-confirm", "resize-dialog", "resize-form", "resize-width", "resize-height",
   "resize-lock", "resize-swap", "resize-size", "resize-cancel", "resize-confirm", "canvas-dialog", "canvas-form", "canvas-width",
-  "canvas-height", "canvas-size", "canvas-cancel", "canvas-confirm", "transform-dialog", "transform-form",
+  "canvas-height", "canvas-swap", "canvas-size", "canvas-cancel", "canvas-confirm", "transform-dialog", "transform-form",
   "transform-scale-x", "transform-scale-y", "transform-rotation", "transform-rotation-value",
   "transform-size", "transform-flip-h", "transform-flip-v", "transform-reset", "transform-cancel", "transform-confirm",
   "help-dialog", "help-close",
@@ -4599,6 +4605,20 @@ export class PaletteEditor {
         if (height > 0) this.el.resizeWidth.value = String(Math.max(1, Math.round(height * this.resizeAspect)));
       }
       this.syncDimensionSize(this.el.resizeSize, this.el.resizeWidth, this.el.resizeHeight, this.doc.width, this.doc.height);
+    });
+    this.el.canvasSwap.addEventListener("click", () => {
+      const { canvasWidth: width, canvasHeight: height } = this.el;
+      const previous = width.value;
+      width.value = height.value;
+      height.value = previous;
+      const anchor = this.root.querySelector('input[name="canvas-anchor"]:checked');
+      const next = anchor && CANVAS_ANCHOR_SWAP[anchor.value];
+      if (next) {
+        const radio = this.root.querySelector(`input[name="canvas-anchor"][value="${next}"]`);
+        if (radio) radio.checked = true;
+      }
+      this.syncDimensionSize(this.el.canvasSize, width, height, this.doc.width, this.doc.height);
+      this.announce("Width and height swapped.");
     });
     this.el.canvasWidth.addEventListener("input", () => this.syncDimensionSize(this.el.canvasSize, this.el.canvasWidth, this.el.canvasHeight, this.doc.width, this.doc.height));
     this.el.canvasHeight.addEventListener("input", () => this.syncDimensionSize(this.el.canvasSize, this.el.canvasWidth, this.el.canvasHeight, this.doc.width, this.doc.height));

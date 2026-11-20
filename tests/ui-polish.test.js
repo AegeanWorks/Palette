@@ -257,11 +257,18 @@ test("collapse chevrons are drawn with CSS borders", () => {
   assert.doesNotMatch(styles, /h2::before \{[^}]*content: "▾"/);
 });
 
+test("the Canvas dialog can swap width and height and transpose the anchor", () => {
+  assert.match(html, /id="canvas-swap"[^>]*title="Swap width and height \(transposes the anchor\)"/);
+  assert.match(editor, /canvasSwap\.addEventListener\("click"/);
+  assert.match(editor, /CANVAS_ANCHOR_SWAP\[anchor\.value\]/);
+  assert.match(editor, /"bottom-left": "bottom-right", bottom: "right", "bottom-right": "bottom-left"/);
+});
+
 test("the Resize dialog can swap width and height", () => {
   assert.match(html, /id="resize-swap"[^>]*title="Swap width and height"/);
   assert.match(editor, /resizeSwap\.addEventListener\("click"/);
   assert.match(editor, /this\.resizeAspect = 1 \/ this\.resizeAspect/);
-  assert.match(styles, /#resize-swap \{[^}]*grid-column: 1 \/ -1/);
+  assert.match(styles, /#resize-swap,[\s\S]{0,40}#canvas-swap \{[^}]*grid-column: 1 \/ -1/);
 });
 
 test("the New dialog can reuse the current document size", () => {
@@ -980,7 +987,8 @@ test("Resize and Canvas dialogs preview the effective size and capping warning",
   assert.match(html, /id="canvas-size"[^>]*aria-live="polite"/);
   assert.match(editor, /"resize-lock"/);
   assert.match(editor, /"resize-size"/);
-  assert.match(editor, /"canvas-height", "canvas-size"/);
+  assert.match(editor, /"canvas-height"/);
+  assert.match(editor, /"canvas-size"/);
   assert.match(editor, /syncDimensionSize\(readout, widthInput, heightInput, fallbackWidth, fallbackHeight\)/);
   assert.match(editor, /readout\.textContent = capped/);
   assert.match(editor, /canvasWidth\.addEventListener\("input", \(\) => this\.syncDimensionSize/);
