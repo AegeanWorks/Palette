@@ -210,6 +210,10 @@ test("Noise lives with the texture filters", () => {
   assert.ok(noise > colorBalance);
 });
 
+test("the New dialog offers a 4K size preset", () => {
+  assert.match(html, /data-w="3840" data-h="2160">4K<\/button>/);
+});
+
 test("the layer clip icon toggles that layer's clipping mask", () => {
   assert.match(editor, /toggleClippingMask\(id = this\.doc\?\.activeLayerId\)/);
   assert.match(editor, /clip\.addEventListener\("click"[\s\S]{0,140}this\.toggleClippingMask\(layer\.id\)/);
