@@ -168,7 +168,7 @@ const TOOL_META = Object.freeze({
   dodge: { label: "Dodge & burn", cursor: "crosshair", hint: "Drag to lighten or darken existing pixels." },
   bucket: { label: "Paint bucket", cursor: "crosshair", hint: "Click an area to fill with the active colour." },
   crop: { label: "Crop", cursor: "crosshair", hint: "Drag a region, then confirm." },
-  marquee: { label: "Marquee", cursor: "crosshair", hint: "Drag to select a region. Ctrl+A selects all; Ctrl+D deselects." },
+  marquee: { label: "Marquee", cursor: "crosshair", hint: "Drag to select a region. Double-click or Ctrl+A selects all; Ctrl+D deselects." },
   text: { label: "Text", cursor: "text", hint: "Click the canvas, type a line, then press Add." },
   rect: { label: "Rectangle", cursor: "crosshair", hint: "Drag to draw a rectangle. Shift keeps it square." },
   ellipse: { label: "Ellipse", cursor: "crosshair", hint: "Drag to draw an ellipse. Shift keeps it circular." },
@@ -4262,6 +4262,9 @@ export class PaletteEditor {
 
     this.el.stage.addEventListener("pointerdown", (event) => this.onPointerDown(event));
     this.el.stage.addEventListener("pointermove", (event) => this.onPointerMove(event));
+    this.el.stage.addEventListener("dblclick", () => {
+      if (this.tool === "marquee" && !this.textDraft) this.selectAll();
+    });
     this.el.stage.addEventListener("pointerup", (event) => this.onPointerUp(event));
     this.el.stage.addEventListener("pointercancel", () => this.onPointerCancel());
     this.el.stage.addEventListener("pointerleave", () => this.onPointerLeave());

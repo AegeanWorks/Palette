@@ -131,6 +131,11 @@ test("the status bar reflects the active Gradient type", () => {
   assert.match(editor, /gradientType\.addEventListener\("change"[\s\S]{0,160}this\.syncToolOptions\(\)/);
 });
 
+test("double-clicking with the Marquee tool selects all", () => {
+  assert.match(editor, /stage\.addEventListener\("dblclick"[\s\S]{0,120}this\.tool === "marquee" && !this\.textDraft\) this\.selectAll\(\)/);
+  assert.match(editor, /Double-click or Ctrl\+A selects all/);
+});
+
 test("zoom buttons disable with a reason at the scale limits", () => {
   assert.match(editor, /btnZoomIn\.disabled = this\.view\.scale >= MAX_SCALE/);
   assert.match(editor, /"Zoom in — already at maximum"/);
