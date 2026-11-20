@@ -843,6 +843,11 @@ test("discarding a recovered session reads as a destructive choice", () => {
   assert.match(styles, /\.btn-ghost\.btn-danger\s*\{[^}]*color:\s*var\(--danger\)/);
 });
 
+test("the Export size readout includes the aspect ratio", () => {
+  assert.match(editor, /const ratio = aspectRatio\(output\.width, output\.height\)/);
+  assert.match(editor, /exportSize\.textContent = `\$\{output\.width\} × \$\{output\.height\} pixels \(\$\{ratio\}/);
+});
+
 test("the export size readout warns visually when capped", () => {
   assert.match(editor, /syncExportFormat\(\)\s*\{[\s\S]{0,1000}const capped = percent < Math\.round\(scale \* 100\)/);
   assert.match(editor, /exportSize\.dataset\.tone = capped \? "warn" : "muted"/);
