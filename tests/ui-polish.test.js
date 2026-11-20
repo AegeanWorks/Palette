@@ -309,6 +309,13 @@ test("the New dialog has a Reset control", () => {
   assert.match(editor, /resetNewSettings\(\) \{[\s\S]*?newName\.value = "Untitled"[\s\S]*?newWidth\.value = "1280"[\s\S]*?newHeight\.value = "800"/);
 });
 
+test("shape and gradient hex readouts copy on click", () => {
+  assert.match(html, /id="shape-outline-hex"[^>]*title="Copy the outline hex"/);
+  assert.match(html, /id="gradient-end-hex"[^>]*title="Copy the gradient end hex"/);
+  assert.match(editor, /copyHexButton\(this\.el\.shapeOutlineHex, this\.options\.shape\.outlineColor/);
+  assert.match(editor, /copyHexButton\(this\.el\.gradientEndHex, this\.options\.gradient\.to/);
+});
+
 test("the New dialog hex readout copies on click", () => {
   assert.match(html, /id="new-color-hex"[^>]*title="Copy the background hex"/);
   assert.match(editor, /newColorHex\.addEventListener\("click"/);

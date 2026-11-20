@@ -2588,6 +2588,24 @@ export class PaletteEditor {
     }
   }
 
+  copyHexButton(button, value, timerKey) {
+    if (!button || !value) return;
+    const label = button.textContent.trim();
+    if (!navigator.clipboard?.writeText) {
+      this.announce("Clipboard is unavailable in this context.", { error: true });
+      return;
+    }
+    navigator.clipboard.writeText(value).then(
+      () => {
+        this.announce(`Copied ${value} to clipboard.`);
+        button.textContent = "Copied!";
+        clearTimeout(this[timerKey]);
+        this[timerKey] = setTimeout(() => { button.textContent = label; }, 900);
+      },
+      () => this.announce("Could not copy the hex colour.", { error: true }),
+    );
+  }
+
   setColor(value) {
     const hex = normalizeHex(value, this.options.color);
     this.options.color = hex;
@@ -4373,6 +4391,9 @@ export class PaletteEditor {
       this.options.shape.outlineColor = normalizeHex(this.el.shapeOutlineColor.value, "#e9eefb");
       this.el.shapeOutlineHex.textContent = this.options.shape.outlineColor;
     });
+    this.el.shapeOutlineHex.addEventListener("click", () => {
+      this.copyHexButton(this.el.shapeOutlineHex, this.options.shape.outlineColor, "shapeHexCopyTimer");
+    });
     this.el.gradientType.addEventListener("change", () => {
       this.options.gradient.type = this.el.gradientType.value;
       this.syncToolOptions();
@@ -4382,6 +4403,9 @@ export class PaletteEditor {
       this.options.gradient.to = normalizeHex(this.el.gradientEnd.value, "#a78bfa");
       this.el.gradientEndHex.textContent = this.options.gradient.to;
       this.scheduleOverlay();
+    });
+    this.el.gradientEndHex.addEventListener("click", () => {
+      this.copyHexButton(this.el.gradientEndHex, this.options.gradient.to, "gradientHexCopyTimer");
     });
     this.el.gradientFade.addEventListener("change", () => {
       this.options.gradient.fade = this.el.gradientFade.checked;
