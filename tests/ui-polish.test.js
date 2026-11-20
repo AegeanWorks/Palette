@@ -221,6 +221,12 @@ test("export settings persist across dialog opens", () => {
   assert.match(editor, /saved\.format \|\| "png"/);
 });
 
+test("filter sliders reset on double-click", () => {
+  assert.match(editor, /filter-grid"\)\?\.addEventListener\("dblclick"/);
+  assert.match(editor, /event\.target\.closest\('input\[type="range"\]'\)/);
+  assert.match(editor, /this\.announce\("Filter setting reset\."\)/);
+});
+
 test("adjustment sliders reset on double-click", () => {
   assert.match(editor, /input\.addEventListener\("dblclick"/);
   assert.match(editor, /input\.value = input\.defaultValue/);

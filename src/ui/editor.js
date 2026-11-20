@@ -4369,6 +4369,16 @@ export class PaletteEditor {
       this.commit(before, "Layer opacity");
     });
     this.root.querySelector(".filter-grid")?.addEventListener("input", () => this.syncFilterOutputs());
+    this.root.querySelector(".filter-grid")?.addEventListener("dblclick", (event) => {
+      const input = event.target.closest('input[type="range"]');
+      if (!input) return;
+      input.value = input.defaultValue;
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      this.announce("Filter setting reset.");
+    });
+    for (const input of this.root.querySelectorAll('.filter-grid input[type="range"]')) {
+      if (!input.title) input.title = "Double-click to reset";
+    }
     this.root.querySelector(".filter-grid")?.addEventListener("click", (event) => {
       const head = event.target.closest(".filter-group");
       if (!head) return;
