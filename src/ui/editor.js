@@ -781,6 +781,11 @@ export class PaletteEditor {
       output.dataset.active = value !== 0 ? "true" : "false";
     }
     this.el.adjustReset.disabled = cannotEditLayer || isNeutralAdjustments(layer.adjustments);
+    this.el.adjustReset.title = cannotEditLayer
+      ? `Reset adjustments — ${editLock}`
+      : isNeutralAdjustments(layer.adjustments)
+        ? "Reset — adjustments are already neutral"
+        : "Reset adjustments on the active layer";
   }
 
   syncToolOptions() {
@@ -2707,7 +2712,12 @@ export class PaletteEditor {
     }
     const adjustments = { ...layer.adjustments, [key]: value };
     this.doc = updateLayer(this.doc, layer.id, { adjustments });
-    if (this.el.adjustReset) this.el.adjustReset.disabled = isNeutralAdjustments(adjustments);
+    if (this.el.adjustReset) {
+      this.el.adjustReset.disabled = isNeutralAdjustments(adjustments);
+      this.el.adjustReset.title = isNeutralAdjustments(adjustments)
+        ? "Reset — adjustments are already neutral"
+        : "Reset adjustments on the active layer";
+    }
     const output = this.el[`adj${key[0].toUpperCase()}${key.slice(1)}Value`];
     if (output) output.textContent = formatAdjustment(key, value);
     this.scheduleRender();
