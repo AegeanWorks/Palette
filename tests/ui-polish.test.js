@@ -177,7 +177,7 @@ test("the shape badge marks when Shift snaps the geometry", () => {
 test("the crop badge shows the locked aspect ratio", () => {
   assert.match(html, /<option value="1\.7777777778" data-label="16:9">16:9<\/option>/);
   assert.match(editor, /this\.el\.cropAspect\.selectedOptions\[0\]\?\.dataset\.label \|\| aspect/);
-  assert.match(editor, /px\$\{aspectLabel \? ` · \$\{aspectLabel\}` : ""\}/);
+  assert.match(editor, /Math\.round\(crop\.y\)\}\$\{aspectLabel \? ` · \$\{aspectLabel\}` : ""\}/);
 });
 
 test("keyboard nudges announce the direction and distance", () => {
@@ -286,7 +286,7 @@ test("the selection marquee shows its live size and position while dragging", ()
 });
 
 test("the crop overlay shows a live dimension badge", () => {
-  assert.match(editor, /const label = `\$\{Math\.round\(crop\.w\)\} × \$\{Math\.round\(crop\.h\)\} px\$\{aspectLabel \? ` · \$\{aspectLabel\}` : ""\}`/);
+  assert.match(editor, /const label = `\$\{Math\.round\(crop\.w\)\} × \$\{Math\.round\(crop\.h\)\} px @ \$\{Math\.round\(crop\.x\)\},\$\{Math\.round\(crop\.y\)\}\$\{aspectLabel \? ` · \$\{aspectLabel\}` : ""\}`/);
   assert.match(editor, /context\.measureText\(label\)\.width/);
   assert.match(editor, /context\.fillText\(label, bx \+ 6, by \+ 9\)/);
 });
