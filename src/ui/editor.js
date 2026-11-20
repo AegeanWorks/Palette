@@ -211,7 +211,7 @@ const DESTRUCTIVE_ACTIONS = [
 const IDS = [
   "doc-name", "doc-dirty", "doc-size", "btn-new", "btn-open", "btn-open-project", "btn-save", "btn-export",
   "btn-undo", "btn-redo", "btn-help", "file-image", "file-layer", "file-project", "stage-wrap", "doc-frame",
-  "stage", "overlay", "text-editor", "text-input", "text-commit", "text-cancel", "drop-hint",
+  "stage", "overlay", "text-editor", "text-input", "text-count", "text-commit", "text-cancel", "drop-hint",
   "stage-note", "btn-zoom-out", "btn-fit", "btn-zoom-in", "color-row", "color-input", "color-hex",
   "tool-hint", "edit-lock-notice", "options-brush", "options-eraser", "options-clone", "options-dodge", "options-bucket", "options-shape", "options-text", "options-gradient",
   "options-marquee", "options-crop", "options-move", "marquee-shape", "crop-aspect", "btn-select-all", "btn-deselect",
@@ -2420,9 +2420,14 @@ export class PaletteEditor {
 
   syncTextCommit() {
     if (!this.el.textCommit) return;
+    const length = this.el.textInput.value.length;
     const empty = !this.el.textInput.value.trim();
     this.el.textCommit.disabled = empty;
     this.el.textCommit.title = empty ? "Add text — type something first" : "Add text to the layer (Enter)";
+    if (this.el.textCount) {
+      this.el.textCount.textContent = `${length}/200`;
+      this.el.textCount.dataset.near = length >= 180 ? "true" : "false";
+    }
   }
 
   positionTextEditor() {

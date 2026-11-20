@@ -126,6 +126,13 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("the text editor shows a live character counter", () => {
+  assert.match(html, /id="text-count"[^>]*>0\/200<\/output>/);
+  assert.match(editor, /textCount\.textContent = `\$\{length\}\/200`/);
+  assert.match(editor, /textCount\.dataset\.near = length >= 180 \? "true" : "false"/);
+  assert.match(styles, /\.text-count\[data-near="true"\]/);
+});
+
 test("the text Add button disables when the input is empty", () => {
   assert.match(editor, /syncTextCommit\(\) \{[\s\S]{0,180}textCommit\.disabled = empty/);
   assert.match(editor, /textCommit\.title = empty \? "Add text — type something first" : "Add text to the layer \(Enter\)"/);

@@ -512,6 +512,18 @@ select:disabled {
   background: var(--bg-raised);
 }
 
+.text-count {
+  min-width: 40px;
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: 10px;
+  text-align: right;
+}
+
+.text-count[data-near="true"] {
+  color: var(--pink);
+}
+
 /* ---------- panels ---------- */
 
 .panel-column {
