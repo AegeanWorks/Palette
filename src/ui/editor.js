@@ -1507,6 +1507,15 @@ export class PaletteEditor {
       context.lineWidth = 1;
       context.strokeStyle = "rgba(233, 238, 251, 0.9)";
       context.stroke();
+      if (this.tool === "brush") {
+        context.beginPath();
+        context.arc(this.pointer.x, this.pointer.y, 2.5, 0, Math.PI * 2);
+        context.fillStyle = this.options.color;
+        context.fill();
+        context.strokeStyle = "rgba(2, 6, 14, 0.9)";
+        context.lineWidth = 1;
+        context.stroke();
+      }
       // Inner ring marks the hard core so hardness is visible at a glance.
       if (hardness < 0.98) {
         context.beginPath();

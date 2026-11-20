@@ -210,6 +210,11 @@ test("Noise lives with the texture filters", () => {
   assert.ok(noise > colorBalance);
 });
 
+test("the brush cursor shows the active colour at its centre", () => {
+  assert.match(editor, /if \(this\.tool === "brush"\) \{[\s\S]{0,180}context\.arc\(this\.pointer\.x, this\.pointer\.y, 2\.5/);
+  assert.match(editor, /context\.fillStyle = this\.options\.color/);
+});
+
 test("export scale options show the resulting dimensions", () => {
   assert.match(editor, /for \(const option of this\.el\.exportScale\.options\)/);
   assert.match(editor, /option\.textContent = `\$\{Math\.round\(scale \* 100\)\}% · \$\{width\}×\$\{height\}`/);
