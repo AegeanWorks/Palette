@@ -1223,6 +1223,25 @@ export class PaletteEditor {
       }
     }
 
+    if ((this.action?.type === "move" || this.action?.type === "move-selection") && (this.action.dx || this.action.dy)) {
+      // Live offset for layer/pixel moves, which otherwise give no numeric
+      // feedback until the drag ends.
+      const { dx, dy } = this.action;
+      const label = `Δ ${dx >= 0 ? "+" : ""}${dx}, ${dy >= 0 ? "+" : ""}${dy} px`;
+      const px = this.pointer ?? { x: this.viewport.width / 2, y: this.viewport.height / 2 };
+      context.save();
+      context.font = '600 12px ui-monospace, "Cascadia Mono", Consolas, monospace';
+      const tw = context.measureText(label).width;
+      const bx = Math.max(0, Math.min(px.x + 14, this.viewport.width - tw - 14));
+      const by = Math.max(0, Math.min(px.y - 26, this.viewport.height - 22));
+      context.fillStyle = "rgba(2, 6, 14, 0.85)";
+      context.fillRect(bx, by, tw + 12, 18);
+      context.fillStyle = "rgba(103, 232, 249, 0.95)";
+      context.textBaseline = "middle";
+      context.fillText(label, bx + 6, by + 9);
+      context.restore();
+    }
+
     if (this.action?.type === "gradient") {
       context.save();
       context.translate(this.view.offsetX, this.view.offsetY);

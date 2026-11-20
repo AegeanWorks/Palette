@@ -126,6 +126,11 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("moving a layer shows a live offset badge", () => {
+  assert.match(editor, /\(this\.action\?\.type === "move" \|\| this\.action\?\.type === "move-selection"\)/);
+  assert.match(editor, /const label = `Δ \$\{dx >= 0 \? "\+" : ""\}\$\{dx\}, \$\{dy >= 0 \? "\+" : ""\}\$\{dy\} px`/);
+});
+
 test("signed adjustment readouts show an explicit plus for positive values", () => {
   assert.match(editor, /const signed = \["brightness", "contrast", "saturation", "hue"\]\.includes\(key\)/);
   assert.match(editor, /return signed && rounded > 0 \? `\+\$\{rounded\}` : String\(rounded\)/);
