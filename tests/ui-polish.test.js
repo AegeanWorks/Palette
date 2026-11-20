@@ -126,6 +126,13 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("the eyedropper shows a live colour loupe at the cursor", () => {
+  assert.match(editor, /this\.tool === "eyedropper" && this\.pointer && this\.pointInsideDoc/);
+  assert.match(editor, /getImageData\(sx, sy, 1, 1\)\.data/);
+  assert.match(editor, /rgbToHex\(\{ r: sample\[0\], g: sample\[1\], b: sample\[2\] \}\)/);
+  assert.match(editor, /context\.fillText\(hex \?\? "transparent"/);
+});
+
 test("the brush cursor shows an inner ring for brush hardness", () => {
   assert.match(editor, /const hardness =\s*this\.tool === "brush"[\s\S]{0,260}this\.options\.dodge\.hardness/);
   assert.match(editor, /if \(hardness < 0\.98\) \{[\s\S]{0,200}radius \* hardness/);

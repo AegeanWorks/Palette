@@ -1462,6 +1462,35 @@ export class PaletteEditor {
       context.stroke();
       context.restore();
     }
+
+    if (this.tool === "eyedropper" && this.pointer && this.pointInsideDoc(this.toDoc(this.pointer))) {
+      // Sample the already-composited stage canvas: one 1x1 read per frame,
+      // no document recompositing, so the preview matches what the user sees.
+      let sample = null;
+      try {
+        const { dpr } = this.viewport;
+        const sx = Math.max(0, Math.min(this.el.stage.width - 1, Math.round(this.pointer.x * dpr)));
+        const sy = Math.max(0, Math.min(this.el.stage.height - 1, Math.round(this.pointer.y * dpr)));
+        sample = this.el.stage.getContext("2d").getImageData(sx, sy, 1, 1).data;
+      } catch { /* canvas may be tainted; fall back to no swatch */ }
+      const hex = sample && sample[3] >= 8 ? rgbToHex({ r: sample[0], g: sample[1], b: sample[2] }) : null;
+      const chipW = 74;
+      const chipX = Math.max(0, Math.min(this.pointer.x + 14, this.viewport.width - chipW));
+      const chipY = Math.max(0, this.pointer.y - 24);
+      context.save();
+      context.fillStyle = "rgba(2, 6, 14, 0.9)";
+      context.fillRect(chipX, chipY, chipW, 20);
+      context.fillStyle = hex ?? "rgba(255, 255, 255, 0.08)";
+      context.fillRect(chipX + 2, chipY + 2, 16, 16);
+      context.strokeStyle = "rgba(103, 232, 249, 0.6)";
+      context.lineWidth = 1;
+      context.strokeRect(chipX + 2.5, chipY + 2.5, 15, 15);
+      context.fillStyle = hex ? "rgba(103, 232, 249, 0.95)" : "rgba(233, 238, 251, 0.7)";
+      context.font = '600 11px ui-monospace, "Cascadia Mono", Consolas, monospace';
+      context.textBaseline = "middle";
+      context.fillText(hex ?? "transparent", chipX + 22, chipY + 10);
+      context.restore();
+    }
   }
 
   eventPoint(event) {
