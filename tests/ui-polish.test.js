@@ -221,6 +221,12 @@ test("export settings persist across dialog opens", () => {
   assert.match(editor, /saved\.format \|\| "png"/);
 });
 
+test("the Export dialog has a Reset control", () => {
+  assert.match(html, /id="export-reset"[^>]*title="Reset export settings to defaults"/);
+  assert.match(editor, /exportReset\.addEventListener\("click"/);
+  assert.match(editor, /this\.el\.exportFormat\.value = "png"/);
+});
+
 test("the Transform dialog has a Reset control", () => {
   assert.match(html, /id="transform-reset"[^>]*title="Reset to 100% scale and no rotation"/);
   assert.match(editor, /transformReset\.addEventListener\("click", \(\) => this\.resetTransformSettings\(\)\)/);

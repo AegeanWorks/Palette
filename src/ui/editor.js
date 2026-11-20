@@ -255,7 +255,7 @@ const IDS = [
   "status-color", "status-cursor", "status-zoom",
   "btn-actual", "new-dialog", "new-form", "new-name", "new-width", "new-height", "new-presets", "new-color", "new-color-hex",
   "new-cancel", "new-create", "new-size", "export-dialog", "export-form", "export-name", "export-filename", "export-format",
-  "export-quality-row", "export-quality", "export-quality-value", "export-scale", "export-size",
+  "export-quality-row", "export-quality", "export-quality-value", "export-scale", "export-size", "export-reset",
   "export-cancel", "export-confirm", "resize-dialog", "resize-form", "resize-width", "resize-height",
   "resize-lock", "resize-size", "resize-cancel", "resize-confirm", "canvas-dialog", "canvas-form", "canvas-width",
   "canvas-height", "canvas-size", "canvas-cancel", "canvas-confirm", "transform-dialog", "transform-form",
@@ -4471,6 +4471,12 @@ export class PaletteEditor {
     this.el.newColor.addEventListener("input", () => {
       const radio = this.root.querySelector('input[name="new-background"][value="color"]');
       if (radio) radio.checked = true;
+    });
+    this.el.exportReset.addEventListener("click", () => {
+      this.el.exportFormat.value = "png";
+      this.el.exportScale.value = "1";
+      this.el.exportQuality.value = "92";
+      this.syncExportFormat();
     });
     this.el.exportName.addEventListener("input", () => this.syncExportFormat());
     this.el.exportFormat.addEventListener("change", () => this.syncExportFormat());
