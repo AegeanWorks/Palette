@@ -186,7 +186,7 @@ test("the text Add button disables when the input is empty", () => {
 });
 
 test("the shape badge marks when Shift snaps the geometry", () => {
-  assert.match(editor, /Math\.round\(angle\)\}°\$\{this\.action\.shift \? " · snapped" : ""\}/);
+  assert.match(editor, /Math\.round\(angle\)\}° @ \$\{Math\.round\(start\.x\)\},\$\{Math\.round\(start\.y\)\}\$\{this\.action\.shift \? " · snapped" : ""\}/);
   assert.match(editor, /this\.action\.shift \? \(this\.action\.tool === "ellipse" \? " · circle" : " · square"\) : ""/);
 });
 

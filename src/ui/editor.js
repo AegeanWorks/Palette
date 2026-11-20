@@ -1346,7 +1346,7 @@ export class PaletteEditor {
         const length = Math.hypot(dx, dy);
         if (length >= 1) {
           const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
-          label = `${Math.round(length)} px · ${Math.round(angle)}°${this.action.shift ? " · snapped" : ""}`;
+          label = `${Math.round(length)} px · ${Math.round(angle)}° @ ${Math.round(start.x)},${Math.round(start.y)}${this.action.shift ? " · snapped" : ""}`;
           ax = end.x;
           ay = end.y;
         }
