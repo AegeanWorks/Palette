@@ -232,7 +232,7 @@ const IDS = [
   "layer-opacity-value", "layer-blend", "layer-count", "layer-list",
   "btn-resize", "btn-canvas-size", "btn-transform", "btn-layer-flip-h", "btn-layer-flip-v", "btn-layer-rotate-cw", "btn-layer-rotate-ccw", "btn-flip-h", "btn-flip-v", "btn-rotate",
   "btn-flatten", "btn-stamp-visible",
-  "adjust-reset", "histogram", "histogram-hover", "histogram-range", "btn-auto-levels", "filter-reset", "adj-brightness",
+  "adjust-reset", "histogram", "histogram-hover", "histogram-range", "btn-auto-levels", "filter-reset", "filter-count", "adj-brightness",
   "adj-brightness-value", "adj-contrast", "adj-contrast-value",
   "adj-saturation", "adj-saturation-value", "adj-hue", "adj-hue-value", "adj-grayscale",
   "adj-grayscale-value", "adj-sepia", "adj-sepia-value", "adj-invert", "adj-invert-value",
@@ -2608,12 +2608,17 @@ export class PaletteEditor {
       const out = this.root.querySelector(`output[for="${input.id}"]`);
       if (out) out.dataset.active = input.value !== input.dataset.neutral ? "true" : "false";
     }
-    let changed = false;
+    let changedCount = 0;
     for (const input of this.root.querySelectorAll(".filter-grid input")) {
       const isDefault = input.type === "checkbox"
         ? input.checked === input.defaultChecked
         : input.value === (input.dataset.neutral ?? input.defaultValue);
-      if (!isDefault) changed = true;
+      if (!isDefault) changedCount += 1;
+    }
+    const changed = changedCount > 0;
+    if (this.el.filterCount) {
+      this.el.filterCount.textContent = String(changedCount);
+      this.el.filterCount.dataset.active = changed ? "true" : "false";
     }
     if (this.el.filterReset) {
       this.el.filterReset.disabled = !changed;

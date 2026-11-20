@@ -791,6 +791,10 @@ select:focus {
   font-weight: 500;
 }
 
+.layer-count[data-active="true"] {
+  color: var(--accent, #67e8f9);
+}
+
 .layer-list {
   display: grid;
   gap: 4px;

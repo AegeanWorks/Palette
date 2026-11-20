@@ -261,6 +261,13 @@ test("the New dialog shows the custom background hex", () => {
   assert.match(editor, /newColorHex\.textContent = this\.el\.newColor\.value/);
 });
 
+test("the Filters header counts changed filters", () => {
+  assert.match(html, /id="filter-count"[^>]*data-active="false">0<\/span>/);
+  assert.match(editor, /filterCount\.textContent = String\(changedCount\)/);
+  assert.match(editor, /filterCount\.dataset\.active = changed \? "true" : "false"/);
+  assert.match(styles, /\.layer-count\[data-active="true"\]/);
+});
+
 test("filter sliders reset on double-click", () => {
   assert.match(editor, /filter-grid"\)\?\.addEventListener\("dblclick"/);
   assert.match(editor, /event\.target\.closest\('input\[type="range"\]'\)/);
