@@ -814,6 +814,7 @@ export class PaletteEditor {
     let modeNote = "";
     if (this.tool === "dodge" && this.options.dodge.mode === "burn") modeNote = " · Burn";
     if (this.tool === "marquee" && this.options.marquee.kind === "ellipse") modeNote = " · Ellipse";
+    if (this.tool === "gradient" && this.options.gradient.type === "radial") modeNote = " · Radial";
     const statusLabel = `${meta.label}${modeNote}`;
     this.el.statusTool.textContent = toolKey ? `${statusLabel} (${toolKey})` : statusLabel;
     this.el.statusTool.title = toolKey ? `${statusLabel} tool (${toolKey})` : `${statusLabel} tool`;
@@ -4027,6 +4028,7 @@ export class PaletteEditor {
     });
     this.el.gradientType.addEventListener("change", () => {
       this.options.gradient.type = this.el.gradientType.value;
+      this.syncToolOptions();
       this.scheduleOverlay();
     });
     this.el.gradientEnd.addEventListener("input", () => {
