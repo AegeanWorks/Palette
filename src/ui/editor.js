@@ -2488,7 +2488,19 @@ export class PaletteEditor {
         head.setAttribute("aria-expanded", "false");
         head.title = "Click to expand";
       }
-    } catch { /* storage unavailable; panels default to expanded */ }
+      for (const head of this.root.querySelectorAll(".filter-group")) {
+        const key = `filter:${head.textContent.trim()}`;
+        if (saved[key] !== true) continue;
+        head.dataset.collapsed = "true";
+        head.setAttribute("aria-expanded", "false");
+        head.title = "Click to expand";
+        let node = head.nextElementSibling;
+        while (node && !node.classList.contains("filter-group")) {
+          node.hidden = true;
+          node = node.nextElementSibling;
+        }
+      }
+    } catch { /* storage unavailable; sections default to expanded */ }
   }
 
   savePanelState(panel) {
@@ -2497,6 +2509,15 @@ export class PaletteEditor {
       if (!key) return;
       const saved = JSON.parse(localStorage.getItem("palette.panels") || "{}");
       saved[key] = panel.dataset.collapsed === "true";
+      localStorage.setItem("palette.panels", JSON.stringify(saved));
+    } catch { /* storage unavailable; state is session-only */ }
+  }
+
+  saveFilterGroupState(head) {
+    try {
+      const key = `filter:${head.textContent.trim()}`;
+      const saved = JSON.parse(localStorage.getItem("palette.panels") || "{}");
+      saved[key] = head.dataset.collapsed === "true";
       localStorage.setItem("palette.panels", JSON.stringify(saved));
     } catch { /* storage unavailable; state is session-only */ }
   }
@@ -4264,6 +4285,7 @@ export class PaletteEditor {
         node.hidden = !collapsed;
         node = node.nextElementSibling;
       }
+      this.saveFilterGroupState(head);
     });
     this.root.querySelector(".filter-grid")?.addEventListener("keydown", (event) => {
       if (event.key !== "Enter" && event.key !== " ") return;

@@ -136,6 +136,12 @@ test("Manage icons fit a single compact row", () => {
   assert.match(styles, /\.panel-group \.button-row\.compact \{[^}]*gap: 3px/);
 });
 
+test("collapsed filter categories persist across reloads", () => {
+  assert.match(editor, /const key = `filter:\$\{head\.textContent\.trim\(\)\}`/);
+  assert.match(editor, /this\.saveFilterGroupState\(head\)/);
+  assert.match(editor, /while \(node && !node\.classList\.contains\("filter-group"\)\) \{[\s\S]{0,120}node\.hidden = true/);
+});
+
 test("filter category headers respond to Enter and Space", () => {
   assert.match(editor, /filter-grid"\)\?\.addEventListener\("keydown"/);
   assert.match(editor, /event\.key !== "Enter" && event\.key !== " "/);
