@@ -825,9 +825,11 @@ export class PaletteEditor {
     const usesColor = ["brush", "text", "rect", "ellipse", "line", "gradient", "eyedropper", "bucket"].includes(this.tool);
     this.el.colorRow.hidden = !usesColor;
     const meta = TOOL_META[this.tool] ?? TOOL_META.move;
-    if (this.el.optionsToolName) this.el.optionsToolName.textContent = meta.label;
     this.el.toolHint.textContent = meta.hint;
     const toolKey = TOOL_KEYS[this.tool];
+    if (this.el.optionsToolName) {
+      this.el.optionsToolName.textContent = toolKey ? `${meta.label} (${toolKey})` : meta.label;
+    }
     let modeNote = "";
     if (this.tool === "dodge" && this.options.dodge.mode === "burn") modeNote = " · Burn";
     if (this.tool === "marquee" && this.options.marquee.kind === "ellipse") modeNote = " · Ellipse";

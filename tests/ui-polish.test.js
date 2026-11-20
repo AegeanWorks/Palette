@@ -144,7 +144,7 @@ test("a pixel grid appears at high zoom", () => {
 
 test("Tool options header names the active tool", () => {
   assert.match(html, /id="options-heading"><span id="options-tool-name">Move<\/span> options<\/h2>/);
-  assert.match(editor, /optionsToolName\.textContent = meta\.label/);
+  assert.match(editor, /optionsToolName\.textContent = toolKey \? `\$\{meta\.label\} \(\$\{toolKey\}\)`/);
 });
 
 test("collapsed filter categories persist across reloads", () => {
@@ -219,6 +219,10 @@ test("export settings persist across dialog opens", () => {
   assert.match(editor, /localStorage\.getItem\("palette\.export"\)/);
   assert.match(editor, /localStorage\.setItem\("palette\.export", JSON\.stringify\(\{/);
   assert.match(editor, /saved\.format \|\| "png"/);
+});
+
+test("the Tool options header includes the active tool's shortcut", () => {
+  assert.match(editor, /optionsToolName\.textContent = toolKey \? `\$\{meta\.label\} \(\$\{toolKey\}\)`/);
 });
 
 test("collapse chevrons are drawn with CSS borders", () => {
