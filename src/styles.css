@@ -1326,6 +1326,17 @@ select:focus {
   justify-self: start;
 }
 
+.tool-key {
+  padding: 1px 5px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--panel-2);
+  color: var(--cyan);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+}
+
 .rotation-row {
   display: grid;
   grid-template-columns: 1fr 76px;

@@ -144,8 +144,9 @@ test("a pixel grid appears at high zoom", () => {
 });
 
 test("Tool options header names the active tool", () => {
-  assert.match(html, /id="options-heading"><span id="options-tool-name">Move<\/span> options<\/h2>/);
-  assert.match(editor, /optionsToolName\.textContent = toolKey \? `\$\{meta\.label\} \(\$\{toolKey\}\)`/);
+  assert.match(html, /id="options-heading"><span id="options-tool-name">Move<\/span> <kbd id="options-tool-key"/);
+  assert.match(editor, /optionsToolName\.textContent = meta\.label/);
+  assert.match(editor, /optionsToolKey\.textContent = toolKey \? `\(\$\{toolKey\}\)` : ""/);
 });
 
 test("collapsed filter categories persist across reloads", () => {
@@ -254,8 +255,10 @@ test("the Transform dialog has a Reset control", () => {
   assert.match(editor, /resetTransformSettings\(\) \{/);
 });
 
-test("the Tool options header includes the active tool's shortcut", () => {
-  assert.match(editor, /optionsToolName\.textContent = toolKey \? `\$\{meta\.label\} \(\$\{toolKey\}\)`/);
+test("the Tool options header shows the shortcut as a key chip", () => {
+  assert.match(editor, /optionsToolKey\.textContent = toolKey \? `\(\$\{toolKey\}\)` : ""/);
+  assert.match(editor, /optionsToolKey\.hidden = !toolKey/);
+  assert.match(styles, /\.tool-key \{[^}]*border-radius: 5px/);
 });
 
 test("collapse chevrons are drawn with CSS borders", () => {

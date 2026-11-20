@@ -221,7 +221,7 @@ const IDS = [
   "btn-undo", "btn-redo", "btn-help", "file-image", "file-layer", "file-project", "stage-wrap", "doc-frame",
   "stage", "overlay", "text-editor", "text-input", "text-count", "text-commit", "text-cancel", "drop-hint",
   "stage-note", "btn-zoom-out", "btn-fit", "btn-zoom-in", "color-row", "color-input", "color-hex",
-  "tool-hint", "edit-lock-notice", "options-tool-name", "options-brush", "options-eraser", "options-clone", "options-dodge", "options-bucket", "options-shape", "options-text", "options-gradient",
+  "tool-hint", "edit-lock-notice", "options-tool-name", "options-tool-key", "options-brush", "options-eraser", "options-clone", "options-dodge", "options-bucket", "options-shape", "options-text", "options-gradient",
   "options-marquee", "options-crop", "options-move", "marquee-shape", "crop-aspect", "btn-select-all", "btn-deselect",
   "btn-crop-selection", "btn-invert-selection", "btn-expand-selection", "btn-contract-selection", "btn-clear-selection", "btn-copy", "btn-cut", "btn-paste",
   "btn-layer-via-copy", "btn-layer-via-cut", "brush-size", "brush-size-value", "brush-hardness",
@@ -864,8 +864,10 @@ export class PaletteEditor {
     const meta = TOOL_META[this.tool] ?? TOOL_META.move;
     this.el.toolHint.textContent = meta.hint;
     const toolKey = TOOL_KEYS[this.tool];
-    if (this.el.optionsToolName) {
-      this.el.optionsToolName.textContent = toolKey ? `${meta.label} (${toolKey})` : meta.label;
+    if (this.el.optionsToolName) this.el.optionsToolName.textContent = meta.label;
+    if (this.el.optionsToolKey) {
+      this.el.optionsToolKey.textContent = toolKey ? `(${toolKey})` : "";
+      this.el.optionsToolKey.hidden = !toolKey;
     }
     let modeNote = "";
     if (this.tool === "dodge" && this.options.dodge.mode === "burn") modeNote = " · Burn";
