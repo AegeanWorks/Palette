@@ -131,6 +131,13 @@ test("the status bar reflects the active Gradient type", () => {
   assert.match(editor, /gradientType\.addEventListener\("change"[\s\S]{0,160}this\.syncToolOptions\(\)/);
 });
 
+test("zoom buttons disable with a reason at the scale limits", () => {
+  assert.match(editor, /btnZoomIn\.disabled = this\.view\.scale >= MAX_SCALE/);
+  assert.match(editor, /"Zoom in — already at maximum"/);
+  assert.match(editor, /btnZoomOut\.disabled = this\.view\.scale <= MIN_SCALE/);
+  assert.match(editor, /"Zoom out — already at minimum"/);
+});
+
 test("the text input placeholder shows its Enter/Escape shortcuts", () => {
   assert.match(html, /id="text-input"[^>]*placeholder="Type text — Enter to add, Esc to cancel"/);
 });

@@ -65,6 +65,8 @@ import {
   expandSelection,
   fitView,
   isUsableRect,
+  MAX_SCALE,
+  MIN_SCALE,
   normalizeRect,
   roundRect,
   screenToDoc,
@@ -978,6 +980,14 @@ export class PaletteEditor {
     }
     if (this.el.btnFit) {
       this.el.btnFit.setAttribute("aria-pressed", this.autoFit ? "true" : "false");
+    }
+    if (this.el.btnZoomIn) {
+      this.el.btnZoomIn.disabled = this.view.scale >= MAX_SCALE;
+      this.el.btnZoomIn.title = this.el.btnZoomIn.disabled ? "Zoom in — already at maximum" : "Zoom in (+)";
+    }
+    if (this.el.btnZoomOut) {
+      this.el.btnZoomOut.disabled = this.view.scale <= MIN_SCALE;
+      this.el.btnZoomOut.title = this.el.btnZoomOut.disabled ? "Zoom out — already at minimum" : "Zoom out (-)";
     }
   }
 
