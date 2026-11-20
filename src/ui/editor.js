@@ -3160,6 +3160,11 @@ export class PaletteEditor {
     this.el.exportFormat.value = "png";
     this.el.exportQuality.value = "92";
     this.el.exportScale.value = "1";
+    for (const option of this.el.exportScale.options) {
+      const scale = Number(option.value);
+      const { width, height } = exportDimensions(this.doc.width, this.doc.height, scale);
+      option.textContent = `${Math.round(scale * 100)}% · ${width}×${height}`;
+    }
     this.syncExportFormat();
     this.el.exportDialog.showModal();
     this.el.exportName.focus();

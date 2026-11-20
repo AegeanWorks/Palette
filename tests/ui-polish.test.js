@@ -210,6 +210,11 @@ test("Noise lives with the texture filters", () => {
   assert.ok(noise > colorBalance);
 });
 
+test("export scale options show the resulting dimensions", () => {
+  assert.match(editor, /for \(const option of this\.el\.exportScale\.options\)/);
+  assert.match(editor, /option\.textContent = `\$\{Math\.round\(scale \* 100\)\}% · \$\{width\}×\$\{height\}`/);
+});
+
 test("the levels group is labelled Levels", () => {
   assert.match(html, /filter-group"[^>]*>Levels<\/h3>[\s\S]{0,200}id="level-black"/);
   assert.doesNotMatch(html, /filter-group"[^>]*>Tone &amp; levels<\/h3>/);
@@ -930,7 +935,7 @@ test("the remaining selection controls explain what they do", () => {
 });
 
 test("the export dialog starts with its pre-filled name selected", () => {
-  const body = editor.slice(editor.indexOf("  openExportDialog()"), editor.indexOf("  openExportDialog()") + 600);
+  const body = editor.slice(editor.indexOf("  openExportDialog()"), editor.indexOf("  openExportDialog()") + 900);
   assert.match(body, /exportName\.value\s*=\s*this\.doc\.name/);
   assert.match(body, /exportDialog\.showModal\(\)[\s\S]*?exportName\.focus\(\)/);
   assert.match(body, /exportName\.select\(\)/);
