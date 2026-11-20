@@ -4187,6 +4187,16 @@ export class PaletteEditor {
       head.title = collapsed ? "Click to collapse" : "Click to expand";
       this.savePanelState(panel);
     });
+    this.root.querySelector(".panel-column")?.addEventListener("dblclick", (event) => {
+      const input = event.target.closest('.options-group input[type="range"]');
+      if (!input) return;
+      input.value = input.defaultValue;
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      this.announce("Tool option reset.");
+    });
+    for (const input of this.root.querySelectorAll('.options-group input[type="range"]')) {
+      if (!input.title) input.title = "Double-click to reset";
+    }
     this.root.querySelector(".panel-column")?.addEventListener("keydown", (event) => {
       if (event.key !== "Enter" && event.key !== " ") return;
       const head = event.target.closest(".panel-head");
