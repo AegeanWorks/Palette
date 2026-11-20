@@ -1114,6 +1114,13 @@ test("colour labels use consistent spelling", () => {
   assert.match(html, /data-ui="filter-color-balance">Colour balance<\/button>/);
 });
 
+test("the selection can be fitted to the view", () => {
+  assert.match(html, /id="selection-zoom"[^>]*title="Zoom the view to the selection"/);
+  assert.match(editor, /selectionZoom\.addEventListener\("click", \(\) => this\.zoomToSelection\(\)\)/);
+  assert.match(editor, /offsetX: viewport\.width \/ 2 - \(x \+ w \/ 2\) \* scale/);
+  assert.match(editor, /selectionZoom\.hidden = !selectionRect/);
+});
+
 test("the layer count tooltip names the active layer's position", () => {
   assert.match(editor, /layers\.findIndex\(\(layer\) => layer\.id === this\.doc\.activeLayerId\)/);
   assert.match(editor, /active layer \$\{activeIndex \+ 1\} of \$\{layers\.length\}/);

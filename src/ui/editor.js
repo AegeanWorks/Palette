@@ -257,7 +257,7 @@ const IDS = [
   "filter-tint-preserve", "btn-filter-tint",
   "btn-filter-find-edges", "btn-filter-solarize", "filter-duotone-shadow", "filter-duotone-highlight", "btn-filter-duotone", "btn-filter-dither",
   "filter-oil-radius", "filter-oil-value", "btn-filter-oil", "btn-filter-median",
-  "status-tool", "status-tool-key", "status-layer", "status-selection", "status-message",
+  "status-tool", "status-tool-key", "status-layer", "status-selection", "selection-zoom", "status-message",
   "status-color", "status-cursor", "status-zoom",
   "btn-actual", "new-dialog", "new-form", "new-name", "new-width", "new-height", "new-presets", "new-current", "new-reset", "new-color", "new-color-hex",
   "new-cancel", "new-create", "new-size", "export-dialog", "export-form", "export-name", "export-filename", "export-format",
@@ -644,6 +644,7 @@ export class PaletteEditor {
     const selectionSize = selectionW > 0 && selectionH > 0
       ? `${selectionW}×${selectionH} (${aspectRatio(selectionW, selectionH)})`
       : `${selectionW}×${selectionH}`;
+    if (this.el.selectionZoom) this.el.selectionZoom.hidden = !selectionRect;
     if (this.el.statusSelection) {
       this.el.statusSelection.hidden = !selectionRect;
       if (selectionRect) {
@@ -1123,6 +1124,23 @@ export class PaletteEditor {
     this.autoFit = true;
     this.updateZoomLabel();
     this.scheduleRender();
+  }
+
+  zoomToSelection() {
+    if (!this.doc || !this.selection?.rect) return;
+    const viewport = this.el.stageWrap.getBoundingClientRect();
+    const { x, y, w, h } = this.selection.rect;
+    if (w <= 0 || h <= 0) return;
+    const { scale } = fitView(w, h, Math.max(1, viewport.width), Math.max(1, viewport.height), 56);
+    this.view = {
+      scale,
+      offsetX: viewport.width / 2 - (x + w / 2) * scale,
+      offsetY: viewport.height / 2 - (y + h / 2) * scale,
+    };
+    this.autoFit = false;
+    this.updateZoomLabel();
+    this.scheduleRender();
+    this.announce("Zoomed to the selection.");
   }
 
   actualSize() {
@@ -4488,6 +4506,7 @@ export class PaletteEditor {
     this.el.btnSelectAll.addEventListener("click", () => this.selectAll());
     this.el.btnDeselect.addEventListener("click", () => this.deselect());
     this.el.statusSelection.addEventListener("click", () => this.deselect());
+    this.el.selectionZoom.addEventListener("click", () => this.zoomToSelection());
     this.el.btnInvertSelection.addEventListener("click", () => this.invertSelection());
     this.el.btnCropSelection.addEventListener("click", () => this.cropToSelection());
     this.el.btnExpandSelection.addEventListener("click", () => this.modifySelection(5));
