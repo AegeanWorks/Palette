@@ -798,7 +798,7 @@ export class PaletteEditor {
     this.el.layerOpacity.disabled = cannotEditLayer;
     this.el.layerOpacity.title = cannotEditLayer
       ? `Layer opacity — ${editLock}`
-      : "Layer opacity — double-click to reset to 100%";
+      : `Layer opacity ${Math.round(layer.opacity * 100)}% — double-click to reset to 100%`;
     this.el.layerBlend.disabled = cannotEditLayer;
     this.el.layerBlend.title = cannotEditLayer ? `Blend mode — ${editLock}` : "Blend mode";
     for (const name of DESTRUCTIVE_ACTIONS) {

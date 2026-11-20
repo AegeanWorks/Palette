@@ -390,7 +390,7 @@ test("the layer opacity slider resets on double-click", () => {
   assert.match(editor, /layerOpacity\.addEventListener\("dblclick"/);
   assert.match(editor, /layerOpacity\.value = this\.el\.layerOpacity\.defaultValue/);
   assert.match(editor, /announce\("Layer opacity reset to 100%."\)/);
-  assert.match(editor, /"Layer opacity — double-click to reset to 100%"/);
+  assert.match(editor, /`Layer opacity \$\{Math\.round\(layer\.opacity \* 100\)\}% — double-click to reset to 100%`/);
 });
 
 test("layer rows mark layers that carry adjustments", () => {
