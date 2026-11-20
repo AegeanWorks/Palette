@@ -222,8 +222,16 @@ test("export settings persist across dialog opens", () => {
 });
 
 test("the New document size readout includes the aspect ratio", () => {
-  assert.match(editor, /const ratio = `\$\{width \/ gcd\}:\$\{height \/ gcd\}`/);
+  assert.match(editor, /function aspectRatio\(width, height\) \{/);
+  assert.match(editor, /return `\$\{width \/ gcd\}:\$\{height \/ gcd\}`/);
+  assert.match(editor, /const ratio = aspectRatio\(width, height\)/);
   assert.match(editor, /\$\{width\} × \$\{height\} pixels \(\$\{ratio\}\)/);
+});
+
+test("Resize and Canvas size readouts include the aspect ratio", () => {
+  assert.match(editor, /readout\.textContent = capped[^;]*\(\$\{ratio\}\)/);
+  assert.match(editor, /syncDimensionSize\(this\.el\.resizeSize/);
+  assert.match(editor, /syncDimensionSize\(this\.el\.canvasSize/);
 });
 
 test("the Export dialog has a Reset control", () => {

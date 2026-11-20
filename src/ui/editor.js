@@ -398,6 +398,17 @@ function welcomeDocument() {
   });
 }
 
+function aspectRatio(width, height) {
+  let gcd = width;
+  let other = height;
+  while (other) {
+    const next = gcd % other;
+    gcd = other;
+    other = next;
+  }
+  return `${width / gcd}:${height / gcd}`;
+}
+
 export class PaletteEditor {
   constructor(root = document) {
     this.root = root;
@@ -3156,14 +3167,7 @@ export class PaletteEditor {
     const requestedHeight = requestedDimension(this.el.newHeight.value, 800);
     const { width, height } = boundedDimensions(requestedWidth, requestedHeight);
     const capped = width !== requestedWidth || height !== requestedHeight;
-    let gcd = width;
-    let other = height;
-    while (other) {
-      const next = gcd % other;
-      gcd = other;
-      other = next;
-    }
-    const ratio = `${width / gcd}:${height / gcd}`;
+    const ratio = aspectRatio(width, height);
     this.el.newSize.textContent = capped
       ? `${requestedWidth} × ${requestedHeight} will be capped to ${width} × ${height} pixels (${ratio})`
       : `${width} × ${height} pixels (${ratio})`;
@@ -3398,9 +3402,10 @@ export class PaletteEditor {
     const requestedHeight = requestedDimension(heightInput.value, fallbackHeight);
     const { width, height } = boundedDimensions(requestedWidth, requestedHeight);
     const capped = width !== requestedWidth || height !== requestedHeight;
+    const ratio = aspectRatio(width, height);
     readout.textContent = capped
-      ? `${requestedWidth} × ${requestedHeight} will be capped to ${width} × ${height} pixels`
-      : `${width} × ${height} pixels`;
+      ? `${requestedWidth} × ${requestedHeight} will be capped to ${width} × ${height} pixels (${ratio})`
+      : `${width} × ${height} pixels (${ratio})`;
     readout.dataset.tone = capped ? "warn" : "muted";
   }
 
