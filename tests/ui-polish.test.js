@@ -126,6 +126,10 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("Paste explains why it is disabled when the clipboard is empty", () => {
+  assert.match(editor, /btnPaste\.title = this\.clipboard[\s\S]{0,80}"Paste — copy or cut something first"/);
+});
+
 test("the text draft shows a live bounding box and size", () => {
   assert.match(editor, /FONT_STACKS\[this\.options\.text\.family\] \?\? FONT_STACKS\.system/);
   assert.match(editor, /const label = `\$\{Math\.round\(maxWidth\)\} × \$\{Math\.round\(\(lines\.length - 1\) \* lineHeight \+ fontSize\)\} px`/);

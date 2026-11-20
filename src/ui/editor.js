@@ -620,6 +620,9 @@ export class PaletteEditor {
       }
     }
     this.el.btnPaste.disabled = !this.clipboard;
+    this.el.btnPaste.title = this.clipboard
+      ? "Paste clipboard (Ctrl+V)"
+      : "Paste — copy or cut something first";
     this.scheduleHistogram();
   }
 
