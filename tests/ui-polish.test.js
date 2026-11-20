@@ -189,6 +189,13 @@ test("the Filters panel can reset all settings", () => {
   assert.match(editor, /this\.announce\("Filter settings reset\."\)/);
 });
 
+test("the layer list scrolls and keeps the active layer visible", () => {
+  assert.match(styles, /\.layer-list \{[^}]*max-height: 210px/);
+  assert.match(styles, /\.layer-list \{[^}]*overflow-y: auto/);
+  assert.match(editor, /lastActiveLayerId !== this\.doc\.activeLayerId/);
+  assert.match(editor, /scrollIntoView\(\{ block: "nearest" \}\)/);
+});
+
 test("Noise lives with the texture filters", () => {
   const textures = html.search(/filter-group"[^>]*>Textures<\/h3>/);
   const colorBalance = html.search(/filter-group"[^>]*>Colour balance<\/h3>/);

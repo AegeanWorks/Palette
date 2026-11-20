@@ -978,6 +978,10 @@ export class PaletteEditor {
       item.append(visibility, thumb, name, clip, lock);
       list.append(item);
     }
+    if (this.lastActiveLayerId !== this.doc.activeLayerId) {
+      this.lastActiveLayerId = this.doc.activeLayerId;
+      list.querySelector('.layer-item[data-active="true"]')?.scrollIntoView({ block: "nearest" });
+    }
   }
 
   updateZoomLabel() {
