@@ -1346,7 +1346,7 @@ export class PaletteEditor {
         }
       } else if (Math.abs(dx) >= 1 && Math.abs(dy) >= 1) {
         const constrained = this.action.shift ? (this.action.tool === "ellipse" ? " · circle" : " · square") : "";
-        label = `${Math.round(Math.abs(dx))} × ${Math.round(Math.abs(dy))} px${constrained}`;
+        label = `${Math.round(Math.abs(dx))} × ${Math.round(Math.abs(dy))} px @ ${Math.round(Math.min(start.x, end.x))},${Math.round(Math.min(start.y, end.y))}${constrained}`;
         ax = (start.x + end.x) / 2;
         ay = Math.min(start.y, end.y);
       }

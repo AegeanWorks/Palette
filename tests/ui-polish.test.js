@@ -268,7 +268,7 @@ test("the clone source links to the cursor with a dashed guide", () => {
 
 test("the shape drag shows a live length/angle or size badge", () => {
   assert.match(editor, /if \(this\.action\.tool === "line"\) \{[\s\S]{0,220}const angle = \(Math\.atan2\(dy, dx\) \* 180\) \/ Math\.PI/);
-  assert.match(editor, /label = `\$\{Math\.round\(Math\.abs\(dx\)\)\} × \$\{Math\.round\(Math\.abs\(dy\)\)\} px\$\{constrained\}`/);
+  assert.match(editor, /label = `\$\{Math\.round\(Math\.abs\(dx\)\)\} × \$\{Math\.round\(Math\.abs\(dy\)\)\} px @ \$\{Math\.round\(Math\.min\(start\.x, end\.x\)\)\},\$\{Math\.round\(Math\.min\(start\.y, end\.y\)\)\}\$\{constrained\}`/);
   assert.match(editor, /context\.fillText\(label, bx \+ 6, by \+ 9\)/);
 });
 
