@@ -422,23 +422,36 @@
             <button class="btn btn-ghost btn-small" id="btn-auto-levels" type="button" data-ui="auto-levels" title="Auto levels — stretch tones to the visible range (samples the selection if active)">Auto levels</button>
           </div>
         </div>
-        <div class="adjust-list">
-          <label class="field" for="adj-brightness">Brightness <output id="adj-brightness-value" for="adj-brightness">0</output></label>
-          <input id="adj-brightness" type="range" min="-100" max="100" step="1" value="0">
-          <label class="field" for="adj-contrast">Contrast <output id="adj-contrast-value" for="adj-contrast">0</output></label>
-          <input id="adj-contrast" type="range" min="-100" max="100" step="1" value="0">
-          <label class="field" for="adj-saturation">Saturation <output id="adj-saturation-value" for="adj-saturation">0</output></label>
-          <input id="adj-saturation" type="range" min="-100" max="100" step="1" value="0">
-          <label class="field" for="adj-hue">Hue <output id="adj-hue-value" for="adj-hue">0</output></label>
-          <input id="adj-hue" type="range" min="-180" max="180" step="1" value="0">
-          <label class="field" for="adj-grayscale">Grayscale <output id="adj-grayscale-value" for="adj-grayscale">0</output>%</label>
-          <input id="adj-grayscale" type="range" min="0" max="100" step="1" value="0">
-          <label class="field" for="adj-sepia">Sepia <output id="adj-sepia-value" for="adj-sepia">0</output>%</label>
-          <input id="adj-sepia" type="range" min="0" max="100" step="1" value="0">
-          <label class="field" for="adj-invert">Invert <output id="adj-invert-value" for="adj-invert">0</output>%</label>
-          <input id="adj-invert" type="range" min="0" max="100" step="1" value="0">
-          <label class="field" for="adj-blur">Blur <output id="adj-blur-value" for="adj-blur">0</output> px</label>
-          <input id="adj-blur" type="range" min="0" max="20" step="0.5" value="0">
+        <div class="panel-group">
+          <span class="panel-group-label">Tone</span>
+          <div class="adjust-list">
+            <label class="field" for="adj-brightness">Brightness <output id="adj-brightness-value" for="adj-brightness">0</output></label>
+            <input id="adj-brightness" type="range" min="-100" max="100" step="1" value="0">
+            <label class="field" for="adj-contrast">Contrast <output id="adj-contrast-value" for="adj-contrast">0</output></label>
+            <input id="adj-contrast" type="range" min="-100" max="100" step="1" value="0">
+          </div>
+        </div>
+        <div class="panel-group">
+          <span class="panel-group-label">Colour</span>
+          <div class="adjust-list">
+            <label class="field" for="adj-saturation">Saturation <output id="adj-saturation-value" for="adj-saturation">0</output></label>
+            <input id="adj-saturation" type="range" min="-100" max="100" step="1" value="0">
+            <label class="field" for="adj-hue">Hue <output id="adj-hue-value" for="adj-hue">0</output></label>
+            <input id="adj-hue" type="range" min="-180" max="180" step="1" value="0">
+            <label class="field" for="adj-grayscale">Grayscale <output id="adj-grayscale-value" for="adj-grayscale">0</output>%</label>
+            <input id="adj-grayscale" type="range" min="0" max="100" step="1" value="0">
+            <label class="field" for="adj-sepia">Sepia <output id="adj-sepia-value" for="adj-sepia">0</output>%</label>
+            <input id="adj-sepia" type="range" min="0" max="100" step="1" value="0">
+            <label class="field" for="adj-invert">Invert <output id="adj-invert-value" for="adj-invert">0</output>%</label>
+            <input id="adj-invert" type="range" min="0" max="100" step="1" value="0">
+          </div>
+        </div>
+        <div class="panel-group">
+          <span class="panel-group-label">Detail</span>
+          <div class="adjust-list">
+            <label class="field" for="adj-blur">Blur <output id="adj-blur-value" for="adj-blur">0</output> px</label>
+            <input id="adj-blur" type="range" min="0" max="20" step="0.5" value="0">
+          </div>
         </div>
       </section>
 

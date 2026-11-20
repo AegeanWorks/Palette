@@ -131,6 +131,14 @@ test("the status bar reflects the active Gradient type", () => {
   assert.match(editor, /gradientType\.addEventListener\("change"[\s\S]{0,160}this\.syncToolOptions\(\)/);
 });
 
+test("adjustment sliders are grouped into Tone, Colour and Detail", () => {
+  for (const label of ["Tone", "Colour", "Detail"]) {
+    assert.match(html, new RegExp(`panel-group-label">${label}</span>`));
+  }
+  assert.match(html, /panel-group-label">Tone<\/span>[\s\S]{0,200}id="adj-brightness"/);
+  assert.match(html, /panel-group-label">Detail<\/span>[\s\S]{0,200}id="adj-blur"/);
+});
+
 test("the Layers header stays minimal with layer tools in a labelled group", () => {
   const header = html.match(/<header class="panel-head"[^>]*>\s*<h2 id="layers-heading">[\s\S]*?<\/header>/)?.[0] ?? "";
   assert.equal((header.match(/<button/g) || []).length, 1);
