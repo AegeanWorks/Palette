@@ -210,6 +210,11 @@ test("Noise lives with the texture filters", () => {
   assert.ok(noise > colorBalance);
 });
 
+test("the levels group is labelled Levels", () => {
+  assert.match(html, /filter-group"[^>]*>Levels<\/h3>[\s\S]{0,200}id="level-black"/);
+  assert.doesNotMatch(html, /filter-group"[^>]*>Tone &amp; levels<\/h3>/);
+});
+
 test("brightness and contrast have their own Tone category", () => {
   const tone = html.search(/filter-group"[^>]*>Tone<\/h3>/);
   assert.ok(tone > 0 && tone < html.indexOf('id="filter-brightness"'));
@@ -932,7 +937,7 @@ test("the export dialog starts with its pre-filled name selected", () => {
 });
 
 test("the filters panel is grouped into scannable sections", () => {
-  for (const label of ["Essentials", "Stylize", "Tone &amp; levels", "Tone", "Colour balance", "Effects", "Textures"]) {
+  for (const label of ["Essentials", "Stylize", "Levels", "Tone", "Colour balance", "Effects", "Textures"]) {
     assert.match(html, new RegExp(`<h3 class="filter-group"[^>]*>${label}</h3>`), `${label} group`);
   }
   assert.match(styles, /\.filter-group\s*\{[^}]*grid-column:\s*1\s*\/\s*-1/);
