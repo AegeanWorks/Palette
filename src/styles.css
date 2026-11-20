@@ -556,6 +556,28 @@ select:disabled {
   margin-bottom: 10px;
 }
 
+.panel-head {
+  cursor: pointer;
+}
+
+.panel-head h2::before {
+  content: "▾";
+  display: inline-block;
+  margin-right: 7px;
+  color: var(--dim);
+  font-size: 10px;
+  transition: transform 0.18s var(--ease);
+}
+
+.panel[data-collapsed="true"] .panel-head h2::before {
+  transform: rotate(-90deg);
+}
+
+.panel[data-collapsed="true"] .panel-head > :not(h2),
+.panel[data-collapsed="true"] > :not(.panel-head) {
+  display: none;
+}
+
 /* The tool hint can be long; give it a full-width line instead of cramping it
    beside the heading, where it wraps into a narrow column. Scope to the options
    panel so other panel headers keep their single-row layout. */

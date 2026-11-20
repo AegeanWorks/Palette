@@ -3894,6 +3894,23 @@ export class PaletteEditor {
     this.el.btnOpen.addEventListener("click", () => this.el.fileImage.click());
     this.el.btnOpenProject.addEventListener("click", () => this.el.fileProject.click());
     this.el.btnSave.addEventListener("click", () => this.saveProject());
+    this.root.querySelector(".panel-column")?.addEventListener("click", (event) => {
+      if (event.target.closest("button")) return;
+      const head = event.target.closest(".panel-head");
+      if (!head) return;
+      const panel = head.closest(".panel");
+      const collapsed = panel.dataset.collapsed === "true";
+      panel.dataset.collapsed = collapsed ? "false" : "true";
+      head.setAttribute("aria-expanded", collapsed ? "true" : "false");
+      head.title = collapsed ? "Click to collapse" : "Click to expand";
+    });
+    this.root.querySelector(".panel-column")?.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      const head = event.target.closest(".panel-head");
+      if (!head) return;
+      event.preventDefault();
+      head.click();
+    });
     this.el.btnExport.addEventListener("click", () => this.openExportDialog());
     this.el.btnUndo.addEventListener("click", () => this.undo());
     this.el.btnRedo.addEventListener("click", () => this.redo());

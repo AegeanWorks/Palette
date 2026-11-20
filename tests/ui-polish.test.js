@@ -131,6 +131,16 @@ test("the status bar reflects the active Gradient type", () => {
   assert.match(editor, /gradientType\.addEventListener\("change"[\s\S]{0,160}this\.syncToolOptions\(\)/);
 });
 
+test("sidebar panels can be collapsed to reduce clutter", () => {
+  assert.equal((html.match(/class="panel-head" role="button"/g) || []).length, 4);
+  assert.match(styles, /\.panel\[data-collapsed="true"\] \.panel-head h2::before/);
+  assert.match(styles, /\.panel\[data-collapsed="true"\] > :not\(\.panel-head\)/);
+  assert.match(editor, /event\.target\.closest\("button"\)/);
+  assert.match(editor, /event\.target\.closest\("\.panel-head"\)/);
+  assert.match(editor, /panel\.dataset\.collapsed = collapsed \? "false" : "true"/);
+  assert.match(editor, /event\.key !== "Enter" && event\.key !== " "/);
+});
+
 test("the bucket tool shows its fill colour at the cursor", () => {
   assert.match(editor, /this\.tool === "bucket" && this\.pointer && this\.pointInsideDoc/);
   assert.match(editor, /const hex = this\.options\.color/);
