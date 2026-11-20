@@ -253,7 +253,7 @@ const IDS = [
   "filter-oil-radius", "filter-oil-value", "btn-filter-oil", "btn-filter-median",
   "status-tool", "status-layer", "status-selection", "status-message",
   "status-color", "status-cursor", "status-zoom",
-  "btn-actual", "new-dialog", "new-form", "new-name", "new-width", "new-height", "new-presets", "new-color", "new-color-hex",
+  "btn-actual", "new-dialog", "new-form", "new-name", "new-width", "new-height", "new-presets", "new-reset", "new-color", "new-color-hex",
   "new-cancel", "new-create", "new-size", "export-dialog", "export-form", "export-name", "export-filename", "export-format",
   "export-quality-row", "export-quality", "export-quality-value", "export-scale", "export-size", "export-reset",
   "export-cancel", "export-confirm", "resize-dialog", "resize-form", "resize-width", "resize-height",
@@ -3173,6 +3173,17 @@ export class PaletteEditor {
     this.el.newName.select();
   }
 
+  resetNewSettings() {
+    this.el.newName.value = "Untitled";
+    this.el.newWidth.value = "1280";
+    this.el.newHeight.value = "800";
+    const white = this.root.querySelector('input[name="new-background"][value="white"]');
+    if (white) white.checked = true;
+    this.el.newColor.value = "#0b1220";
+    if (this.el.newColorHex) this.el.newColorHex.textContent = "#0b1220";
+    this.syncNewSize();
+  }
+
   hasUnsavedChanges() {
     return this.documentDirty;
   }
@@ -4491,6 +4502,7 @@ export class PaletteEditor {
       event.preventDefault();
       this.createNewDocument();
     });
+    this.el.newReset.addEventListener("click", () => this.resetNewSettings());
     this.el.newPresets.addEventListener("click", (event) => {
       const button = event.target.closest("button[data-w]");
       if (!button) return;

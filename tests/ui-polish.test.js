@@ -256,6 +256,12 @@ test("collapse chevrons are drawn with CSS borders", () => {
   assert.doesNotMatch(styles, /h2::before \{[^}]*content: "▾"/);
 });
 
+test("the New dialog has a Reset control", () => {
+  assert.match(html, /id="new-reset"[^>]*title="Reset name, size and background to defaults"/);
+  assert.match(editor, /newReset\.addEventListener\("click", \(\) => this\.resetNewSettings\(\)\)/);
+  assert.match(editor, /resetNewSettings\(\) \{[\s\S]*?newName\.value = "Untitled"[\s\S]*?newWidth\.value = "1280"[\s\S]*?newHeight\.value = "800"/);
+});
+
 test("the New dialog shows the custom background hex", () => {
   assert.match(html, /id="new-color-hex"[^>]*>#0b1220<\/output>/);
   assert.match(editor, /newColorHex\.textContent = this\.el\.newColor\.value/);
