@@ -298,12 +298,18 @@ test("the New dialog has a Reset control", () => {
   assert.match(editor, /resetNewSettings\(\) \{[\s\S]*?newName\.value = "Untitled"[\s\S]*?newWidth\.value = "1280"[\s\S]*?newHeight\.value = "800"/);
 });
 
+test("the New dialog hex readout copies on click", () => {
+  assert.match(html, /id="new-color-hex"[^>]*title="Copy the background hex"/);
+  assert.match(editor, /newColorHex\.addEventListener\("click"/);
+  assert.match(editor, /newColorHex\.textContent = "Copied!"/);
+});
+
 test("the New dialog labels its custom background option", () => {
   assert.match(html, /value="color"> Custom <input id="new-color" type="color"/);
 });
 
 test("the New dialog shows the custom background hex", () => {
-  assert.match(html, /id="new-color-hex"[^>]*>#0b1220<\/output>/);
+  assert.match(html, /id="new-color-hex"[^>]*>#0b1220<\/button>/);
   assert.match(editor, /newColorHex\.textContent = this\.el\.newColor\.value/);
 });
 

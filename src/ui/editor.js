@@ -4571,6 +4571,24 @@ export class PaletteEditor {
     this.el.newColor.addEventListener("input", () => {
       if (this.el.newColorHex) this.el.newColorHex.textContent = this.el.newColor.value;
     });
+    this.el.newColorHex.addEventListener("click", () => {
+      const hex = this.el.newColor.value;
+      if (!navigator.clipboard?.writeText) {
+        this.announce("Clipboard is unavailable in this context.", { error: true });
+        return;
+      }
+      navigator.clipboard.writeText(hex).then(
+        () => {
+          this.announce(`Copied ${hex} to clipboard.`);
+          this.el.newColorHex.textContent = "Copied!";
+          clearTimeout(this.newColorCopyTimer);
+          this.newColorCopyTimer = setTimeout(() => {
+            if (this.el.newColorHex) this.el.newColorHex.textContent = this.el.newColor.value;
+          }, 900);
+        },
+        () => this.announce("Could not copy the hex colour.", { error: true }),
+      );
+    });
     this.el.newWidth.addEventListener("input", () => this.syncNewSize());
     this.el.newHeight.addEventListener("input", () => this.syncNewSize());
     this.el.newColor.addEventListener("input", () => {
