@@ -131,6 +131,10 @@ test("the status bar reflects the active Gradient type", () => {
   assert.match(editor, /gradientType\.addEventListener\("change"[\s\S]{0,160}this\.syncToolOptions\(\)/);
 });
 
+test("the Move hint advertises the Shift-axis constraint", () => {
+  assert.match(editor, /Shift constrains to an axis; arrow keys nudge it/);
+});
+
 test("Shift constrains layer moves to one axis", () => {
   assert.match(editor, /if \(event\.shiftKey\) \{[\s\S]{0,140}Math\.abs\(dx\) >= Math\.abs\(dy\)/);
   assert.match(editor, /action\.shift = event\.shiftKey/);

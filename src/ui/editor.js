@@ -161,7 +161,7 @@ const BUTTON_SHORTCUTS = Object.freeze({
 });
 
 const TOOL_META = Object.freeze({
-  move: { label: "Move", cursor: "move", hint: "Drag the active layer. Arrow keys nudge it." },
+  move: { label: "Move", cursor: "move", hint: "Drag the active layer. Shift constrains to an axis; arrow keys nudge it." },
   brush: { label: "Brush", cursor: "crosshair", hint: "Paint on the active layer." },
   eraser: { label: "Eraser", cursor: "crosshair", hint: "Erase pixels from the active layer." },
   clone: { label: "Clone stamp", cursor: "crosshair", hint: "Alt-click a source, then drag to clone from it." },
