@@ -1151,7 +1151,11 @@ export class PaletteEditor {
         context.stroke();
       }
       // Live dimension badge for the crop region.
-      const label = `${Math.round(crop.w)} × ${Math.round(crop.h)} px`;
+      const aspect = this.options.crop.aspect;
+      const aspectLabel = aspect && aspect !== "free"
+        ? this.el.cropAspect.selectedOptions[0]?.dataset.label || aspect
+        : "";
+      const label = `${Math.round(crop.w)} × ${Math.round(crop.h)} px${aspectLabel ? ` · ${aspectLabel}` : ""}`;
       context.font = '600 12px ui-monospace, "Cascadia Mono", Consolas, monospace';
       const tw = context.measureText(label).width;
       const bx = Math.max(0, Math.min(x, this.viewport.width - tw - 14));
