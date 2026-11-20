@@ -4511,10 +4511,15 @@ export class PaletteEditor {
     });
     this.el.newReset.addEventListener("click", () => this.resetNewSettings());
     this.el.newPresets.addEventListener("click", (event) => {
-      const button = event.target.closest("button[data-w]");
+      const button = event.target.closest("button[data-w], button[data-current]");
       if (!button) return;
-      this.el.newWidth.value = button.dataset.w;
-      this.el.newHeight.value = button.dataset.h;
+      if ("current" in button.dataset) {
+        this.el.newWidth.value = String(this.doc.width);
+        this.el.newHeight.value = String(this.doc.height);
+      } else {
+        this.el.newWidth.value = button.dataset.w;
+        this.el.newHeight.value = button.dataset.h;
+      }
       this.syncNewSize();
     });
     this.el.newColor.addEventListener("input", () => {

@@ -256,6 +256,12 @@ test("collapse chevrons are drawn with CSS borders", () => {
   assert.doesNotMatch(styles, /h2::before \{[^}]*content: "▾"/);
 });
 
+test("the New dialog can reuse the current document size", () => {
+  assert.match(html, /id="new-current"[^>]*data-current[^>]*title="Use the current document's size"/);
+  assert.match(editor, /closest\("button\[data-w\], button\[data-current\]"\)/);
+  assert.match(editor, /"current" in button\.dataset[\s\S]{0,140}newWidth\.value = String\(this\.doc\.width\)/);
+});
+
 test("the New dialog has a Reset control", () => {
   assert.match(html, /id="new-reset"[^>]*title="Reset name, size and background to defaults"/);
   assert.match(editor, /newReset\.addEventListener\("click", \(\) => this\.resetNewSettings\(\)\)/);
