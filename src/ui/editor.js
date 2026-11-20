@@ -3156,9 +3156,17 @@ export class PaletteEditor {
     const requestedHeight = requestedDimension(this.el.newHeight.value, 800);
     const { width, height } = boundedDimensions(requestedWidth, requestedHeight);
     const capped = width !== requestedWidth || height !== requestedHeight;
+    let gcd = width;
+    let other = height;
+    while (other) {
+      const next = gcd % other;
+      gcd = other;
+      other = next;
+    }
+    const ratio = `${width / gcd}:${height / gcd}`;
     this.el.newSize.textContent = capped
-      ? `${requestedWidth} × ${requestedHeight} will be capped to ${width} × ${height} pixels`
-      : `${width} × ${height} pixels`;
+      ? `${requestedWidth} × ${requestedHeight} will be capped to ${width} × ${height} pixels (${ratio})`
+      : `${width} × ${height} pixels (${ratio})`;
     this.el.newSize.dataset.tone = capped ? "warn" : "muted";
     for (const button of this.el.newPresets.querySelectorAll("button[data-w]")) {
       const matches = Number(button.dataset.w) === requestedWidth && Number(button.dataset.h) === requestedHeight;

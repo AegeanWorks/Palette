@@ -221,6 +221,11 @@ test("export settings persist across dialog opens", () => {
   assert.match(editor, /saved\.format \|\| "png"/);
 });
 
+test("the New document size readout includes the aspect ratio", () => {
+  assert.match(editor, /const ratio = `\$\{width \/ gcd\}:\$\{height \/ gcd\}`/);
+  assert.match(editor, /\$\{width\} × \$\{height\} pixels \(\$\{ratio\}\)/);
+});
+
 test("the Export dialog has a Reset control", () => {
   assert.match(html, /id="export-reset"[^>]*title="Reset export settings to defaults"/);
   assert.match(editor, /exportReset\.addEventListener\("click"/);
