@@ -1264,7 +1264,7 @@ export class PaletteEditor {
       // Live offset for layer/pixel moves, which otherwise give no numeric
       // feedback until the drag ends.
       const { dx, dy } = this.action;
-      const label = `Δ ${dx >= 0 ? "+" : ""}${dx}, ${dy >= 0 ? "+" : ""}${dy} px`;
+      const label = `Δ ${dx >= 0 ? "+" : ""}${dx}, ${dy >= 0 ? "+" : ""}${dy} px${this.action.shift ? " · axis" : ""}`;
       const px = this.pointer ?? { x: this.viewport.width / 2, y: this.viewport.height / 2 };
       context.save();
       context.font = '600 12px ui-monospace, "Cascadia Mono", Consolas, monospace';
@@ -1860,16 +1860,19 @@ export class PaletteEditor {
       this.scheduleRender();
       return;
     }
-    if (action.type === "move") {
-      action.dx = Math.round(point.x - action.start.x);
-      action.dy = Math.round(point.y - action.start.y);
-      this.scheduleRender();
-      return;
-    }
-    if (action.type === "move-selection") {
-      action.dx = Math.round(point.x - action.start.x);
-      action.dy = Math.round(point.y - action.start.y);
-      redrawSelectedMove(action.base, action.patch, action.selection, action.dx, action.dy, action.preview);
+    if (action.type === "move" || action.type === "move-selection") {
+      let dx = point.x - action.start.x;
+      let dy = point.y - action.start.y;
+      if (event.shiftKey) {
+        if (Math.abs(dx) >= Math.abs(dy)) dy = 0;
+        else dx = 0;
+      }
+      action.dx = Math.round(dx);
+      action.dy = Math.round(dy);
+      action.shift = event.shiftKey;
+      if (action.type === "move-selection") {
+        redrawSelectedMove(action.base, action.patch, action.selection, action.dx, action.dy, action.preview);
+      }
       this.scheduleRender();
       return;
     }

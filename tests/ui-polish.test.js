@@ -131,6 +131,12 @@ test("the status bar reflects the active Gradient type", () => {
   assert.match(editor, /gradientType\.addEventListener\("change"[\s\S]{0,160}this\.syncToolOptions\(\)/);
 });
 
+test("Shift constrains layer moves to one axis", () => {
+  assert.match(editor, /if \(event\.shiftKey\) \{[\s\S]{0,140}Math\.abs\(dx\) >= Math\.abs\(dy\)/);
+  assert.match(editor, /action\.shift = event\.shiftKey/);
+  assert.match(editor, /px\$\{this\.action\.shift \? " · axis" : ""\}/);
+});
+
 test("the histogram shows per-channel values on hover", () => {
   assert.match(html, /id="histogram-hover"[^>]*>Hover to inspect channel levels<\/output>/);
   assert.match(editor, /histogram\.addEventListener\("mousemove"/);
@@ -273,7 +279,7 @@ test("the histogram has a visible RGB and luminance legend", () => {
 
 test("moving a layer shows a live offset badge", () => {
   assert.match(editor, /\(this\.action\?\.type === "move" \|\| this\.action\?\.type === "move-selection"\)/);
-  assert.match(editor, /const label = `Δ \$\{dx >= 0 \? "\+" : ""\}\$\{dx\}, \$\{dy >= 0 \? "\+" : ""\}\$\{dy\} px`/);
+  assert.match(editor, /const label = `Δ \$\{dx >= 0 \? "\+" : ""\}\$\{dx\}, \$\{dy >= 0 \? "\+" : ""\}\$\{dy\} px\$\{this\.action\.shift \? " · axis" : ""\}`/);
 });
 
 test("signed adjustment readouts show an explicit plus for positive values", () => {
