@@ -221,6 +221,12 @@ test("export settings persist across dialog opens", () => {
   assert.match(editor, /saved\.format \|\| "png"/);
 });
 
+test("collapse chevrons are drawn with CSS borders", () => {
+  assert.match(styles, /\.panel-head h2::before \{[^}]*border-bottom: 1\.5px solid currentColor/);
+  assert.match(styles, /\.filter-group::before \{[^}]*border-bottom: 1\.5px solid currentColor/);
+  assert.doesNotMatch(styles, /h2::before \{[^}]*content: "▾"/);
+});
+
 test("the New dialog shows the custom background hex", () => {
   assert.match(html, /id="new-color-hex"[^>]*>#0b1220<\/output>/);
   assert.match(editor, /newColorHex\.textContent = this\.el\.newColor\.value/);
