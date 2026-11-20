@@ -261,6 +261,12 @@ test("the New dialog shows the custom background hex", () => {
   assert.match(editor, /newColorHex\.textContent = this\.el\.newColor\.value/);
 });
 
+test("the Adjustments header counts changed adjustments", () => {
+  assert.match(html, /id="adjust-count"[^>]*data-active="false">0<\/span>/);
+  assert.match(editor, /syncAdjustCount\(adjustments\)/);
+  assert.match(editor, /for \(const key of ADJUSTMENTS\) \{\s*if \(\(adjustments\[key\] \?\? 0\) !== 0\) count \+= 1/);
+});
+
 test("the Filters header counts changed filters", () => {
   assert.match(html, /id="filter-count"[^>]*data-active="false">0<\/span>/);
   assert.match(editor, /filterCount\.textContent = String\(changedCount\)/);

@@ -232,7 +232,7 @@ const IDS = [
   "layer-opacity-value", "layer-blend", "layer-count", "layer-list",
   "btn-resize", "btn-canvas-size", "btn-transform", "btn-layer-flip-h", "btn-layer-flip-v", "btn-layer-rotate-cw", "btn-layer-rotate-ccw", "btn-flip-h", "btn-flip-v", "btn-rotate",
   "btn-flatten", "btn-stamp-visible",
-  "adjust-reset", "histogram", "histogram-hover", "histogram-range", "btn-auto-levels", "filter-reset", "filter-count", "adj-brightness",
+  "adjust-reset", "adjust-count", "histogram", "histogram-hover", "histogram-range", "btn-auto-levels", "filter-reset", "filter-count", "adj-brightness",
   "adj-brightness-value", "adj-contrast", "adj-contrast-value",
   "adj-saturation", "adj-saturation-value", "adj-hue", "adj-hue-value", "adj-grayscale",
   "adj-grayscale-value", "adj-sepia", "adj-sepia-value", "adj-invert", "adj-invert-value",
@@ -816,6 +816,17 @@ export class PaletteEditor {
       : isNeutralAdjustments(layer.adjustments)
         ? "Reset — adjustments are already neutral"
         : "Reset adjustments on the active layer";
+    this.syncAdjustCount(layer.adjustments);
+  }
+
+  syncAdjustCount(adjustments) {
+    if (!this.el.adjustCount) return;
+    let count = 0;
+    for (const key of ADJUSTMENTS) {
+      if ((adjustments[key] ?? 0) !== 0) count += 1;
+    }
+    this.el.adjustCount.textContent = String(count);
+    this.el.adjustCount.dataset.active = count > 0 ? "true" : "false";
   }
 
   syncToolOptions() {
@@ -2916,6 +2927,7 @@ export class PaletteEditor {
     }
     const adjustments = { ...layer.adjustments, [key]: value };
     this.doc = updateLayer(this.doc, layer.id, { adjustments });
+    this.syncAdjustCount(adjustments);
     if (this.el.adjustReset) {
       this.el.adjustReset.disabled = isNeutralAdjustments(adjustments);
       this.el.adjustReset.title = isNeutralAdjustments(adjustments)
