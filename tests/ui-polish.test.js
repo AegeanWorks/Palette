@@ -126,6 +126,11 @@ test("the Help button advertises the F1 shortcut", () => {
   assert.match(editor, /btnHelp: "F1"/);
 });
 
+test("the clone guide shows the exact source offset", () => {
+  assert.match(editor, /const offX = Math\.round\(pointerDoc\.x - currentSource\.x\)/);
+  assert.match(editor, /const label = `Clone Δ \$\{offX >= 0 \? "\+" : ""\}\$\{offX\}, \$\{offY >= 0 \? "\+" : ""\}\$\{offY\} px`/);
+});
+
 test("the histogram has a visible RGB and luminance legend", () => {
   assert.match(html, /class="histogram-legend"[^>]*>[\s\S]{0,300}data-ch="r"[\s\S]{0,240}data-ch="l"/);
   for (const ch of ["r", "g", "b", "l"]) {

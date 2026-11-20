@@ -1462,6 +1462,22 @@ export class PaletteEditor {
         context.lineTo(this.pointer.x, this.pointer.y);
         context.stroke();
         context.restore();
+        // Numeric offset so the exact clone delta is readable, not just its direction.
+        const pointerDoc = this.toDoc(this.pointer);
+        const offX = Math.round(pointerDoc.x - currentSource.x);
+        const offY = Math.round(pointerDoc.y - currentSource.y);
+        const label = `Clone Δ ${offX >= 0 ? "+" : ""}${offX}, ${offY >= 0 ? "+" : ""}${offY} px`;
+        context.save();
+        context.font = '600 12px ui-monospace, "Cascadia Mono", Consolas, monospace';
+        const tw = context.measureText(label).width;
+        const bx = Math.max(0, Math.min(this.pointer.x + 14, this.viewport.width - tw - 14));
+        const by = Math.max(0, this.pointer.y - 26);
+        context.fillStyle = "rgba(2, 6, 14, 0.85)";
+        context.fillRect(bx, by, tw + 12, 18);
+        context.fillStyle = "rgba(103, 232, 249, 0.95)";
+        context.textBaseline = "middle";
+        context.fillText(label, bx + 6, by + 9);
+        context.restore();
       }
       context.save();
       context.strokeStyle = "rgba(103, 232, 249, 0.95)";
