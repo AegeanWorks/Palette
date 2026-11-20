@@ -131,6 +131,11 @@ test("the status bar reflects the active Gradient type", () => {
   assert.match(editor, /gradientType\.addEventListener\("change"[\s\S]{0,160}this\.syncToolOptions\(\)/);
 });
 
+test("double-clicking with the Hand tool fits the view", () => {
+  assert.match(editor, /this\.tool === "hand"\) this\.fitView\(\)/);
+  assert.match(editor, /Double-click to fit/);
+});
+
 test("double-clicking with the Crop tool applies a ready crop", () => {
   assert.match(editor, /this\.tool === "crop" && isUsableRect\(this\.cropRect\)\) this\.applyCrop\(\)/);
   assert.match(editor, /Double-click or Enter to apply/);
