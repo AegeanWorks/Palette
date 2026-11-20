@@ -131,6 +131,12 @@ test("the status bar reflects the active Gradient type", () => {
   assert.match(editor, /gradientType\.addEventListener\("change"[\s\S]{0,160}this\.syncToolOptions\(\)/);
 });
 
+test("sidebar panels use tighter spacing", () => {
+  assert.match(styles, /\.panel \{[^}]*padding: 10px 12px 12px/);
+  assert.match(styles, /\.panel-head \{[^}]*margin-bottom: 8px/);
+  assert.match(styles, /\.panel-group \{[^}]*margin-top: 8px/);
+});
+
 test("adjustment sliders are grouped into Tone, Colour and Detail", () => {
   for (const label of ["Tone", "Colour", "Detail"]) {
     assert.match(html, new RegExp(`panel-group-label">${label}</span>`));

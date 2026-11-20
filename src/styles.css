@@ -556,7 +556,7 @@ select:disabled {
 }
 
 .panel {
-  padding: 13px 14px 16px;
+  padding: 10px 12px 12px;
   border-bottom: 1px solid var(--line);
 }
 
@@ -565,7 +565,7 @@ select:disabled {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .panel-head {
@@ -935,8 +935,8 @@ select:focus {
 }
 
 .panel-group {
-  margin-top: 11px;
-  padding-top: 10px;
+  margin-top: 8px;
+  padding-top: 8px;
   border-top: 1px solid var(--line);
 }
 
