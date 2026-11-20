@@ -189,6 +189,12 @@ test("the Filters panel can reset all settings", () => {
   assert.match(editor, /this\.announce\("Filter settings reset\."\)/);
 });
 
+test("layer thumbnails toggle visibility with a tooltip", () => {
+  assert.match(editor, /thumb\.title = `\$\{layer\.visible \? "Hide" : "Show"\} \$\{layer\.name\}`/);
+  assert.match(editor, /thumb\.addEventListener\("click"[\s\S]{0,140}this\.toggleLayerVisibility\(layer\.id\)/);
+  assert.match(styles, /\.layer-thumb \{[^}]*cursor: pointer/);
+});
+
 test("the layer list scrolls and keeps the active layer visible", () => {
   assert.match(styles, /\.layer-list \{[^}]*max-height: 210px/);
   assert.match(styles, /\.layer-list \{[^}]*overflow-y: auto/);

@@ -850,6 +850,7 @@ select:focus {
 .layer-thumb {
   width: 44px;
   height: 34px;
+  cursor: pointer;
   border: 1px solid var(--line);
   border-radius: 5px;
   background-color: var(--checker-dark);

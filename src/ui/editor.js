@@ -936,6 +936,11 @@ export class PaletteEditor {
       thumb.src = layerThumbnail(layer.canvas);
       thumb.width = 44;
       thumb.height = 34;
+      thumb.title = `${layer.visible ? "Hide" : "Show"} ${layer.name}`;
+      thumb.addEventListener("click", (event) => {
+        event.stopPropagation();
+        this.toggleLayerVisibility(layer.id);
+      });
 
       const name = this.root.createElement("button");
       name.type = "button";
