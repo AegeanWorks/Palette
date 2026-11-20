@@ -131,6 +131,11 @@ test("the status bar reflects the active Gradient type", () => {
   assert.match(editor, /gradientType\.addEventListener\("change"[\s\S]{0,160}this\.syncToolOptions\(\)/);
 });
 
+test("Manage icons fit a single compact row", () => {
+  assert.match(styles, /\.panel-group \.icon-btn \{[^}]*width: 26px/);
+  assert.match(styles, /\.panel-group \.button-row\.compact \{[^}]*gap: 3px/);
+});
+
 test("sidebar panels use tighter spacing", () => {
   assert.match(styles, /\.panel \{[^}]*padding: 10px 12px 12px/);
   assert.match(styles, /\.panel-head \{[^}]*margin-bottom: 8px/);

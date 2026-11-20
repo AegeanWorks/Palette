@@ -940,6 +940,20 @@ select:focus {
   border-top: 1px solid var(--line);
 }
 
+.panel-group .button-row.compact {
+  gap: 3px;
+}
+
+.panel-group .icon-btn {
+  width: 26px;
+  height: 26px;
+}
+
+.panel-group .icon-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
 .panel-group-label {
   display: block;
   margin-bottom: 5px;
