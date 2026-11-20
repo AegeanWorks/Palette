@@ -1158,8 +1158,16 @@ select:focus {
   color: var(--danger);
 }
 
+#status-message[data-tone="error"]::before {
+  content: "⚠ ";
+}
+
 #status-message[data-tone="ok"] {
   color: var(--good);
+}
+
+#status-message[data-tone="ok"]::before {
+  content: "✓ ";
 }
 
 .status-color {
