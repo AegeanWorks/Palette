@@ -766,7 +766,8 @@ export class PaletteEditor {
       ].filter(Boolean);
       const suffix = flags.length ? ` (${flags.join(", ")})` : "";
       this.el.statusLayer.textContent = `${layer.name}${suffix}`;
-      this.el.statusLayer.title = `Active layer: ${layer.name}${suffix}`;
+      const dimensions = layer.canvas ? ` — ${layer.canvas.width}×${layer.canvas.height} px` : "";
+      this.el.statusLayer.title = `Active layer: ${layer.name}${suffix}${dimensions}`;
     }
     const layerIndex = indexOfLayer(this.doc, layer.id);
     this.el.btnLayerUp.disabled = layerIndex >= this.doc.layers.length - 1;

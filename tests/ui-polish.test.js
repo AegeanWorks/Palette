@@ -1140,6 +1140,11 @@ test("the layer count tooltip names the active layer's position", () => {
   assert.match(editor, /active layer \$\{activeIndex \+ 1\} of \$\{layers\.length\}/);
 });
 
+test("the active layer tooltip includes its pixel dimensions", () => {
+  assert.match(editor, /layer\.canvas \? ` — \$\{layer\.canvas\.width\}×\$\{layer\.canvas\.height\} px` : ""/);
+  assert.match(editor, /Active layer: \$\{layer\.name\}\$\{suffix\}\$\{dimensions\}/);
+});
+
 test("the autosave status can save the session on click", () => {
   assert.match(html, /id="status-autosave"[^>]*title="Autosave status — click to save now"/);
   assert.match(editor, /statusAutosave\.addEventListener\("click"/);
