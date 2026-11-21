@@ -3406,7 +3406,8 @@ export class PaletteEditor {
     const capped = percent < Math.round(scale * 100);
     const limit = capped ? " (capped to the pixel budget)" : "";
     const ratio = aspectRatio(output.width, output.height);
-    this.el.exportSize.textContent = `${output.width} × ${output.height} pixels (${ratio}, ${percent}% of ${
+    const megapixels = (output.width * output.height / 1_000_000).toFixed(2);
+    this.el.exportSize.textContent = `${output.width} × ${output.height} pixels (${ratio}, ${megapixels} MP, ${percent}% of ${
       this.doc.width
     } × ${this.doc.height}${limit}), ${format.mime === "image/jpeg" ? "white background" : "transparent background"}.`;
     this.el.exportSize.dataset.tone = capped ? "warn" : "muted";

@@ -926,6 +926,8 @@ test("discarding a recovered session reads as a destructive choice", () => {
 test("the Export size readout includes the aspect ratio", () => {
   assert.match(editor, /const ratio = aspectRatio\(output\.width, output\.height\)/);
   assert.match(editor, /exportSize\.textContent = `\$\{output\.width\} × \$\{output\.height\} pixels \(\$\{ratio\}/);
+  assert.match(editor, /const megapixels = \(output\.width \* output\.height \/ 1_000_000\)\.toFixed\(2\)/);
+  assert.match(editor, /\$\{megapixels\} MP/);
 });
 
 test("the export size readout warns visually when capped", () => {
