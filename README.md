@@ -7,6 +7,8 @@
 
 A zero-dependency, Photoshop-style image editor for the browser. Layers, filters, undo/redo and local export; images never leave the device.
 
+> **Archived**: Project complete: full Reforge audit passed and one-click launchers shipped; retiring after delivery. (archived 2026-11-21). This project is read-only; its GitHub repository is archived.
+
 No server, no accounts, no uploads, no build step.
 
 ## ⚡ 30-Second Cold-Start Quick Reference

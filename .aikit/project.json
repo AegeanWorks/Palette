@@ -24,5 +24,11 @@
     "index.html"
   ],
   "ui_checked_at": "2026-10-31",
-  "ui_source": "detected"
+  "ui_source": "detected",
+  "archived": true,
+  "archived_at": "2026-11-21",
+  "archive_reason": "Project complete: full Reforge audit passed and one-click launchers shipped; retiring after delivery.",
+  "archive_repo": "AegeanWorks/Palette",
+  "archive_description": "[ARCHIVED] A zero-dependency, Photoshop-style image editor for the browser. Layers, filters, undo/redo and local export; images never leave the device.",
+  "archive_origin": "projects/palette"
 }
