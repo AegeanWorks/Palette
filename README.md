@@ -16,7 +16,13 @@ No server, no accounts, no uploads, no build step.
   ```bash
   npm test
   ```
-- **Run it locally**:
+- **Run it locally — one click**: double-click the launcher for your platform in the project folder:
+  - Windows: `start.bat`
+  - macOS: `start.command`
+  - Linux / other Unix: `start.sh` (or `./start.sh`)
+
+  Each launcher checks that Node.js is installed, starts the local server and opens your default browser — no terminal typing needed. Requires Node.js 20+.
+- **Or run it from a terminal**:
   ```bash
   npm start
   ```
@@ -75,10 +81,14 @@ Everything happens in the browser. Images are never uploaded, and there is no ne
 
 ```text
 palette/
+├── .gitattributes              <- line endings for the one-click launchers
 ├── .gitignore
 ├── LICENSES/
 ├── README.md
 ├── index.html                 <- editor shell, dialogs, panels and tools
+├── start.bat                  <- one-click launcher (Windows)
+├── start.command              <- one-click launcher (macOS)
+├── start.sh                   <- one-click launcher (Linux / Unix)
 ├── package.json               <- npm scripts, test command and version
 ├── src/
 │   ├── theme.css              <- design tokens

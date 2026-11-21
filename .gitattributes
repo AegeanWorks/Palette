@@ -1,0 +1,5 @@
+# One-click launchers must keep platform-correct line endings.
+# Unix shells break on a CRLF shebang; batch files expect CRLF.
+start.sh text eol=lf
+start.command text eol=lf
+start.bat text eol=crlf
