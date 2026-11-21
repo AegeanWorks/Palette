@@ -1142,6 +1142,11 @@ test("the layer count tooltip names the active layer's position", () => {
   assert.match(editor, /active layer \$\{activeIndex \+ 1\} of \$\{layers\.length\}/);
 });
 
+test("the active layer's lock has a keyboard shortcut", () => {
+  assert.match(editor, /event\.altKey && key === "l"[\s\S]{0,120}toggleLayerLock\(this\.doc\.activeLayerId\)/);
+  assert.match(html, /Ctrl \/ Cmd \+ Alt \+ L<\/dt><dd>Lock or unlock the active layer<\/dd>/);
+});
+
 test("the active layer's visibility has a keyboard shortcut", () => {
   assert.match(editor, /event\.altKey && key === "v"[\s\S]{0,120}toggleLayerVisibility\(this\.doc\.activeLayerId\)/);
   assert.match(html, /Ctrl \/ Cmd \+ Alt \+ V<\/dt><dd>Show or hide the active layer<\/dd>/);

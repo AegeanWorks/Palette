@@ -4091,6 +4091,9 @@ export class PaletteEditor {
       } else if (event.altKey && key === "v") {
         event.preventDefault();
         if (this.doc) this.toggleLayerVisibility(this.doc.activeLayerId);
+      } else if (event.altKey && key === "l") {
+        event.preventDefault();
+        if (this.doc) this.toggleLayerLock(this.doc.activeLayerId);
       }
       return;
     }
