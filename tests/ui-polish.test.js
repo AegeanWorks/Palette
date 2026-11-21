@@ -213,7 +213,7 @@ test("the Filters panel can reset all settings", () => {
 });
 
 test("layer thumbnails toggle visibility with a tooltip", () => {
-  assert.match(editor, /thumb\.title = `\$\{layer\.visible \? "Hide" : "Show"\} \$\{layer\.name\}`/);
+  assert.match(editor, /thumb\.title = `\$\{layer\.visible \? "Hide" : "Show"\} \$\{layer\.name\}/);
   assert.match(editor, /thumb\.addEventListener\("click"[\s\S]{0,140}this\.toggleLayerVisibility\(layer\.id\)/);
   assert.match(styles, /\.layer-thumb \{[^}]*cursor: pointer/);
 });
@@ -1140,6 +1140,10 @@ test("the selection can be fitted to the view", () => {
 test("the layer count tooltip names the active layer's position", () => {
   assert.match(editor, /layers\.findIndex\(\(layer\) => layer\.id === this\.doc\.activeLayerId\)/);
   assert.match(editor, /active layer \$\{activeIndex \+ 1\} of \$\{layers\.length\}/);
+});
+
+test("layer thumbnails show dimensions in their tooltip", () => {
+  assert.match(editor, /thumb\.title = `\$\{layer\.visible \? "Hide" : "Show"\} \$\{layer\.name\} — \$\{layer\.canvas\.width\}×\$\{layer\.canvas\.height\} px`/);
 });
 
 test("the app-bar size tooltip includes megapixels", () => {
