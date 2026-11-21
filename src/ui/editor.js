@@ -601,6 +601,7 @@ export class PaletteEditor {
       this.el.docName.title = `${cleanDocumentName(this.doc.name, "Untitled")} — click to rename`;
     }
     this.el.docSize.textContent = `${this.doc.width} × ${this.doc.height} · ${aspectRatio(this.doc.width, this.doc.height)}`;
+    this.el.docSize.title = `${this.doc.width} × ${this.doc.height} pixels (${aspectRatio(this.doc.width, this.doc.height)}, ${(this.doc.width * this.doc.height / 1_000_000).toFixed(2)} MP) — click to resize`;
     this.updateHistoryButtons();
     this.renderLayerList();
     this.syncActiveLayer();

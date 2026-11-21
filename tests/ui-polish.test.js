@@ -1142,6 +1142,10 @@ test("the layer count tooltip names the active layer's position", () => {
   assert.match(editor, /active layer \$\{activeIndex \+ 1\} of \$\{layers\.length\}/);
 });
 
+test("the app-bar size tooltip includes megapixels", () => {
+  assert.match(editor, /docSize\.title = `\$\{this\.doc\.width\} × \$\{this\.doc\.height\} pixels \([\s\S]{0,160}MP\) — click to resize`/);
+});
+
 test("the document name tooltip shows the full name", () => {
   assert.match(editor, /docName\.title = `\$\{name\} — click to rename`/);
   assert.match(editor, /docName\.title = `\$\{cleanDocumentName\(this\.doc\.name, "Untitled"\)\} — click to rename`/);
