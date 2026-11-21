@@ -1142,6 +1142,11 @@ test("the layer count tooltip names the active layer's position", () => {
   assert.match(editor, /active layer \$\{activeIndex \+ 1\} of \$\{layers\.length\}/);
 });
 
+test("the active layer's visibility has a keyboard shortcut", () => {
+  assert.match(editor, /event\.altKey && key === "v"[\s\S]{0,120}toggleLayerVisibility\(this\.doc\.activeLayerId\)/);
+  assert.match(html, /Ctrl \/ Cmd \+ Alt \+ V<\/dt><dd>Show or hide the active layer<\/dd>/);
+});
+
 test("layer thumbnails show dimensions in their tooltip", () => {
   assert.match(editor, /thumb\.title = `\$\{layer\.visible \? "Hide" : "Show"\} \$\{layer\.name\} — \$\{layer\.canvas\.width\}×\$\{layer\.canvas\.height\} px`/);
 });

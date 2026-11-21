@@ -4088,6 +4088,9 @@ export class PaletteEditor {
       } else if (event.altKey && key === "f") {
         event.preventDefault();
         this.zoomToSelection();
+      } else if (event.altKey && key === "v") {
+        event.preventDefault();
+        if (this.doc) this.toggleLayerVisibility(this.doc.activeLayerId);
       }
       return;
     }
