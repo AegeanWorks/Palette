@@ -1129,7 +1129,9 @@ test("layers can be selected from the keyboard", () => {
 });
 
 test("the selection can be fitted to the view", () => {
-  assert.match(html, /id="selection-zoom"[^>]*title="Zoom the view to the selection"/);
+  assert.match(html, /id="selection-zoom"[^>]*title="Zoom the view to the selection \(Ctrl\+Alt\+F\)"/);
+  assert.match(editor, /event\.altKey && key === "f"[\s\S]{0,80}this\.zoomToSelection\(\)/);
+  assert.match(html, /Ctrl \/ Cmd \+ Alt \+ F<\/dt><dd>Fit the view to the active selection<\/dd>/);
   assert.match(editor, /selectionZoom\.addEventListener\("click", \(\) => this\.zoomToSelection\(\)\)/);
   assert.match(editor, /offsetX: viewport\.width \/ 2 - \(x \+ w \/ 2\) \* scale/);
   assert.match(editor, /selectionZoom\.hidden = !selectionRect/);

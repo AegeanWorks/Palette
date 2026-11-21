@@ -4080,6 +4080,9 @@ export class PaletteEditor {
       } else if (event.altKey && (key === "arrowup" || key === "arrowdown")) {
         event.preventDefault();
         this.selectAdjacentLayer(key === "arrowup" ? 1 : -1);
+      } else if (event.altKey && key === "f") {
+        event.preventDefault();
+        this.zoomToSelection();
       }
       return;
     }
