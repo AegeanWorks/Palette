@@ -573,6 +573,7 @@ export class PaletteEditor {
     const dirty = Boolean(this.documentDirty);
     const name = cleanDocumentName(this.doc?.name, "Untitled");
     if (this.el.docDirty) this.el.docDirty.hidden = !dirty;
+    if (this.el.docName) this.el.docName.title = `${name} — click to rename`;
     const title = `${name}${dirty ? " •" : ""} — Palette`;
     if (document.title !== title) document.title = title;
     if (this.el.btnSave) {
@@ -596,6 +597,9 @@ export class PaletteEditor {
     if (!this.doc) return;
     this.syncSwatches();
     if (this.root.activeElement !== this.el.docName) this.el.docName.value = this.doc.name;
+    if (this.el.docName) {
+      this.el.docName.title = `${cleanDocumentName(this.doc.name, "Untitled")} — click to rename`;
+    }
     this.el.docSize.textContent = `${this.doc.width} × ${this.doc.height} · ${aspectRatio(this.doc.width, this.doc.height)}`;
     this.updateHistoryButtons();
     this.renderLayerList();
