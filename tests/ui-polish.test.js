@@ -1114,6 +1114,11 @@ test("colour labels use consistent spelling", () => {
   assert.match(html, /data-ui="filter-color-balance">Colour balance<\/button>/);
 });
 
+test("Help dialog shortcut keys are styled as chips", () => {
+  assert.match(styles, /\.shortcut-list dt \{[\s\S]{0,180}border-radius: 5px/);
+  assert.match(styles, /\.shortcut-list dt \{[\s\S]{0,180}rgba\(34, 211, 238, 0\.06\)/);
+});
+
 test("layers can be selected from the keyboard", () => {
   assert.match(editor, /event\.altKey && \(key === "arrowup" \|\| key === "arrowdown"\)/);
   assert.match(editor, /this\.selectAdjacentLayer\(key === "arrowup" \? 1 : -1\)/);
